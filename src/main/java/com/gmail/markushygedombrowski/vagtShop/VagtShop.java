@@ -33,7 +33,7 @@ public class VagtShop implements Listener {
     private ItemStack legs;
     private ItemStack boots;
     private ItemStack bow = new ItemStack(Material.BOW);
-    private ItemStack food = new ItemStack(Material.GRILLED_PORK);
+    private ItemStack food = new ItemStack(Material.GRILLED_PORK,16);
     private ItemStack stick = new ItemStack(Material.STICK);
     private ItemStack arrow = new ItemStack(Material.ARROW, 64);
 

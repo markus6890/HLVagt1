@@ -4,6 +4,7 @@ import com.gmail.markushygedombrowski.HLvagt;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -20,9 +21,11 @@ public class VagtShopEnchant implements Listener {
     private final int ENCHANT_INDEX = 12;
     private final int MAXENCHANT_INDEX = 14;
     private ItemStack invItem;
+    private ItemStack mexInvItem;
     private HLvagt plugin;
     private Enchantment enchant;
     private int lvl;
+
     public VagtShopEnchant(HLvagt plugin) {
         this.plugin = plugin;
     }
@@ -30,6 +33,7 @@ public class VagtShopEnchant implements Listener {
     public void enchantItem(Player p, ItemStack item) {
         Inventory inventory = Bukkit.createInventory(null, 27, "§cVagt-§9Enchant §bShop");
         invItem = new ItemStack(item.getType());
+        mexInvItem = new ItemStack(item.getType());
         int pay = 500;
         Enchantment enchant;
         int lvl;
@@ -49,7 +53,7 @@ public class VagtShopEnchant implements Listener {
             } else {
                 enchant = Enchantment.PROTECTION_ENVIRONMENTAL;
             }
-             lvl = invItem.getEnchantmentLevel(enchant);
+            lvl = invItem.getEnchantmentLevel(enchant);
 
             lvl = lvl + 1;
             pay = 500 * lvl;
@@ -58,20 +62,19 @@ public class VagtShopEnchant implements Listener {
         }
 
         List<String> lore = new ArrayList<>();
-        lore.add(0,"§7Koster: §a" + pay);
+        lore.add(0, "§7Koster: §a" + pay);
         ItemMeta meta = invItem.getItemMeta();
         meta.setLore(lore);
         invItem.setItemMeta(meta);
         inventory.setItem(ENCHANT_INDEX, invItem);
 
 
-        lvl = enchant.getMaxLevel();
+        invItem.addEnchantment(enchant, lvl);
         pay = 5000;
-        invItem.removeEnchantment(enchant);
-        lore.set(0,"§7Koster: §a" + pay);
+        lore.set(0, "§7Koster: §a" + pay);
         meta.setLore(lore);
-        invItem.setItemMeta(meta);
-        inventory.setItem(MAXENCHANT_INDEX, invItem);
+        mexInvItem.setItemMeta(meta);
+        inventory.setItem(MAXENCHANT_INDEX, mexInvItem);
         p.openInventory(inventory);
 
     }
@@ -86,7 +89,7 @@ public class VagtShopEnchant implements Listener {
         ItemStack item = p.getItemInHand();
         if (inventory.getTitle().equalsIgnoreCase("§cVagt-§9Enchant §bShop")) {
             if (clickedSlot == ENCHANT_INDEX) {
-                checkEnchant(item,p);
+                checkEnchant(item, p);
                 if (enchant.getMaxLevel() == lvl) {
 
                     event.setCancelled(true);
@@ -105,7 +108,7 @@ public class VagtShopEnchant implements Listener {
                 item.addEnchantment(enchant, lvl);
             }
             if (clickedSlot == MAXENCHANT_INDEX) {
-                checkEnchant(item,p);
+                checkEnchant(item, p);
                 lvl = enchant.getMaxLevel();
                 pay = 5000;
                 if (!plugin.econ.has(p, pay)) {
@@ -122,7 +125,7 @@ public class VagtShopEnchant implements Listener {
         }
     }
 
-    public void checkEnchant(ItemStack item,Player p) {
+    public void checkEnchant(ItemStack item, Player p) {
         if (item.getType() == Material.IRON_SWORD || item.getType() == Material.DIAMOND_SWORD) {
             enchant = Enchantment.DAMAGE_ALL;
         } else if (item.getType() == Material.BOW) {
