@@ -26,16 +26,25 @@ public class VagtShop implements Listener {
     private final int LEGS_INDEX = 22;
     private final int FOOD_INDEX = 30;
     private final int BOOTS_INDEX = 31;
+    private final int PICKAXE_INDEX = 20;
+    private final int AXE_INDEX = 24;
+    private final int SHOVEL_INDEX = 29;
+    private final int BUCKET_INDEX = 33;
     private HLvagt plugin;
     private String region;
     private ItemStack sword;
     private ItemStack chest;
     private ItemStack legs;
     private ItemStack boots;
+    private ItemStack pickaxe;
+    private ItemStack axe;
+    private ItemStack shovel;
+    private ItemStack bucket;
     private ItemStack bow = new ItemStack(Material.BOW);
     private ItemStack food = new ItemStack(Material.GRILLED_PORK,16);
     private ItemStack stick = new ItemStack(Material.STICK);
     private ItemStack arrow = new ItemStack(Material.ARROW, 64);
+
 
     public VagtShop(HLvagt plugin) {
         this.plugin = plugin;
@@ -49,6 +58,9 @@ public class VagtShop implements Listener {
             bAndAItems();
         } else {
             cItems();
+        }
+        if(p.hasPermission("vagttools")) {
+            offiTools(inventory);
         }
         ItemStack helmet;
         if (p.hasPermission("diaHelmet")) {
@@ -79,7 +91,7 @@ public class VagtShop implements Listener {
         metabow.setDisplayName(region + "-Bow");
         metafood.setDisplayName(region + "-Mad");
         metastick.setDisplayName(region + "-Stav");
-        metaarrow.setDisplayName("§cVagt-pile");
+        metaarrow.setDisplayName("§cVagt-Pile");
 
         List<String> lore = new ArrayList<>();
         lore.add(0, "§7Koster: §a" + 400);
@@ -166,11 +178,11 @@ public class VagtShop implements Listener {
                     break;
                 case ARROW_INDEX:
                     pay = 200;
-                    itembuy(arrow, "§cVagt§6-§7Pile",p,pay);
+                    itembuy(arrow, "§cVagt §7Pile",p,pay);
                     break;
                 case FOOD_INDEX:
                     pay = 100;
-                    itembuy(food, "§cVagt§6-§7Mad",p,pay);
+                    itembuy(food, "§cVagt §7Mad",p,pay);
                     break;
                 case STICK_INDEX:
                     pay = 100;
@@ -178,6 +190,26 @@ public class VagtShop implements Listener {
                     break;
 
             }
+
+            if(p.hasPermission("vagttools")) {
+                pay = 500;
+                switch (clickedSlot) {
+                    case PICKAXE_INDEX:
+                        itembuy(pickaxe,region+"-Pickaxe",p,pay);
+                        break;
+                    case AXE_INDEX:
+                        itembuy(axe,region+"-Axe",p,pay);
+                        break;
+                    case SHOVEL_INDEX:
+                        itembuy(shovel,region+"-Spade",p,pay);
+                        break;
+                    case BUCKET_INDEX:
+                        itembuy(bucket,"Bucket",p,1500);
+                        break;
+
+                }
+
+                }
             event.setCancelled(true);
             event.setResult(Event.Result.DENY);
 
@@ -220,6 +252,39 @@ public class VagtShop implements Listener {
         chest = new ItemStack(Material.DIAMOND_CHESTPLATE);
         legs = new ItemStack(Material.DIAMOND_LEGGINGS);
         boots = new ItemStack(Material.DIAMOND_BOOTS);
+
+    }
+    public void offiTools(Inventory inv) {
+        pickaxe = new ItemStack(Material.IRON_PICKAXE);
+        axe = new ItemStack(Material.IRON_AXE);
+        shovel = new ItemStack(Material.IRON_SPADE);
+        bucket = new ItemStack(Material.BUCKET,16);
+
+        ItemMeta metapickaxe = pickaxe.getItemMeta();
+        ItemMeta metaaxe = axe.getItemMeta();
+        ItemMeta metashovel = shovel.getItemMeta();
+        ItemMeta metaBucket = bucket.getItemMeta();
+
+        metapickaxe.setDisplayName("§cVagt Pickaxe");
+        metaaxe.setDisplayName("§cVagt Axe");
+        metashovel.setDisplayName("§cVagt Spade");
+        List<String> offilore = new ArrayList<>();
+        offilore.add(0,"§7Koster: " + 500);
+        metapickaxe.setLore(offilore);
+        metaaxe.setLore(offilore);
+        metashovel.setLore(offilore);
+        offilore.set(0,"§7Koster: " + 1500);
+        metaBucket.setLore(offilore);
+
+        pickaxe.setItemMeta(metapickaxe);
+        axe.setItemMeta(metaaxe);
+        shovel.setItemMeta(metashovel);
+        bucket.setItemMeta(metaBucket);
+        inv.setItem(PICKAXE_INDEX,pickaxe);
+        inv.setItem(AXE_INDEX,axe);
+        inv.setItem(SHOVEL_INDEX,shovel);
+        inv.setItem(BUCKET_INDEX,bucket);
+
 
     }
 
