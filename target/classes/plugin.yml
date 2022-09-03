@@ -1,0 +1,22 @@
+main: com.gmail.markushygedombrowski.HLvagt
+name: HLvagt
+version: "1.0"
+softdepend:  [Vault,WorldGuard,WorldEdit,EssentialsX,HeadDatabase]
+commands:
+  hlwarp:
+    aliases: ["sethlwarp"]
+    description: "HLwarp system"
+  vagt:
+    description: "vagt"
+  hlreload:
+    description: "reloads config"
+  ansat:
+    description: "ansæt vagter"
+  vc:
+    description: "vagt chat"
+  gui:
+    description: "mikkels gui"
+  drop:
+    description: "må droppe"
+  fyr:
+    description: "fyr vagter"
