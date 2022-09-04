@@ -25,6 +25,7 @@ public class VagtShopEnchant implements Listener {
     private Enchantment maxEnchant;
     private ItemStack maxInvItem;
     private int lvl;
+    private String message;
 
     public VagtShopEnchant(HLvagt plugin) {
         this.plugin = plugin;
@@ -39,17 +40,6 @@ public class VagtShopEnchant implements Listener {
         int pay;
         checkEnchant(invItem, p);
 
-
-        /*if (invItem.getType() == Material.IRON_SWORD || invItem.getType() == Material.DIAMOND_SWORD) {
-            enchant = Enchantment.DAMAGE_ALL;
-        } else if (invItem.getType() == Material.BOW) {
-            enchant = Enchantment.ARROW_DAMAGE;
-
-        } else if (invItem.getType() == Material.IRON_PICKAXE || invItem.getType() == Material.IRON_AXE || invItem.getType() == Material.IRON_SPADE) {
-            enchant = Enchantment.DIG_SPEED;
-        } else {
-            enchant = Enchantment.PROTECTION_ENVIRONMENTAL;
-        } */
         lvl = invItem.getEnchantmentLevel(enchant);
 
         if (lvl < enchant.getMaxLevel()) lvl++;
@@ -107,7 +97,7 @@ public class VagtShopEnchant implements Listener {
 
                         plugin.econ.withdrawPlayer(p, pay);
                         item.addEnchantment(enchant, lvl);
-                        p.sendMessage("§7du har købt: §9" + enchant.getName().toLowerCase() + " §7for: §a" + pay);
+                        p.sendMessage("§7du har købt: §9" + message + " §7for: §a" + pay);
                         update(inventory,p);
                     } else {
                         p.sendMessage("§cDu har ikke nok penge!");
@@ -131,7 +121,7 @@ public class VagtShopEnchant implements Listener {
                         lvl = 4;
                         plugin.econ.withdrawPlayer(p, pay);
                         item.addEnchantment(enchant, lvl);
-                        p.sendMessage("§7du har købt: §9" + enchant.getName().toLowerCase() + " §7for: §a" + pay);
+                        p.sendMessage("§7du har købt: §9" + message + " §7for: §a" + pay);
                         update(inventory,p);
                         p.closeInventory();
                     } else {
@@ -160,12 +150,16 @@ public class VagtShopEnchant implements Listener {
     public boolean checkEnchant(ItemStack item, Player p) {
         if (item.getType() == Material.IRON_SWORD || item.getType() == Material.DIAMOND_SWORD) {
             enchant = Enchantment.DAMAGE_ALL;
+            message = "Sharpness";
         } else if (item.getType() == Material.BOW) {
             enchant = Enchantment.ARROW_DAMAGE;
+            message = "Power";
         } else if (invItem.getType() == Material.IRON_PICKAXE || invItem.getType() == Material.IRON_AXE || invItem.getType() == Material.IRON_SPADE) {
             enchant = Enchantment.DIG_SPEED;
+            message = "Effectivity";
         } else {
             enchant = Enchantment.PROTECTION_ENVIRONMENTAL;
+            message = "Protection";
 
         }
         return lvl < 4;
