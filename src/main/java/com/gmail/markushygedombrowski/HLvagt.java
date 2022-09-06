@@ -26,6 +26,7 @@ import com.gmail.markushygedombrowski.warp.Warpsign;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -69,6 +70,7 @@ public class HLvagt extends JavaPlugin {
                 cooldown.handleCooldowns();
             }
         }, 1L, 1L);
+
 
 
     }
@@ -122,6 +124,7 @@ public class HLvagt extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(topVagterGUI, this);
 
 
+
         MainMenu mainMenu = new MainMenu(this, pvgui, topVagterGUI, playerProfiles, rankup);
         Bukkit.getPluginManager().registerEvents(mainMenu, this);
 
@@ -172,6 +175,8 @@ public class HLvagt extends JavaPlugin {
         Dropcommand dropcommand = new Dropcommand(dropItemListener);
         getCommand("drop").setExecutor(dropcommand);
     }
+
+
 
 
     public void onDisable() {

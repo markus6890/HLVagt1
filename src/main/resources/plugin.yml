@@ -1,7 +1,7 @@
 main: com.gmail.markushygedombrowski.HLvagt
 name: HLvagt
 version: "1.0"
-softdepend:  [Vault,WorldGuard,WorldEdit,EssentialsX,HeadDatabase]
+softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase]
 commands:
   hlwarp:
     aliases: ["sethlwarp"]

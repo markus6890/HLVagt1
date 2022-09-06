@@ -51,13 +51,13 @@ public class OnJoin implements Listener {
         }
         int lon;
 
-        if(p.hasPermission("direktør")) {
+        if (p.hasPermission("direktør")) {
             lon = settings.getLondire();
-        } else if(p.hasPermission("inspektør")) {
+        } else if (p.hasPermission("inspektør")) {
             lon = settings.getLonins();
-        } else if(p.hasPermission("viceinspektør")) {
+        } else if (p.hasPermission("viceinspektør")) {
             lon = settings.getLonviceins();
-        }else if(p.hasPermission("officer")) {
+        } else if (p.hasPermission("officer")) {
             lon = settings.getLonoffi();
         } else if (p.hasPermission("a-vagt")) {
             lon = settings.getLona();
@@ -68,7 +68,7 @@ public class OnJoin implements Listener {
         } else {
             lon = 1000;
         }
-        profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon,0);
+        profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon, 0);
         playerProfiles.save(profile);
 
     }
@@ -87,7 +87,6 @@ public class OnJoin implements Listener {
         if (Cooldown.isCooling(p.getName(), "lon")) {
             Cooldown.removeCooldown(p.getName(), "lon");
         }
-
 
 
     }

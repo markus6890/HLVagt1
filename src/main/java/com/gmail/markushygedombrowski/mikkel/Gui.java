@@ -1,5 +1,6 @@
 package com.gmail.markushygedombrowski.mikkel;
 
+import com.gmail.markushygedombrowski.HLvagt;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,8 +11,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 
 public class Gui implements Listener {
+
+
+    private HLvagt plugin;
+
+    public Gui(HLvagt plugin) {
+        this.plugin = plugin;
+    }
     private final int DIAMOND_INDEX = 4;
 
     public void create(Player p){
@@ -48,4 +57,13 @@ public class Gui implements Listener {
             event.setResult(Event.Result.DENY);
         }
     }
+
+
+
+
+
+
+
+
+
 }

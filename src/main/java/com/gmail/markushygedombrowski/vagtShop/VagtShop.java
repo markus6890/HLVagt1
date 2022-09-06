@@ -53,7 +53,7 @@ public class VagtShop implements Listener {
 
     public void vagtShop(Player p, String region) {
         this.region = region;
-        Inventory inventory = Bukkit.createInventory(null, 36, region + "-Vagt §bShop §8" + p.getName());
+        Inventory inventory = Bukkit.createInventory(null, 36, region + "-Vagt §bShop §8");
         if (region.equalsIgnoreCase("§bB") || region.equalsIgnoreCase("§aA")) {
             bAndAItems();
         } else {
@@ -142,7 +142,7 @@ public class VagtShop implements Listener {
         if (clickeditem == null) {
             return;
         }
-        if (inventory.getTitle().equalsIgnoreCase(region + "-Vagt §bShop §8" + p.getName())) {
+        if (inventory.getTitle().equalsIgnoreCase(region + "-Vagt §bShop §8")) {
             ItemStack helmet;
             pay = 400;
             if (region.equalsIgnoreCase("§bB") || region.equalsIgnoreCase("§aA")) {

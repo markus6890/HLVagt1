@@ -32,10 +32,9 @@ public class VagtShopEnchant implements Listener {
     }
 
     public void enchantItem(Player p, ItemStack item) {
-        Inventory inventory = Bukkit.createInventory(null, 27, "§9Enchant §bShop" + p.getName());
+        Inventory inventory = Bukkit.createInventory(null, 27, "§9Enchant §bShop");
         invItem = new ItemStack(item);
         maxInvItem = new ItemStack(item.getType());
-
 
         int pay;
         checkEnchant(invItem, p);
@@ -64,7 +63,6 @@ public class VagtShopEnchant implements Listener {
         maxInvItem.addEnchantment(enchant, maxLvl);
         inventory.setItem(MAXENCHANT_INDEX, maxInvItem);
 
-
         p.openInventory(inventory);
 
     }
@@ -80,7 +78,7 @@ public class VagtShopEnchant implements Listener {
             return;
         }
         ItemStack item = p.getItemInHand();
-        if (inventory.getTitle().equalsIgnoreCase("§9Enchant §bShop" + p.getName())) {
+        if (inventory.getTitle().equalsIgnoreCase("§9Enchant §bShop")) {
             if (!(item.getType() == invItem.getType())) {
                 event.setCancelled(true);
                 event.setResult(Event.Result.DENY);

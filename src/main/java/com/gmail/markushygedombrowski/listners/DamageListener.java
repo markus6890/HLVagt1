@@ -8,7 +8,6 @@ import com.gmail.markushygedombrowski.warp.WarpManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -16,21 +15,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import java.util.Set;
 
 
 public class DamageListener implements Listener {
 
 
-    private Settings settings;
-    private WarpManager warpManager;
-    private PlayerProfiles profiles;
+    private final Settings settings;
+    private final WarpManager warpManager;
+    private final PlayerProfiles profiles;
 
     public DamageListener(Settings settings, WarpManager warpManager, PlayerProfiles profiles) {
         this.settings = settings;
@@ -141,15 +136,21 @@ public class DamageListener implements Listener {
 
         }
     }
+
     @EventHandler
     public void onVagtRespawn(PlayerRespawnEvent event) {
         Player p = event.getPlayer();
-        if(!p.hasPermission("vagt")) return;
+        if (!p.hasPermission("vagt")) return;
         Location loc = warpManager.getWarpInfo("spassermine").getLocation();
         p.teleport(loc);
 
     }
 
+    @EventHandler
+    public void OnArmorDamage(PlayerItemDamageEvent event) {
+        int dura = 1;
+        event.setDamage(dura);
+    }
 
 
 }
