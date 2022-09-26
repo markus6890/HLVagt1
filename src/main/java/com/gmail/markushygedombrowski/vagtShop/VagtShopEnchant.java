@@ -1,6 +1,7 @@
 package com.gmail.markushygedombrowski.vagtShop;
 
 import com.gmail.markushygedombrowski.HLvagt;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -26,6 +27,7 @@ public class VagtShopEnchant implements Listener {
     private ItemStack maxInvItem;
     private int lvl;
     private String message;
+    private int pay;
 
     public VagtShopEnchant(HLvagt plugin) {
         this.plugin = plugin;
@@ -45,7 +47,7 @@ public class VagtShopEnchant implements Listener {
 
         pay = 500 * lvl;
         invItem.removeEnchantment(enchant);
-        invItem.addEnchantment(enchant, lvl);
+        invItem.addUnsafeEnchantment(enchant, lvl);
 
         List<String> lore = new ArrayList<>();
         lore.add(0, "§7Koster: §a" + pay);
@@ -60,7 +62,10 @@ public class VagtShopEnchant implements Listener {
         meta.setLore(lore);
         maxInvItem.setItemMeta(meta);
         maxLvl = 4;
-        maxInvItem.addEnchantment(enchant, maxLvl);
+        if(VagtUtils.isLocInRegion(p.getLocation(),"a")) {
+            maxLvl = 5;
+        }
+        maxInvItem.addUnsafeEnchantment(enchant, maxLvl);
         inventory.setItem(MAXENCHANT_INDEX, maxInvItem);
 
         p.openInventory(inventory);
@@ -73,7 +78,7 @@ public class VagtShopEnchant implements Listener {
         Inventory inventory = event.getClickedInventory();
         ItemStack clickeditem = event.getCurrentItem();
         int clickedSlot = event.getRawSlot();
-        int pay;
+
         if (clickeditem == null) {
             return;
         }
@@ -87,16 +92,10 @@ public class VagtShopEnchant implements Listener {
             if (clickedSlot == ENCHANT_INDEX) {
                 lvl = item.getEnchantmentLevel(enchant);
                 if (checkEnchant(item, p)) {
-
-
                     lvl = lvl + 1;
                     pay = 500 * lvl;
                     if (plugin.econ.has(p, pay)) {
-
-                        plugin.econ.withdrawPlayer(p, pay);
-                        item.addEnchantment(enchant, lvl);
-                        p.sendMessage("§7du har købt: §9" + message + " §7for: §a" + pay);
-                        update(inventory,p);
+                        update(inventory,p,item);
                     } else {
                         p.sendMessage("§cDu har ikke nok penge!");
                         event.setCancelled(true);
@@ -116,11 +115,13 @@ public class VagtShopEnchant implements Listener {
                 if (checkEnchant(item, p)) {
                     pay = 6000;
                     if (plugin.econ.has(p, pay)) {
-                        lvl = 4;
-                        plugin.econ.withdrawPlayer(p, pay);
-                        item.addEnchantment(enchant, lvl);
-                        p.sendMessage("§7du har købt: §9" + message + " §7for: §a" + pay);
-                        update(inventory,p);
+                        if(VagtUtils.isLocInRegion(p.getLocation(),"a")) {
+                            lvl = 5;
+                        } else {
+                            lvl = 4;
+                        }
+
+                        update(inventory,p,item);
                         p.closeInventory();
                     } else {
                         p.sendMessage("§cDu har ikke nok penge!");
@@ -146,6 +147,7 @@ public class VagtShopEnchant implements Listener {
     }
 
     public boolean checkEnchant(ItemStack item, Player p) {
+        int max = 4;
         if (item.getType() == Material.IRON_SWORD || item.getType() == Material.DIAMOND_SWORD) {
             enchant = Enchantment.DAMAGE_ALL;
             message = "Sharpness";
@@ -160,11 +162,17 @@ public class VagtShopEnchant implements Listener {
             message = "Protection";
 
         }
-        return lvl < 4;
+        if(VagtUtils.isLocInRegion(p.getLocation(),"a")) {
+            max = 5;
+        }
+        return lvl < max;
 
     }
 
-    public void update(Inventory inventory, Player p) {
+    public void update(Inventory inventory, Player p, ItemStack item) {
+        plugin.econ.withdrawPlayer(p, pay);
+        item.addUnsafeEnchantment(enchant, lvl);
+        p.sendMessage("§7du har købt: §9" + message + " §7for: §a" + pay);
         lvl = invItem.getEnchantmentLevel(enchant);
         if (lvl >= 4) {
             lvl = 4;
@@ -174,7 +182,7 @@ public class VagtShopEnchant implements Listener {
 
         int pay = 500 * lvl;
         invItem.removeEnchantment(enchant);
-        invItem.addEnchantment(enchant, lvl);
+        invItem.addUnsafeEnchantment(enchant, lvl);
 
         List<String> lore = new ArrayList<>();
         lore.add(0, "§7Koster: §a" + pay);

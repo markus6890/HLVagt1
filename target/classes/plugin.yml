@@ -3,12 +3,12 @@ name: HLvagt
 version: "1.0"
 softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase]
 commands:
-  hlwarp:
-    aliases: ["sethlwarp"]
-    description: "HLwarp system"
+  vagtspawn:
+    aliases: ["setvagtspawn"]
+    description: "vagtspawn system"
   vagt:
     description: "vagt"
-  hlreload:
+  hlvagtreload:
     description: "reloads config"
   ansat:
     description: "ansæt vagter"
@@ -20,3 +20,5 @@ commands:
     description: "må droppe"
   fyr:
     description: "fyr vagter"
+  jail:
+    description: "jail system"

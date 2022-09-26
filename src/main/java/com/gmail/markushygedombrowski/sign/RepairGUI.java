@@ -1,7 +1,7 @@
 package com.gmail.markushygedombrowski.sign;
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.utils.Utils;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -109,7 +109,7 @@ public class RepairGUI implements Listener {
                         p.sendMessage("§cDu har ikke nok penge!");
 
                     }else {
-                        Utils.repairItems(p);
+                        VagtUtils.repairItems(p);
                         p.sendMessage("§7Alle items i dit inventory §e repaired");
                         plugin.econ.withdrawPlayer(p,fullKost);
 

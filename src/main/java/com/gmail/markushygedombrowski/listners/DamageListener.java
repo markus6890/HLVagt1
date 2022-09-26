@@ -1,13 +1,15 @@
 package com.gmail.markushygedombrowski.listners;
 
+import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.utils.Utils;
-import com.gmail.markushygedombrowski.warp.WarpManager;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
+import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -24,13 +26,15 @@ public class DamageListener implements Listener {
 
 
     private final Settings settings;
-    private final WarpManager warpManager;
+    private final VagtSpawnManager vagtSpawnManager;
     private final PlayerProfiles profiles;
+    private HLvagt plugin;
 
-    public DamageListener(Settings settings, WarpManager warpManager, PlayerProfiles profiles) {
+    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin) {
         this.settings = settings;
-        this.warpManager = warpManager;
+        this.vagtSpawnManager = vagtSpawnManager;
         this.profiles = profiles;
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -78,7 +82,7 @@ public class DamageListener implements Listener {
             }
             Player defender = (Player) event.getEntity();
             if (defender.hasPermission("vagt.slag") || attacker.hasPermission("vagt.slag")) return;
-            if (!Utils.isLocInRegion(attacker.getLocation(), "vagtfangepvp") && !Utils.isLocInRegion(attacker.getLocation(), "vagtfangepvp2"))
+            if (!VagtUtils.isLocInRegion(attacker.getLocation(), "vagtfangepvp") && !VagtUtils.isLocInRegion(attacker.getLocation(), "vagtfangepvp2"))
                 return;
 
             attacker.sendMessage("§aDu kan ikke slå fanger her!");
@@ -87,17 +91,20 @@ public class DamageListener implements Listener {
     }
 
     @EventHandler
-    public void deathMessage(PlayerDeathEvent event) {
+    public void vagtDeaths(PlayerDeathEvent event) {
         Player defender = event.getEntity();
         Player attacker = defender.getKiller();
-        PlayerProfile profile = profiles.getPlayerProfile(defender.getUniqueId());
+        PlayerProfile profile;
         if (attacker == null) {
             return;
         }
         if (attacker.hasPermission("vagt.slag")) {
             attacker.sendMessage("§2Du §4Dræbte §8" + defender.getName());
+            profile = profiles.getPlayerProfile(attacker.getUniqueId());
+            profile.setKills(profile.getKills() + 1);
         }
         if (defender.hasPermission("vagt.slag")) {
+            profile = profiles.getPlayerProfile(defender.getUniqueId());
             String rank;
             String block;
             if (defender.hasPermission("direktør")) {
@@ -111,11 +118,11 @@ public class DamageListener implements Listener {
             } else {
                 rank = "§6§lVagten ";
             }
-            if (Utils.isLocInRegion(defender.getLocation(), "c")) {
+            if (VagtUtils.isLocInRegion(defender.getLocation(), "c")) {
                 block = "§cC";
-            } else if (Utils.isLocInRegion(defender.getLocation(), "b")) {
+            } else if (VagtUtils.isLocInRegion(defender.getLocation(), "b")) {
                 block = "§bB";
-            } else if (Utils.isLocInRegion(defender.getLocation(), "a")) {
+            } else if (VagtUtils.isLocInRegion(defender.getLocation(), "a")) {
                 block = "§aA";
             } else {
                 block = "bobi";
@@ -128,7 +135,7 @@ public class DamageListener implements Listener {
             HeadDatabaseAPI api = new HeadDatabaseAPI();
             ItemStack item = api.getItemHead(settings.getVagthead());
             profile.setDeaths(profile.getDeaths() + 1);
-            if (Utils.procent(0.5)) {
+            if (VagtUtils.procent(0.5)) {
                 attacker.getInventory().addItem(item);
                 settings.setVagtheaddrop(settings.getVagtheaddrop() + 1);
                 Bukkit.broadcastMessage("§7Et Vagt head er lige §5droppet");
@@ -140,9 +147,15 @@ public class DamageListener implements Listener {
     @EventHandler
     public void onVagtRespawn(PlayerRespawnEvent event) {
         Player p = event.getPlayer();
-        if (!p.hasPermission("vagt")) return;
-        Location loc = warpManager.getWarpInfo("spassermine").getLocation();
-        p.teleport(loc);
+        if (p.hasPermission("vagt")) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    p.teleport(vagtSpawnManager.getWarpInfo("spassermine").getLocation());
+                }
+            },2);
+
+        }
 
     }
 

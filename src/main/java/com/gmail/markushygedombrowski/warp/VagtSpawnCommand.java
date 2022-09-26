@@ -7,12 +7,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class WarpCommand implements CommandExecutor {
-    private final WarpManager warpManager;
+public class VagtSpawnCommand implements CommandExecutor {
+    private final VagtSpawnManager vagtSpawnManager;
     private final JavaPlugin plugin;
 
-    public WarpCommand(WarpManager warpManager, JavaPlugin plugin) {
-        this.warpManager = warpManager;
+    public VagtSpawnCommand(VagtSpawnManager vagtSpawnManager, JavaPlugin plugin) {
+        this.vagtSpawnManager = vagtSpawnManager;
         this.plugin = plugin;
     }
 
@@ -23,7 +23,7 @@ public class WarpCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage("§e/hlwarp <name>");
+            sender.sendMessage("§e/vagtspawn <name>");
             return true;
         }
         if (!(sender instanceof Player)) {
@@ -32,9 +32,9 @@ public class WarpCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
         String warpName = args[0];
-        WarpInfo info = warpManager.getWarpInfo(warpName);
+        VagtSpawnInfo info = vagtSpawnManager.getWarpInfo(warpName);
 
-        if (alias.equalsIgnoreCase("sethlWarp")) {
+        if (alias.equalsIgnoreCase("setvagtspawn")) {
             setWarp(sender, player, warpName, info);
             return true;
         }
@@ -44,26 +44,12 @@ public class WarpCommand implements CommandExecutor {
             return true;
         }
 
-        /*Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                player.teleport(info.getLocation());
-            }
-        };
-
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, runnable, 20, 20);
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @Override
-            public void run() {
-                Bukkit.getScheduler().cancelTask(task.getTaskId());
-            }
-        }, 20 * 20); */
 
         player.teleport(info.getLocation());
         return true;
     }
 
-    private void setWarp(CommandSender sender, Player player, String warpName, WarpInfo info) {
+    private void setWarp(CommandSender sender, Player player, String warpName, VagtSpawnInfo info) {
         if (!sender.hasPermission("setwarp")) {
             sender.sendMessage("Det har du ikke permission til!");
             return;
@@ -73,8 +59,8 @@ public class WarpCommand implements CommandExecutor {
             return;
         }
         Location location = player.getLocation();
-        info = new WarpInfo(warpName, location);
-        warpManager.save(info);
+        info = new VagtSpawnInfo(warpName, location);
+        vagtSpawnManager.save(info);
         sender.sendMessage("§a§lWarp created at §e" + location.toString());
     }
 }

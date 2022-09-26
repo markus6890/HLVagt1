@@ -2,29 +2,25 @@ package com.gmail.markushygedombrowski.utils;
 
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 
-import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.*;
+
+
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
@@ -32,12 +28,12 @@ import java.util.List;
 
 import static org.bukkit.Bukkit.getServer;
 
-public class Utils {
+public class VagtUtils {
     private static HLvagt plugin;
 
 
-    public Utils(HLvagt plugin) {
-        Utils.plugin = plugin;
+    public VagtUtils(HLvagt plugin) {
+        VagtUtils.plugin = plugin;
 
     }
 
@@ -123,7 +119,7 @@ public class Utils {
 
     public static List<String> top10(String perm, Statistic statistic) {
         HashMap<String, Integer> stats = new HashMap<>();
-        List<Player> players = Utils.getPlayers(perm);
+        List<Player> players = VagtUtils.getPlayers(perm);
         List<String> list = new ArrayList<>();
         for (Player player : players) {
 
@@ -146,7 +142,7 @@ public class Utils {
 
     public static List<String> top10Money(String perm) {
         HashMap<String, Integer> stats = new HashMap<>();
-        List<Player> players = Utils.getPlayers(perm);
+        List<Player> players = VagtUtils.getPlayers(perm);
         List<String> list = new ArrayList<>();
         for (Player player : players) {
             stats.put(player.getName(), (int) plugin.econ.getBalance(player));

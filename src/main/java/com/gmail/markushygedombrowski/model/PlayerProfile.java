@@ -13,22 +13,27 @@ public class PlayerProfile {
     private int lon;
 
 
+    private int kills;
+
 
     private int deaths;
 
 
-    public PlayerProfile(UUID uuid, String name, int pv, int lvl, int lon,int deaths) {
+    public PlayerProfile(UUID uuid, String name, int pv, int lvl, int lon, int deaths, int kills) {
         this.uuid = uuid;
         this.name = name;
         this.pv = pv;
         this.lvl = lvl;
         this.lon = lon;
         this.deaths = deaths;
+        this.kills = kills;
     }
+
     // get players info
     public UUID getUuid() {
-       return uuid;
+        return uuid;
     }
+
     public String getName() {
         return name;
     }
@@ -44,8 +49,13 @@ public class PlayerProfile {
     public int getLon() {
         return lon;
     }
+
     public int getDeaths() {
         return deaths;
+    }
+
+    public int getKills() {
+        return kills;
     }
 
 
@@ -66,16 +76,9 @@ public class PlayerProfile {
         this.deaths = deaths;
     }
 
-
-
-
-
-
-
-
-
-
-
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
 
 
 }

@@ -3,6 +3,7 @@ package com.gmail.markushygedombrowski.commands;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,10 +13,12 @@ import org.bukkit.entity.Player;
 public class Rankupcommand implements CommandExecutor {
     private Settings settings;
     private PlayerProfiles profiles;
+    private VagtSpawnManager spawnManager;
 
-    public Rankupcommand(Settings settings, PlayerProfiles profiles) {
+    public Rankupcommand(Settings settings, PlayerProfiles profiles, VagtSpawnManager spawnManager) {
         this.settings = settings;
         this.profiles = profiles;
+        this.spawnManager = spawnManager;
     }
 
     @Override
@@ -35,7 +38,9 @@ public class Rankupcommand implements CommandExecutor {
             return true;
         }
         Player ansat = Bukkit.getPlayer(args[0]);
+
         PlayerProfile profile = profiles.getPlayerProfile(ansat.getUniqueId());
+
         String rank = "bob";
         String perm = "1";
         String prePerm = "0";
@@ -78,15 +83,23 @@ public class Rankupcommand implements CommandExecutor {
         }
 
 
+        if (profile == null) {
+            profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon, 0,0);
+        } else {
+            profile.setLon(lon);
+        }
+        profiles.save(profile);
+
+
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent remove " + prePerm + " prison");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent add " + perm +" prison");
-        profile.setLon(lon);
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
         Bukkit.broadcastMessage("§c§lVagten §6" + ansat.getName());
         Bukkit.broadcastMessage("§7Har lige Ranket up til " + rank);
         Bukkit.broadcastMessage("§7Ved hjælp af §4" + p.getName());
         Bukkit.broadcastMessage("             §a§lTILLYKKE!!!");
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
+
 
 
 

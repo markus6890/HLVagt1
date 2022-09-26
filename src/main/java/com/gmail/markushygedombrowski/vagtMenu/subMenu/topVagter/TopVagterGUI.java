@@ -1,7 +1,6 @@
 package com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter;
 
-import com.gmail.markushygedombrowski.utils.Utils;
-import com.gmail.markushygedombrowski.vagtMenu.MainMenu;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
@@ -14,9 +13,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-
-import java.util.List;
 
 
 public class TopVagterGUI implements Listener {
@@ -62,22 +58,22 @@ public class TopVagterGUI implements Listener {
 
         ItemMeta metakills = kills.getItemMeta();
         metakills.setDisplayName("§7Top 10 §cKills");
-        metakills.setLore(Utils.top10("vagt", Statistic.PLAYER_KILLS));
+        metakills.setLore(VagtUtils.top10("vagt", Statistic.PLAYER_KILLS));
         kills.setItemMeta(metakills);
 
         ItemMeta metaDeaths = deaths.getItemMeta();
         metaDeaths.setDisplayName("§7Top 10 §4Deaths");
-        metaDeaths.setLore(Utils.top10("vagt",Statistic.DEATHS));
+        metaDeaths.setLore(VagtUtils.top10("vagt",Statistic.DEATHS));
         deaths.setItemMeta(metaDeaths);
 
         ItemMeta metaWalked = walked.getItemMeta();
         metaWalked.setDisplayName("§7Top 10 §eGået");
-        metaWalked.setLore(Utils.top10("vagt",Statistic.WALK_ONE_CM));
+        metaWalked.setLore(VagtUtils.top10("vagt",Statistic.WALK_ONE_CM));
         walked.setItemMeta(metaWalked);
 
         ItemMeta metaMoney = money.getItemMeta();
         metaMoney.setDisplayName("§7Top 10 §aPenge");
-        metaMoney.setLore(Utils.top10Money("vagt"));
+        metaMoney.setLore(VagtUtils.top10Money("vagt"));
         money.setItemMeta(metaMoney);
     }
 

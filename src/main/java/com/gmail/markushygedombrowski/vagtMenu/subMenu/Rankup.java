@@ -67,7 +67,7 @@ public class Rankup implements Listener {
                 }else if (p.hasPermission("c-vagt")) {
                     moneyneeded = 70000;
                     pay = 50000;
-                    boolean kills = p.getStatistic(Statistic.PLAYER_KILLS) == 10;
+                    boolean kills = p.getStatistic(Statistic.PLAYER_KILLS) >= 10;
                     if (plugin.econ.getBalance(p) >= moneyneeded && kills) {
                         plugin.econ.withdrawPlayer(p, pay);
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove c-vagt prison");
@@ -82,6 +82,7 @@ public class Rankup implements Listener {
 
                     } else {
                         p.sendMessage("§aDu har ikke nok til rankup!!");
+
                     }
 
 

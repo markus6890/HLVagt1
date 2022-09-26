@@ -25,8 +25,9 @@ public class PlayerProfiles {
             int lvl = config.getInt("vagter." + key + ".lvl");
             int lon = config.getInt("vagter." + key + ".løn");
             int deaths= config.getInt("vagter." + key + ".deaths");
+            int kills = config.getInt("vagter. " + key + ".kills");
             UUID uuid = UUID.fromString(strUuid);
-            PlayerProfile playerProfile = new PlayerProfile(uuid,playerName,pv,lvl,lon,deaths);
+            PlayerProfile playerProfile = new PlayerProfile(uuid,playerName,pv,lvl,lon,deaths,kills);
             profileMap.put(uuid, playerProfile);
         }
     }
@@ -42,6 +43,7 @@ public class PlayerProfiles {
         config.set("vagter." + key + ".lvl", profile.getLvl());
         config.set("vagter." + key + ".løn", profile.getLon());
         config.set("vagter." + key + ".deaths",profile.getDeaths());
+
         plugin.saveConfig();
         profileMap.put(profile.getUuid(),profile);
     }

@@ -21,7 +21,7 @@ public class VagtChat implements CommandExecutor {
             p.sendMessage("§7§l----------§c§lVAGT§7§l----------");
             return true;
         }
-        StringBuilder message = new StringBuilder("§4Vagt Chat: " + p.getDisplayName());
+        StringBuilder message = new StringBuilder("§2§lVagt Chat: " + p.getDisplayName());
         for(String text : args) {
             message.append(" §7").append(text);
         }

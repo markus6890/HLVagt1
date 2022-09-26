@@ -1,11 +1,8 @@
 package com.gmail.markushygedombrowski.warp;
 
 
-import com.gmail.markushygedombrowski.warp.WarpManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -17,13 +14,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Wool;
 
 public class VagtWarpGUI implements Listener {
-    private final WarpManager warpManager;
+    private final VagtSpawnManager vagtSpawnManager;
     private final int WARP_C_INDEX = 11;
     private final int WARP_B_INDEX = 13;
     private final int WARP_A_INDEX = 15;
 
-    public VagtWarpGUI(WarpManager warpManager) {
-        this.warpManager = warpManager;
+    public VagtWarpGUI(VagtSpawnManager vagtSpawnManager) {
+        this.vagtSpawnManager = vagtSpawnManager;
     }
 
     public void create(Player p) {
@@ -70,7 +67,7 @@ public class VagtWarpGUI implements Listener {
         if (inventory.getTitle().equalsIgnoreCase("Warp")) {
             if (clickedSlot == WARP_C_INDEX) {
                 p.sendMessage("§7Du er warpet til §cC");
-                p.teleport(warpManager.getWarpInfo("vagtc").getLocation());
+                p.teleport(vagtSpawnManager.getWarpInfo("vagtc").getLocation());
 
             }
             if (clickedSlot == WARP_B_INDEX) {
@@ -78,7 +75,7 @@ public class VagtWarpGUI implements Listener {
                     p.sendMessage("§cDu har ikke højt nok rank");
                 } else {
                     p.sendMessage("§7Du er warpet til §bB");
-                    p.teleport(warpManager.getWarpInfo("vagtb").getLocation());
+                    p.teleport(vagtSpawnManager.getWarpInfo("vagtb").getLocation());
                 }
 
 
@@ -89,12 +86,13 @@ public class VagtWarpGUI implements Listener {
 
                 } else {
                     p.sendMessage("§7Du er warpet til §aA");
-                    p.teleport(warpManager.getWarpInfo("vagta").getLocation());
+                    p.teleport(vagtSpawnManager.getWarpInfo("vagta").getLocation());
                 }
 
 
             }
             event.setCancelled(true);
+            event.isCancelled();
             event.setResult(Event.Result.DENY);
 
 

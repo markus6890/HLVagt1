@@ -3,13 +3,13 @@ package com.gmail.markushygedombrowski.warp;
 import org.bukkit.Location;
 
 
-public class WarpInfo {
+public class VagtSpawnInfo {
     private String name;
     private Location location;
 
 
 
-    public WarpInfo(String name, Location location) {
+    public VagtSpawnInfo(String name, Location location) {
         this.name = name;
         this.location = location;
 

@@ -1,5 +1,6 @@
 package com.gmail.markushygedombrowski;
 
+import com.gmail.markushygedombrowski.buff.BuffGui;
 import com.gmail.markushygedombrowski.commands.Dropcommand;
 import com.gmail.markushygedombrowski.commands.FyrCommand;
 import com.gmail.markushygedombrowski.commands.Rankupcommand;
@@ -8,9 +9,9 @@ import com.gmail.markushygedombrowski.listners.*;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.sign.*;
-import com.gmail.markushygedombrowski.utils.Configreloadcommand;
-import com.gmail.markushygedombrowski.utils.cooldown.Cooldown;
-import com.gmail.markushygedombrowski.utils.Utils;
+import com.gmail.markushygedombrowski.utils.Reconfigurations;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
+import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.MainMenu;
 import com.gmail.markushygedombrowski.vagtMenu.VagtCommand;
 import com.gmail.markushygedombrowski.vagtShop.VagtShop;
@@ -20,22 +21,20 @@ import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Rankup;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Lon;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
-import com.gmail.markushygedombrowski.warp.WarpCommand;
-import com.gmail.markushygedombrowski.warp.WarpManager;
+import com.gmail.markushygedombrowski.warp.VagtSpawnCommand;
+import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import com.gmail.markushygedombrowski.warp.Warpsign;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class HLvagt extends JavaPlugin {
     public Economy econ = null;
     private Settings settings;
-    private WarpManager warpManager;
+    private VagtSpawnManager vagtSpawnManager;
     private PlayerProfiles playerProfiles;
-    private Utils utils;
     private Lon lon;
 
     public void onEnable() {
@@ -43,7 +42,8 @@ public class HLvagt extends JavaPlugin {
         FileConfiguration config = getConfig();
         settings = new Settings();
         settings.load(config);
-        utils = new Utils(this);
+        VagtUtils vagtUtils = new VagtUtils(this);
+
         System.out.println("HL Plugin enabled!!");
 
         initWarps();
@@ -53,9 +53,9 @@ public class HLvagt extends JavaPlugin {
         initListener();
 
 
-        Cooldown cooldown = new Cooldown(lon);
-        Configreloadcommand configreloadcommand = new Configreloadcommand(this, settings);
-        getCommand("hlreload").setExecutor(configreloadcommand);
+        VagtCooldown vagtCooldown = new VagtCooldown(lon);
+        Reconfigurations reconfigurations = new Reconfigurations(this, settings);
+        getCommand("hlvagtreload").setExecutor(reconfigurations);
 
 
         if (!setupEconomy()) {
@@ -67,7 +67,7 @@ public class HLvagt extends JavaPlugin {
 
             @Override
             public void run() {
-                cooldown.handleCooldowns();
+                vagtCooldown.handleCooldowns();
             }
         }, 1L, 1L);
 
@@ -77,12 +77,12 @@ public class HLvagt extends JavaPlugin {
 
 
     private void initWarps() {
-        warpManager = new WarpManager(this);
-        warpManager.load();
-        WarpCommand warpCommand = new WarpCommand(warpManager, this);
-        getCommand("hlwarp").setExecutor(warpCommand);
+        vagtSpawnManager = new VagtSpawnManager(this);
+        vagtSpawnManager.load();
+        VagtSpawnCommand vagtSpawnCommand = new VagtSpawnCommand(vagtSpawnManager, this);
+        getCommand("vagtspawn").setExecutor(vagtSpawnCommand);
 
-        VagtWarpGUI vagtWarpGUI = new VagtWarpGUI(warpManager);
+        VagtWarpGUI vagtWarpGUI = new VagtWarpGUI(vagtSpawnManager);
         Warpsign warpsign = new Warpsign(vagtWarpGUI);
         Bukkit.getPluginManager().registerEvents(vagtWarpGUI, this);
         Bukkit.getPluginManager().registerEvents(warpsign, this);
@@ -123,15 +123,13 @@ public class HLvagt extends JavaPlugin {
         TopVagterGUI topVagterGUI = new TopVagterGUI();
         Bukkit.getPluginManager().registerEvents(topVagterGUI, this);
 
-
-
         MainMenu mainMenu = new MainMenu(this, pvgui, topVagterGUI, playerProfiles, rankup);
         Bukkit.getPluginManager().registerEvents(mainMenu, this);
 
         VagtCommand vagtCommand = new VagtCommand(mainMenu);
         getCommand("vagt").setExecutor(vagtCommand);
 
-        Rankupcommand rankupcommand = new Rankupcommand(settings, playerProfiles);
+        Rankupcommand rankupcommand = new Rankupcommand(settings, playerProfiles,vagtSpawnManager);
         getCommand("ansat").setExecutor(rankupcommand);
 
         VagtChat vagtChat = new VagtChat();
@@ -155,19 +153,20 @@ public class HLvagt extends JavaPlugin {
 
         VagtShopEnchant vagtShopEnchant = new VagtShopEnchant(this);
         Bukkit.getPluginManager().registerEvents(vagtShopEnchant,this);
-        VagtSigns vagtSigns = new VagtSigns(warpManager, settings, this, repairGUI,vagtShop,vagtShopEnchant);
+
+        BuffGui buffGui = new BuffGui(settings,this);
+        Bukkit.getPluginManager().registerEvents(buffGui,this);
+        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI,vagtShop,vagtShopEnchant,buffGui);
         Bukkit.getPluginManager().registerEvents(vagtSigns, this);
     }
 
     public void initListener() {
-        OnJoin onJoin = new OnJoin(playerProfiles, this, settings);
+        OnJoin onJoin = new OnJoin(playerProfiles, settings);
         Bukkit.getPluginManager().registerEvents(onJoin, this);
 
-        DamageListener damageListener = new DamageListener(settings, warpManager, playerProfiles);
+        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles,this);
         Bukkit.getPluginManager().registerEvents(damageListener, this);
 
-        BreakBlockListener breakBlockListener = new BreakBlockListener();
-        Bukkit.getPluginManager().registerEvents(breakBlockListener, this);
 
         DropItemListener dropItemListener = new DropItemListener();
         Bukkit.getPluginManager().registerEvents(dropItemListener, this);

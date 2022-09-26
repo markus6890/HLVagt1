@@ -2,16 +2,15 @@ package com.gmail.markushygedombrowski.utils;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.utils.cooldown.Cooldown;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class Configreloadcommand implements CommandExecutor {
+public class Reconfigurations implements CommandExecutor {
 
     private HLvagt plugin;
     private Settings settings;
-    public Configreloadcommand(HLvagt plugin, Settings settings) {
+    public Reconfigurations(HLvagt plugin, Settings settings) {
         this.plugin = plugin;
         this.settings = settings;
     }

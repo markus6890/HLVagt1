@@ -3,9 +3,7 @@ package com.gmail.markushygedombrowski.vagtMenu;
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
-import com.gmail.markushygedombrowski.utils.cooldown.Cooldown;
-import com.gmail.markushygedombrowski.utils.cooldown.TimeUnit;
-import com.gmail.markushygedombrowski.utils.cooldown.UtilTime;
+import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Rankup;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
@@ -102,8 +100,8 @@ public class MainMenu implements Listener {
                     }
                     break;
                 case L0N_INDEX:
-                    if (Cooldown.isCooling(p.getName(), "lon")) {
-                        Cooldown.coolDurMessage(p, "lon");
+                    if (VagtCooldown.isCooling(p.getName(), "lon")) {
+                        VagtCooldown.coolDurMessage(p, "lon");
                     }
                     break;
                 case TOPVAGT_INDEX:
@@ -145,7 +143,7 @@ public class MainMenu implements Listener {
         // Lores
 
         List<String> topVagterLore = new ArrayList<>();
-        topVagterLore.add("§cKommer Snart");
+        topVagterLore.add("§7Se §aTopVagterne");
 
         List<String> statsLore = new ArrayList<>();
         statsLore.add("§4Død: §f" + p.getStatistic(Statistic.DEATHS));

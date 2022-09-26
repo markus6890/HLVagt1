@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class Cooldown {
-    public Cooldown(Lon lon) {
+public class VagtCooldown {
+    public VagtCooldown(Lon lon) {
         this.lon = lon;
     }
 

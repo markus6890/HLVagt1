@@ -4,9 +4,8 @@ import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.utils.cooldown.Cooldown;
+import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 public class Lon {
@@ -29,7 +28,7 @@ public class Lon {
                 plugin.econ.depositPlayer(p, profile.getLon());
                 p.sendMessage(ChatColor.GRAY + "Du har fået" + ChatColor.AQUA + " Løn!");
 
-            Cooldown.add(p.getName(), "lon", settings.getLonTime(), System.currentTimeMillis());
+            VagtCooldown.add(p.getName(), "lon", settings.getLonTime(), System.currentTimeMillis());
 
 
         }

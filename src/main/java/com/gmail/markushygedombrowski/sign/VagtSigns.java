@@ -1,12 +1,13 @@
 package com.gmail.markushygedombrowski.sign;
 
 import com.gmail.markushygedombrowski.HLvagt;
+import com.gmail.markushygedombrowski.buff.BuffGui;
 import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.utils.Utils;
-import com.gmail.markushygedombrowski.utils.cooldown.Cooldown;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
+import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtShop.VagtShop;
 import com.gmail.markushygedombrowski.vagtShop.VagtShopEnchant;
-import com.gmail.markushygedombrowski.warp.WarpManager;
+import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,18 +29,20 @@ public class VagtSigns implements Listener {
     private Settings settings;
     private HLvagt plugin;
     private int pay;
-    private WarpManager warpManager;
+    private VagtSpawnManager vagtSpawnManager;
     private RepairGUI repairGUI;
     private VagtShop vagtShop;
     private VagtShopEnchant vagtShopEnchant;
+    private BuffGui buffGui;
 
-    public VagtSigns(WarpManager warpManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant) {
-        this.warpManager = warpManager;
+    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant,BuffGui buffGui) {
+        this.vagtSpawnManager = vagtSpawnManager;
         this.settings = settings;
         this.plugin = plugin;
         this.repairGUI = repairGUI;
         this.vagtShop = vagtShop;
         this.vagtShopEnchant = vagtShopEnchant;
+        this.buffGui = buffGui;
 
 
     }
@@ -58,7 +61,7 @@ public class VagtSigns implements Listener {
 
 
                     String rank;
-                    if (Utils.removeItems(p, items)) {
+                    if (VagtUtils.removeItems(p, items)) {
                         if (p.hasPermission("direktør")) {
                             rank = "§4§lDirektøren ";
                         } else if (p.hasPermission("inspektør")) {
@@ -74,7 +77,7 @@ public class VagtSigns implements Listener {
                         Bukkit.broadcastMessage(rank + "§c" + p.getName());
                         Bukkit.broadcastMessage("§7Har købt sig ud af§a§l spasser minen");
                         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
-                        p.teleport(warpManager.getWarpInfo("vagtc").getLocation());
+                        p.teleport(vagtSpawnManager.getWarpInfo("vagtc").getLocation());
                         p.getInventory().clear();
                     } else {
                         p.sendMessage("§cDu har ikke nok!");
@@ -106,22 +109,7 @@ public class VagtSigns implements Listener {
                         p.sendMessage("§4Det har du ikke permission til!");
                         return;
                     }
-                    pay = settings.getBuffPay();
-                    if (!plugin.econ.has(p, pay)) {
-                        p.sendMessage("§cDu har ikke penge nok!");
-                        return;
-                    }
-                    p.removePotionEffect(PotionEffectType.ABSORPTION);
-                    p.removePotionEffect(PotionEffectType.SPEED);
-                    p.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, settings.getBufflength(), settings.getAbsorption()));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, settings.getBufflength(), settings.getSpeed()));
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, settings.getBufflength(), settings.getStrengh()));
-                    plugin.econ.withdrawPlayer(p, pay);
-                    p.sendMessage("§aDu har taget §cBuff");
-                    if (Utils.procent(1)) {
-                        p.sendMessage("pika pika");
-                    }
+                    buffGui.create(p);
                     return;
 
                 }
@@ -141,8 +129,8 @@ public class VagtSigns implements Listener {
                         p.sendMessage("§cDet har du ikke permission til!");
                         return;
                     }
-                    if (Cooldown.isCooling(p.getName(), "sppickaxe")) {
-                        p.sendMessage("§7Du kan tage en pickaxe om " + ChatColor.AQUA + Cooldown.getRemaining(p.getName(), "sppickaxe") + " Minuter");
+                    if (VagtCooldown.isCooling(p.getName(), "sppickaxe")) {
+                        p.sendMessage("§7Du kan tage en pickaxe om " + ChatColor.AQUA + VagtCooldown.getRemaining(p.getName(), "sppickaxe") + " Minuter");
                         return;
                     }
                     ItemStack itemStack = new ItemStack(Material.WOOD_PICKAXE);
@@ -151,25 +139,30 @@ public class VagtSigns implements Listener {
                     itemMeta.setDisplayName("§cGratis pickaxe!");
                     itemStack.setItemMeta(itemMeta);
                     p.getInventory().addItem(itemStack);
-                    Cooldown.add(p.getName(), "sppickaxe", 400, System.currentTimeMillis());
+                    VagtCooldown.add(p.getName(), "sppickaxe", 400, System.currentTimeMillis());
                     return;
 
                 }
 
                 if (sign.getLine(0).equalsIgnoreCase("§1===============") && sign.getLine(1).equalsIgnoreCase("§cVagt Shop") && sign.getLine(2).equalsIgnoreCase("§8Klik her") && sign.getLine(3).equalsIgnoreCase("§1===============")) {
-                    ItemStack hand = p.getItemInHand();
-                    if (!(hand.getType() == Material.AIR)) {
-                        if (hand.getItemMeta().getDisplayName().contains("§cC") || hand.getItemMeta().getDisplayName().contains("§bB") || hand.getItemMeta().getDisplayName().contains("§aA")) {
-                            vagtShopEnchant.enchantItem(p, hand);
-                            return;
-                        }
-                    }
-                    if (Utils.isLocInRegion(p.getLocation(), "A")) {
-                        vagtShop.vagtShop(p, "§aA");
-                    } else if (Utils.isLocInRegion(p.getLocation(), "B")) {
-                        vagtShop.vagtShop(p, "§bB");
+                    if (!p.hasPermission("vagt")) {
+                        p.sendMessage("§cDet har du ikke permission til!");
                     } else {
-                        vagtShop.vagtShop(p, "§cC");
+                        ItemStack hand = p.getItemInHand();
+                        if (!(hand.getType() == Material.AIR)) {
+
+                            if (hand.getItemMeta().getDisplayName().contains("§cC") || hand.getItemMeta().getDisplayName().contains("§bB") || hand.getItemMeta().getDisplayName().contains("§aA")) {
+                                vagtShopEnchant.enchantItem(p, hand);
+                                return;
+                            }
+                        }
+                        if (VagtUtils.isLocInRegion(p.getLocation(), "A")) {
+                            vagtShop.vagtShop(p, "§aA");
+                        } else if (VagtUtils.isLocInRegion(p.getLocation(), "B")) {
+                            vagtShop.vagtShop(p, "§bB");
+                        } else {
+                            vagtShop.vagtShop(p, "§cC");
+                        }
                     }
 
 

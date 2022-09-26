@@ -9,11 +9,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WarpManager {
-    private final Map<String, WarpInfo> warpMap = new HashMap<>();
+public class VagtSpawnManager {
+    private final Map<String, VagtSpawnInfo> warpMap = new HashMap<>();
     private final JavaPlugin plugin;
 
-    public WarpManager(JavaPlugin plugin) {
+    public VagtSpawnManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -28,24 +28,24 @@ public class WarpManager {
             String stringWorld = config.getString("warps." + key + ".location.world");
             World world = Bukkit.getWorld(stringWorld);
             Location location = new Location(world, x, y, z);
-            WarpInfo warpInfo = new WarpInfo(name, location);
-            warpMap.put(name, warpInfo);
+            VagtSpawnInfo vagtSpawnInfo = new VagtSpawnInfo(name, location);
+            warpMap.put(name, vagtSpawnInfo);
         }
     }
 
-    public void save(WarpInfo warpInfo) {
+    public void save(VagtSpawnInfo vagtSpawnInfo) {
         FileConfiguration config = plugin.getConfig();
         String key = "" + (warpMap.size() + 1);
-        config.set("warps." + key + ".name", warpInfo.getName());
-        config.set("warps." + key + ".location.x", warpInfo.getLocation().getX());
-        config.set("warps." + key + ".location.y", warpInfo.getLocation().getY());
-        config.set("warps." + key + ".location.z", warpInfo.getLocation().getZ());
-        config.set("warps." + key + ".location.world", warpInfo.getLocation().getWorld().getName());
+        config.set("warps." + key + ".name", vagtSpawnInfo.getName());
+        config.set("warps." + key + ".location.x", vagtSpawnInfo.getLocation().getX());
+        config.set("warps." + key + ".location.y", vagtSpawnInfo.getLocation().getY());
+        config.set("warps." + key + ".location.z", vagtSpawnInfo.getLocation().getZ());
+        config.set("warps." + key + ".location.world", vagtSpawnInfo.getLocation().getWorld().getName());
         plugin.saveConfig();
-        warpMap.put(warpInfo.getName(), warpInfo);
+        warpMap.put(vagtSpawnInfo.getName(), vagtSpawnInfo);
 
     }
-    public WarpInfo getWarpInfo(String warpName) {
+    public VagtSpawnInfo getWarpInfo(String warpName) {
         return warpMap.get(warpName);
     }
 
