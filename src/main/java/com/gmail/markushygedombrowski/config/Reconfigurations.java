@@ -1,4 +1,4 @@
-package com.gmail.markushygedombrowski.utils;
+package com.gmail.markushygedombrowski.config;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.Settings;

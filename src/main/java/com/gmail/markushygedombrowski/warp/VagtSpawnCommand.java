@@ -35,32 +35,57 @@ public class VagtSpawnCommand implements CommandExecutor {
         VagtSpawnInfo info = vagtSpawnManager.getWarpInfo(warpName);
 
         if (alias.equalsIgnoreCase("setvagtspawn")) {
-            setWarp(sender, player, warpName, info);
+            setWarp(player, warpName, info);
+            return true;
+        }
+        if(alias.equalsIgnoreCase("resetvagtspawn")) {
+            resetVagtSpawn(player,info);
             return true;
         }
 
-        if (info == null) {
-            sender.sendMessage("§cThat warp doesn't exist");
-            return true;
-        }
+
+        if(!doesExist(player,info)) return true;
 
 
         player.teleport(info.getLocation());
         return true;
     }
 
-    private void setWarp(CommandSender sender, Player player, String warpName, VagtSpawnInfo info) {
-        if (!sender.hasPermission("setwarp")) {
-            sender.sendMessage("Det har du ikke permission til!");
+    private void setWarp(Player player, String warpName, VagtSpawnInfo info) {
+        if (!player.hasPermission("setwarp")) {
+            player.sendMessage("Det har du ikke permission til!");
             return;
         }
-        if (info != null) {
-            sender.sendMessage("§cThat warp already exist!");
+        if (doesExist(player,info)) {
+            player.sendMessage("§cThat warp already exist!");
+            player.sendMessage("§cUse /resetVagtSpawn");
             return;
         }
         Location location = player.getLocation();
         info = new VagtSpawnInfo(warpName, location);
         vagtSpawnManager.save(info);
-        sender.sendMessage("§a§lWarp created at §e" + location.toString());
+        player.sendMessage("§a§lWarp created at §e" + location.toString());
+    }
+    private void resetVagtSpawn(Player player, VagtSpawnInfo info) {
+        if (!player.hasPermission("setwarp")) {
+            player.sendMessage("§cYou do not the permission to do that!");
+            return;
+        }
+        if(!doesExist(player,info)) {
+            return;
+        }
+        Location location = player.getLocation();
+        info.setLocation(location);
+        vagtSpawnManager.save(info);
+        player.sendMessage("Replaced Warp location");
+    }
+
+    private boolean doesExist(Player player,VagtSpawnInfo info) {
+        if(info == null) {
+            player.sendMessage("§cThat warp doesn't exist");
+            return false;
+        }
+        return true;
+
     }
 }

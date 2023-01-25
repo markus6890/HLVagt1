@@ -4,7 +4,8 @@ import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.buff.BuffGui;
 import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
-import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
+import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
+import com.gmail.markushygedombrowski.utils.VagtWorldGuardUtils;
 import com.gmail.markushygedombrowski.vagtShop.VagtShop;
 import com.gmail.markushygedombrowski.vagtShop.VagtShopEnchant;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
@@ -20,8 +21,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 
@@ -35,7 +34,7 @@ public class VagtSigns implements Listener {
     private VagtShopEnchant vagtShopEnchant;
     private BuffGui buffGui;
 
-    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant,BuffGui buffGui) {
+    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant, BuffGui buffGui) {
         this.vagtSpawnManager = vagtSpawnManager;
         this.settings = settings;
         this.plugin = plugin;
@@ -89,12 +88,7 @@ public class VagtSigns implements Listener {
                 }
 
                 if (sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik for") && sign.getLine(2).equalsIgnoreCase("§4Heal") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
-                    if (!p.hasPermission("vagtBuff")) {
-                        p.sendMessage("§4Det har du ikke permission til!");
-                        return;
-                    }
-
-
+                    if (VagtUtils.notHasPermission(p, "vagtbuff")) return;
                     p.setHealth(20);
                     p.setFoodLevel(20);
                     p.setSaturation(10);
@@ -105,30 +99,23 @@ public class VagtSigns implements Listener {
                 }
 
                 if (sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik for") && sign.getLine(2).equalsIgnoreCase("§4Buff") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
-                    if (!p.hasPermission("vagtBuff")) {
-                        p.sendMessage("§4Det har du ikke permission til!");
-                        return;
-                    }
+                    if (VagtUtils.notHasPermission(p, "vagtbuff")) return;
+
                     buffGui.create(p);
                     return;
 
                 }
 
                 if (sign.getLine(0).equalsIgnoreCase("§e§lRepair") && sign.getLine(1).equalsIgnoreCase("Klik for at") && sign.getLine(2).equalsIgnoreCase("Repair dine ting") && sign.getLine(3).equalsIgnoreCase("§e===============")) {
-                    if (!p.hasPermission("vagtRepair")) {
-                        p.sendMessage("§4Det har du ikke permission til!");
-                        return;
-                    }
+                    if (VagtUtils.notHasPermission(p, "vagtRepair")) return;
+
                     repairGUI.create(p);
                     return;
                 }
 
                 if (sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik her for") && sign.getLine(2).equalsIgnoreCase("§cGratis pickaxe") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
+                    if (VagtUtils.notHasPermission(p, "vagt")) return;
 
-                    if (!p.hasPermission("vagt")) {
-                        p.sendMessage("§cDet har du ikke permission til!");
-                        return;
-                    }
                     if (VagtCooldown.isCooling(p.getName(), "sppickaxe")) {
                         p.sendMessage("§7Du kan tage en pickaxe om " + ChatColor.AQUA + VagtCooldown.getRemaining(p.getName(), "sppickaxe") + " Minuter");
                         return;
@@ -145,24 +132,21 @@ public class VagtSigns implements Listener {
                 }
 
                 if (sign.getLine(0).equalsIgnoreCase("§1===============") && sign.getLine(1).equalsIgnoreCase("§cVagt Shop") && sign.getLine(2).equalsIgnoreCase("§8Klik her") && sign.getLine(3).equalsIgnoreCase("§1===============")) {
-                    if (!p.hasPermission("vagt")) {
-                        p.sendMessage("§cDet har du ikke permission til!");
-                    } else {
-                        ItemStack hand = p.getItemInHand();
-                        if (!(hand.getType() == Material.AIR)) {
+                    if (VagtUtils.notHasPermission(p, "vagt")) return;
 
-                            if (hand.getItemMeta().getDisplayName().contains("§cC") || hand.getItemMeta().getDisplayName().contains("§bB") || hand.getItemMeta().getDisplayName().contains("§aA")) {
-                                vagtShopEnchant.enchantItem(p, hand);
-                                return;
-                            }
+                    ItemStack hand = p.getItemInHand();
+                    if (!(hand.getType() == Material.AIR)) {
+                        if (hand.getItemMeta().getDisplayName().contains("§cC") || hand.getItemMeta().getDisplayName().contains("§bB") || hand.getItemMeta().getDisplayName().contains("§aA")) {
+                            vagtShopEnchant.enchantItem(p, hand);
+                            return;
                         }
-                        if (VagtUtils.isLocInRegion(p.getLocation(), "A")) {
-                            vagtShop.vagtShop(p, "§aA");
-                        } else if (VagtUtils.isLocInRegion(p.getLocation(), "B")) {
-                            vagtShop.vagtShop(p, "§bB");
-                        } else {
-                            vagtShop.vagtShop(p, "§cC");
-                        }
+                    }
+                    if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "A")) {
+                        vagtShop.vagtShop(p, "§aA");
+                    } else if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "B")) {
+                        vagtShop.vagtShop(p, "§bB");
+                    } else {
+                        vagtShop.vagtShop(p, "§cC");
                     }
 
 

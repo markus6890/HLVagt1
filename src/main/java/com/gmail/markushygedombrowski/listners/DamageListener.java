@@ -5,11 +5,11 @@ import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
+import com.gmail.markushygedombrowski.utils.VagtWorldGuardUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -39,32 +39,35 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent event) {
-
         Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            Player attacker;
-            if (event.getDamager() instanceof Projectile) {
-                Projectile projectile = (Projectile) event.getDamager();
-                attacker = (Player) projectile.getShooter();
-            } else {
-                attacker = (Player) event.getDamager();
-            }
-            if (!(event.getEntity() instanceof Player)) {
-                return;
-            }
-            Player defender = (Player) event.getEntity();
-            if (attacker.hasPermission("vagt.slag") && defender.hasPermission("vagt.slag")) {
-                attacker.sendMessage("§aDu kan ikke slå andre vagter!");
-                event.setCancelled(true);
-                return;
-            }
-            if (attacker.hasPermission("vagt.slag")) {
-                attacker.sendMessage("§2Du slog §4" + defender.getName());
-            }
-            if (defender.hasPermission("vagt.slag")) {
-                defender.sendMessage("§a" + attacker.getName() + " §aSlog dig!");
-            }
+        if (!(entity instanceof Player)) return;
+
+        Player defender = (Player) entity;
+
+        Player attacker = VagtUtils.getAttacker(event);
+
+        if (isAttackerAndDefenderVagt(attacker, defender)) {
+            event.setCancelled(true);
+            return;
         }
+        sendMessageToVagt(defender, attacker);
+    }
+
+
+    private void sendMessageToVagt(Player defender, Player attacker) {
+        if (attacker.hasPermission("vagt.slag")) {
+            attacker.sendMessage("§2Du slog §4" + defender.getName());
+        } else if (defender.hasPermission("vagt.slag")) {
+            defender.sendMessage("§a" + attacker.getName() + " §aSlog dig!");
+        }
+    }
+
+    private boolean isAttackerAndDefenderVagt(Player attacker, Player defender) {
+        if (attacker.hasPermission("vagt.slag") && defender.hasPermission("vagt.slag")) {
+            attacker.sendMessage("§aDu kan ikke slå andre vagter!");
+            return true;
+        }
+        return false;
     }
 
 
@@ -72,77 +75,97 @@ public class DamageListener implements Listener {
     public void vagtFangePvp(EntityDamageByEntityEvent event) {
 
         Entity entity = event.getEntity();
-        if (entity instanceof Player) {
-            Player attacker;
-            if (event.getDamager() instanceof Projectile) {
-                Projectile projectile = (Projectile) event.getDamager();
-                attacker = (Player) projectile.getShooter();
-            } else {
-                attacker = (Player) event.getDamager();
-            }
-            Player defender = (Player) event.getEntity();
-            if (defender.hasPermission("vagt.slag") || attacker.hasPermission("vagt.slag")) return;
-            if (!VagtUtils.isLocInRegion(attacker.getLocation(), "vagtfangepvp") && !VagtUtils.isLocInRegion(attacker.getLocation(), "vagtfangepvp2"))
-                return;
-
-            attacker.sendMessage("§aDu kan ikke slå fanger her!");
-            event.setCancelled(true);
+        if (!(entity instanceof Player)) {
+            return;
         }
+
+        Player defender = (Player) event.getEntity();
+        Player attacker = VagtUtils.getAttacker(event);
+        if (defender.hasPermission("vagt.slag") || attacker.hasPermission("vagt.slag")) return;
+
+        Location attackerLoc = attacker.getLocation();
+        if (!VagtWorldGuardUtils.isLocInRegion(attackerLoc, "vagtfangepvp")
+                && !VagtWorldGuardUtils.isLocInRegion(attackerLoc, "vagtfangepvp2")) return;
+
+        attacker.sendMessage("§aDu kan ikke slå fanger her!");
+        event.setCancelled(true);
+
     }
+
 
     @EventHandler
     public void vagtDeaths(PlayerDeathEvent event) {
         Player defender = event.getEntity();
         Player attacker = defender.getKiller();
         PlayerProfile profile;
-        if (attacker == null) {
-            return;
-        }
+        if (attacker == null) return;
+
         if (attacker.hasPermission("vagt.slag")) {
             attacker.sendMessage("§2Du §4Dræbte §8" + defender.getName());
             profile = profiles.getPlayerProfile(attacker.getUniqueId());
             profile.setKills(profile.getKills() + 1);
+            return;
         }
-        if (defender.hasPermission("vagt.slag")) {
-            profile = profiles.getPlayerProfile(defender.getUniqueId());
-            String rank;
-            String block;
-            if (defender.hasPermission("direktør")) {
-                rank = "§4§lDirektøren ";
-            } else if (defender.hasPermission("inspektør")) {
-                rank = "§2§lInspektøren ";
-            } else if (defender.hasPermission("viceinspektør")) {
-                rank = "§2§lVice-Inspektøren ";
-            } else if (defender.hasPermission("officer")) {
-                rank = "§6§lOfficeren ";
-            } else {
-                rank = "§6§lVagten ";
-            }
-            if (VagtUtils.isLocInRegion(defender.getLocation(), "c")) {
-                block = "§cC";
-            } else if (VagtUtils.isLocInRegion(defender.getLocation(), "b")) {
-                block = "§bB";
-            } else if (VagtUtils.isLocInRegion(defender.getLocation(), "a")) {
-                block = "§aA";
-            } else {
-                block = "bobi";
-            }
-            Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
-            Bukkit.broadcastMessage(rank + "§c" + defender.getName());
-            Bukkit.broadcastMessage("§7blev dræbt af fangen §a§l" + attacker.getName());
-            Bukkit.broadcastMessage("§e§lBlock§c§l: " + block);
-            Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
+
+        if (!defender.hasPermission("vagt.slag")) return;
+
+        profile = profiles.getPlayerProfile(defender.getUniqueId());
+
+        String rank = getRankName(defender);
+        String block = getBlockDisplayName(defender);
+
+        sendVagtDeathMessage(defender, attacker, rank, block);
+
+        profile.setDeaths(profile.getDeaths() + 1);
+
+        dropVagtHeadChance(attacker);
+
+    }
+
+    private void dropVagtHeadChance(Player p) {
+        if (VagtUtils.procent(0.5)) {
             HeadDatabaseAPI api = new HeadDatabaseAPI();
             ItemStack item = api.getItemHead(settings.getVagthead());
-            profile.setDeaths(profile.getDeaths() + 1);
-            if (VagtUtils.procent(0.5)) {
-                attacker.getInventory().addItem(item);
-                settings.setVagtheaddrop(settings.getVagtheaddrop() + 1);
-                Bukkit.broadcastMessage("§7Et Vagt head er lige §5droppet");
-            }
-
+            p.getInventory().addItem(item);
+            settings.setVagtheaddrop(settings.getVagtheaddrop() + 1);
+            Bukkit.broadcastMessage("§7Et Vagt head er lige §5droppet");
         }
     }
+
+    private void sendVagtDeathMessage(Player defender, Player attacker, String rank, String block) {
+        Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
+        Bukkit.broadcastMessage(rank + "§c" + defender.getName());
+        Bukkit.broadcastMessage("§7blev dræbt af fangen §a§l" + attacker.getName());
+        Bukkit.broadcastMessage("§e§lBlock§c§l: " + block);
+        Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
+    }
+
+    private String getBlockDisplayName(Player p) {
+        String block = "bobi";
+        if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "c")) {
+            block = "§cC";
+        } else if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "b")) {
+            block = "§bB";
+        } else if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "a")) {
+            block = "§aA";
+        }
+        return block;
+    }
+
+    private String getRankName(Player p) {
+        String rank = "§6§lVagten ";
+        if (p.hasPermission("direktør")) {
+            rank = "§4§lDirektøren ";
+        } else if (p.hasPermission("inspektør")) {
+            rank = "§2§lInspektøren ";
+        } else if (p.hasPermission("viceinspektør")) {
+            rank = "§2§lVice-Inspektøren ";
+        } else if (p.hasPermission("officer")) {
+            rank = "§6§lOfficeren ";
+        }
+        return rank;
+    }
+
 
     @EventHandler
     public void onVagtRespawn(PlayerRespawnEvent event) {
@@ -153,14 +176,14 @@ public class DamageListener implements Listener {
                 public void run() {
                     p.teleport(vagtSpawnManager.getWarpInfo("spassermine").getLocation());
                 }
-            },2);
+            }, 2);
 
         }
 
     }
 
     @EventHandler
-    public void OnArmorDamage(PlayerItemDamageEvent event) {
+    public void onArmorDamage(PlayerItemDamageEvent event) {
         int dura = 1;
         event.setDamage(dura);
     }

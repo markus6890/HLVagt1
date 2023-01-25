@@ -4,8 +4,7 @@ import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.utils.cooldown.TimeUnit;
-import com.gmail.markushygedombrowski.utils.cooldown.UtilTime;
+import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Statistic;
@@ -30,11 +29,13 @@ public class Rankup implements Listener {
     private HLvagt plugin;
     private PlayerProfiles profiles;
     private Settings settings;
+    private VagtSpawnManager vagtSpawnM;
 
-    public Rankup(HLvagt plugin, PlayerProfiles profiles,Settings settings) {
+    public Rankup(HLvagt plugin, PlayerProfiles profiles, Settings settings, VagtSpawnManager vagtSpawnM) {
         this.plugin = plugin;
         this.profiles = profiles;
         this.settings = settings;
+        this.vagtSpawnM = vagtSpawnM;
     }
 
     public void create(Player p) {
@@ -88,9 +89,10 @@ public class Rankup implements Listener {
 
 
                 } else if (p.hasPermission("b-vagt")) {
-                    p.sendMessage("kommer snart");
+                    rankupRequarid(100,1000000, 1500000,p,"§l§aA-Vagt","a-vagt");
+                    
                 } else {
-                    p.sendMessage("hmmmmmmmmmmmmmmmmmmmmm");
+                    p.sendMessage("kontakt admin+");
                 }
             }
             event.setCancelled(true);
@@ -100,6 +102,61 @@ public class Rankup implements Listener {
 
 
         }
+
+        public void rankupRequarid(int kills, int money,int moneyneed,Player p,String rank,String perm) {
+            PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
+            if (isProfileNull(p, profile)) return;
+            if (!hasMoney(moneyneed, p)) return;
+            if(!(p.getStatistic(Statistic.PLAYER_KILLS) >= kills)) {
+                p.sendMessage("§aDu har ikke nok til rankup!!");
+                return;
+            }
+            plugin.econ.withdrawPlayer(p, money);
+
+            int lon = settings.getLonb();
+            if(perm.equalsIgnoreCase("a-vagt")) {
+                lon = settings.getLona();
+            }
+            profile.setLon(lon);
+            profiles.save(profile);
+
+            setVagtPerms(p, perm);
+
+            p.closeInventory();
+            vagtRankupMessage(p, rank);
+
+
+        }
+
+    private void setVagtPerms(Player p, String perm) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove c-vagt prison");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove b-vagt prison");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent add " + perm + " prison");
+    }
+
+    private void vagtRankupMessage(Player p, String rank) {
+        Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
+        Bukkit.broadcastMessage("§c§lVagten §6" + p.getName());
+        Bukkit.broadcastMessage("§7Har lige Ranket up til " + rank);
+        Bukkit.broadcastMessage("             §a§lTILLYKKE!!!");
+        Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
+    }
+
+    private boolean isProfileNull(Player p, PlayerProfile profile) {
+        if(profile == null) {
+            p.sendMessage("Du har ikke en loaded profile skriv til en admin+");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasMoney(int moneyneed, Player p) {
+        if(!(plugin.econ.getBalance(p) >= moneyneed))  {
+            p.sendMessage("§aDu har ikke nok penge!!");
+            return false;
+        }
+        return true;
+    }
 
     public void meta(Player p) {
         String pattern = "###,###.##";

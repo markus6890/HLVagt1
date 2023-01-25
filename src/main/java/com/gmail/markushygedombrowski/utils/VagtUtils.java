@@ -2,39 +2,35 @@ package com.gmail.markushygedombrowski.utils;
 
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
+import com.gmail.markushygedombrowski.model.PlayerProfile;
+import com.gmail.markushygedombrowski.model.PlayerProfiles;
+import com.gmail.markushygedombrowski.model.Settings;
 
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 import org.bukkit.Statistic;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-
 
 
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
-
-import static org.bukkit.Bukkit.getServer;
-
 public class VagtUtils {
     private static HLvagt plugin;
-
-
-    public VagtUtils(HLvagt plugin) {
+    private static PlayerProfiles playerProfiles;
+    private static Settings settings;
+    public VagtUtils(HLvagt plugin,PlayerProfiles playerProfiles,Settings settings) {
         VagtUtils.plugin = plugin;
-
+        VagtUtils.playerProfiles = playerProfiles;
+        VagtUtils.settings = settings;
     }
 
 
@@ -66,43 +62,7 @@ public class VagtUtils {
 
     }
 
-    public static boolean isLocInRegion(Location loc, String regionName) {
-        if (regionName == null) {
-            return true;
-        }
-        ApplicableRegionSet set = getWGSet(loc);
-        if (set == null) {
-            return false;
-        }
-        for (ProtectedRegion r : set) {
-            if (r.getId().equalsIgnoreCase(regionName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    private static ApplicableRegionSet getWGSet(Location loc) {
-        WorldGuardPlugin wg = getWorldGuard();
-        if (wg == null) {
-            return null;
-        }
-        RegionManager rm = wg.getRegionManager(loc.getWorld());
-        if (rm == null) {
-            return null;
-        }
-        return rm.getApplicableRegions(com.sk89q.worldguard.bukkit.BukkitUtil.toVector(loc));
-    }
-
-    public static WorldGuardPlugin getWorldGuard() {
-        Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
-
-        // WorldGuard may not be loaded
-        if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
-            return null;
-        }
-        return (WorldGuardPlugin) plugin;
-    }
 
 
     public static List<Player> getPlayers(String perm) {
@@ -114,6 +74,17 @@ public class VagtUtils {
             }
         }
         return playerList;
+    }
+
+    public static Player getAttacker(EntityDamageByEntityEvent event) {
+        Player p;
+        if (event.getDamager() instanceof Projectile) {
+            Projectile projectile = (Projectile) event.getDamager();
+            p = (Player) projectile.getShooter();
+            return p;
+        }
+        p = (Player) event.getDamager();
+        return p;
     }
 
 
@@ -138,6 +109,22 @@ public class VagtUtils {
             }
         }
         return list;
+    }
+
+    public static boolean isSenderNotPlayer(CommandSender sender) {
+        if(!(sender instanceof Player)) {
+            System.out.println("denne command er kun for spillere");
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean notHasPermission(Player p,String perm) {
+        if(!p.hasPermission(perm)) {
+            p.sendMessage("§cDet har du ikke Permission til!");
+            return true;
+        }
+        return false;
     }
 
     public static List<String> top10Money(String perm) {
@@ -170,6 +157,7 @@ public class VagtUtils {
         return num < pro;
 
     }
+
 
 
 }

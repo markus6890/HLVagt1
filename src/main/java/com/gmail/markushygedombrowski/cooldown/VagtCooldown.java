@@ -1,4 +1,4 @@
-package com.gmail.markushygedombrowski.utils.cooldown;
+package com.gmail.markushygedombrowski.cooldown;
 
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Lon;
 import org.bukkit.Bukkit;

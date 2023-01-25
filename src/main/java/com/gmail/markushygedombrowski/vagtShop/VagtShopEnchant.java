@@ -2,6 +2,7 @@ package com.gmail.markushygedombrowski.vagtShop;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
+import com.gmail.markushygedombrowski.utils.VagtWorldGuardUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -62,7 +63,7 @@ public class VagtShopEnchant implements Listener {
         meta.setLore(lore);
         maxInvItem.setItemMeta(meta);
         maxLvl = 4;
-        if(VagtUtils.isLocInRegion(p.getLocation(),"a")) {
+        if(VagtWorldGuardUtils.isLocInRegion(p.getLocation(),"a")) {
             maxLvl = 5;
         }
         maxInvItem.addUnsafeEnchantment(enchant, maxLvl);
@@ -115,7 +116,7 @@ public class VagtShopEnchant implements Listener {
                 if (checkEnchant(item, p)) {
                     pay = 6000;
                     if (plugin.econ.has(p, pay)) {
-                        if(VagtUtils.isLocInRegion(p.getLocation(),"a")) {
+                        if(VagtWorldGuardUtils.isLocInRegion(p.getLocation(),"a")) {
                             lvl = 5;
                         } else {
                             lvl = 4;
@@ -162,7 +163,7 @@ public class VagtShopEnchant implements Listener {
             message = "Protection";
 
         }
-        if(VagtUtils.isLocInRegion(p.getLocation(),"a")) {
+        if(VagtWorldGuardUtils.isLocInRegion(p.getLocation(),"a")) {
             max = 5;
         }
         return lvl < max;

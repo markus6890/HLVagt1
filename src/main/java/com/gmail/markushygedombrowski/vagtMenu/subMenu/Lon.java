@@ -4,7 +4,7 @@ import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
+import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

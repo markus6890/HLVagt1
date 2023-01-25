@@ -3,7 +3,7 @@ package com.gmail.markushygedombrowski.vagtMenu;
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
-import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
+import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Rankup;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
@@ -95,9 +95,12 @@ public class MainMenu implements Listener {
                 case RANKUP_INDEX:
                     if (p.hasPermission("a-vagt") || p.hasPermission("officer") || p.hasPermission("viceinspektør") || p.hasPermission("inspektør") || p.hasPermission("direktør")) {
                         p.sendMessage("§aDu kan ikke ranke up mere!");
-                    } else {
-                        rankupgui.create(p);
+                        break;
+                    } else if (p.hasPermission("p-vagt")) {
+                        p.sendMessage("§cDu kan ikke rankup som P-vagt!!");
+                        break;
                     }
+                    rankupgui.create(p);
                     break;
                 case L0N_INDEX:
                     if (VagtCooldown.isCooling(p.getName(), "lon")) {

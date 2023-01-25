@@ -5,13 +5,14 @@ import com.gmail.markushygedombrowski.commands.Dropcommand;
 import com.gmail.markushygedombrowski.commands.FyrCommand;
 import com.gmail.markushygedombrowski.commands.Rankupcommand;
 import com.gmail.markushygedombrowski.commands.VagtChat;
+import com.gmail.markushygedombrowski.config.ConfigManager;
 import com.gmail.markushygedombrowski.listners.*;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.sign.*;
-import com.gmail.markushygedombrowski.utils.Reconfigurations;
+import com.gmail.markushygedombrowski.config.Reconfigurations;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
-import com.gmail.markushygedombrowski.utils.cooldown.VagtCooldown;
+import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.MainMenu;
 import com.gmail.markushygedombrowski.vagtMenu.VagtCommand;
 import com.gmail.markushygedombrowski.vagtShop.VagtShop;
@@ -36,13 +37,17 @@ public class HLvagt extends JavaPlugin {
     private VagtSpawnManager vagtSpawnManager;
     private PlayerProfiles playerProfiles;
     private Lon lon;
+    private ConfigManager configM;
 
     public void onEnable() {
         saveDefaultConfig();
+        loadConfigManager();
         FileConfiguration config = getConfig();
         settings = new Settings();
         settings.load(config);
-        VagtUtils vagtUtils = new VagtUtils(this);
+        playerProfiles = new PlayerProfiles(this, settings);
+        playerProfiles.load();
+        VagtUtils vagtUtils = new VagtUtils(this,playerProfiles,settings);
 
         System.out.println("HL Plugin enabled!!");
 
@@ -94,9 +99,15 @@ public class HLvagt extends JavaPlugin {
     public void reload() {
         reloadConfig();
         FileConfiguration config = getConfig();
+        loadConfigManager();
         settings.load(config);
         playerProfiles.load();
 
+    }
+    public void loadConfigManager() {
+        configM = new ConfigManager();
+        configM.setup();
+        configM.saveVagtFangePvp();
     }
 
     private boolean setupEconomy() {
@@ -112,12 +123,11 @@ public class HLvagt extends JavaPlugin {
     }
 
     public void initVagt() {
-        playerProfiles = new PlayerProfiles(this);
-        playerProfiles.load();
+
         PVGUI pvgui = new PVGUI(this, playerProfiles);
         Bukkit.getPluginManager().registerEvents(pvgui, this);
 
-        Rankup rankup = new Rankup(this, playerProfiles, settings);
+        Rankup rankup = new Rankup(this, playerProfiles, settings, vagtSpawnManager);
         Bukkit.getPluginManager().registerEvents(rankup, this);
 
         TopVagterGUI topVagterGUI = new TopVagterGUI();

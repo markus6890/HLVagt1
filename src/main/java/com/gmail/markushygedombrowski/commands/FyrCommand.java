@@ -2,6 +2,7 @@ package com.gmail.markushygedombrowski.commands;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -20,36 +21,26 @@ public class FyrCommand implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
-        if(!(sender instanceof Player)) {
-            System.out.println("denne command er kun for spillere");
-            return true;
-        }
+        if(VagtUtils.isSenderNotPlayer(sender)) return true;
+
         Player p = (Player) sender;
-        if(!p.hasPermission("direktør")) {
-            p.sendMessage("§cDet har du ikke Permission til!!");
-            return true;
-        }
+        if (VagtUtils.notHasPermission(p,"direktør")) return true;
+
         if(args.length == 0) {
             p.sendMessage("/fyr <Player>");
 
             return true;
         }
         Player fyr = Bukkit.getPlayer(args[0]);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + fyr.getName() + " parent remove c-vagt prison");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + fyr.getName() + " parent remove b-vagt prison");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + fyr.getName() + " parent remove a-vagt prison");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + fyr.getName() + " parent remove officer prison");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + fyr.getName() + " parent add c-fange prison");
+        if(fyr == null) {
+            p.sendMessage("er ikke en spiller");
+            return true;
+        }
+        removeVagtPermsForPlayer(fyr);
+        clearInventory(fyr);
 
-        fyr.getInventory().clear();
-        fyr.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
-        fyr.getInventory().setChestplate(new ItemStack(Material.AIR, 1));
-        fyr.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
-        fyr.getInventory().setBoots(new ItemStack(Material.AIR, 1));
-        fyr.setHealth(0);
-        double money = plugin.econ.getBalance(fyr);
-        plugin.econ.withdrawPlayer(fyr,money);
-        plugin.econ.depositPlayer(fyr, 400);
+
+        resetPlayerBalance(fyr);
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
         Bukkit.broadcastMessage("§c§lVagten §6" + fyr.getName());
         Bukkit.broadcastMessage("§7Er lige blevet fyret");
@@ -60,5 +51,29 @@ public class FyrCommand implements CommandExecutor {
 
 
         return true;
+    }
+
+    private void resetPlayerBalance(Player p) {
+        double money = plugin.econ.getBalance(p);
+
+        plugin.econ.withdrawPlayer(p,money);
+        plugin.econ.depositPlayer(p, 400);
+    }
+
+    private void clearInventory(Player p) {
+        p.getInventory().clear();
+        p.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
+        p.getInventory().setChestplate(new ItemStack(Material.AIR, 1));
+        p.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
+        p.getInventory().setBoots(new ItemStack(Material.AIR, 1));
+        p.setHealth(0);
+    }
+
+    private void removeVagtPermsForPlayer(Player p) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove c-vagt prison");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove b-vagt prison");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove a-vagt prison");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove officer prison");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent add c-fange prison");
     }
 }

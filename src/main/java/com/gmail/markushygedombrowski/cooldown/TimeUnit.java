@@ -1,4 +1,4 @@
-package com.gmail.markushygedombrowski.utils.cooldown;
+package com.gmail.markushygedombrowski.cooldown;
 
 public enum TimeUnit {
     BEST,

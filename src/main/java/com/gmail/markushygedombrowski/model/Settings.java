@@ -25,6 +25,7 @@ public class Settings {
     private int lonTime;
 
 
+
     private int vagtheaddrop;
 
     private String vagthead;
@@ -50,8 +51,8 @@ public class Settings {
         this.vagthead = config.getString("vagt.vagthead");
         this.vagtheaddrop = config.getInt("vagt.vagtheaddrop");
 
-    }
 
+    }
     public int getBufflength () {
         return bufflength;
     }
@@ -79,17 +80,7 @@ public class Settings {
     public int getLonoffi() {
         return lonoffi;
     }
-    public int getLonviceins() {
-        return lonviceins;
-    }
-    public int getLonins() {
-        return lonins;
-    }
-    public int getLondire() {
-        return londire;
-    }
     public int getLonTime() {
-
         int timesend = (lonTime * 60);
         return timesend;
     }
@@ -111,5 +102,6 @@ public class Settings {
     public void setVagtheaddrop(int vagtheaddrop) {
         this.vagtheaddrop = vagtheaddrop;
     }
+
 }
 

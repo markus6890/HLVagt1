@@ -4,7 +4,7 @@ version: "1.0"
 softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase]
 commands:
   vagtspawn:
-    aliases: ["setvagtspawn"]
+    aliases: ["setvagtspawn", "resetvagtspawn"]
     description: "vagtspawn system"
   vagt:
     description: "vagt"

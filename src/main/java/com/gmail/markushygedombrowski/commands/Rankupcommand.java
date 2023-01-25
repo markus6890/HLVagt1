@@ -3,6 +3,7 @@ package com.gmail.markushygedombrowski.commands;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -23,84 +24,74 @@ public class Rankupcommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(!(sender instanceof Player)) {
-            System.out.println("denne command er kun for spillere");
-            return true;
-        }
+        if(VagtUtils.isSenderNotPlayer(sender)) return true;
+
         Player p = (Player) sender;
-        if(!p.hasPermission("direktør")) {
-            p.sendMessage("§cDet har du ikke Permission til!!");
-            return true;
-        }
-        if(args.length == 0 || args.length == 1) {
+        if (VagtUtils.notHasPermission(p,"direktør")) return true;
+
+        if (args.length <= 1) {
             p.sendMessage("/ansat <Player> <Rank>");
             p.sendMessage("Ranks: p-vagt, c-vagt, b-vagt, a-vagt, officer");
             return true;
         }
         Player ansat = Bukkit.getPlayer(args[0]);
-
+        if(ansat == null) {
+            p.sendMessage("er ikke en spiller");
+            return true;
+        }
         PlayerProfile profile = profiles.getPlayerProfile(ansat.getUniqueId());
 
         String rank = "bob";
         String perm = "1";
         String prePerm = "0";
-        int lon = 100;
-        if(args[1].equalsIgnoreCase("p-vagt")) {
+        int lon = settings.getLonp();
+        if (args[1].equalsIgnoreCase("p-vagt")) {
             rank = "§cp-vagt";
             perm = "p-vagt";
             lon = settings.getLonp();
-            if(ansat.hasPermission("a-fange")) {
+            if (ansat.hasPermission("a-fange")) {
                 prePerm = "a-fange";
-            } else if(ansat.hasPermission("b-fange")) {
+            } else if (ansat.hasPermission("b-fange")) {
                 prePerm = "b-fange";
             } else {
                 prePerm = "c-fange";
             }
-        }
-        if(args[1].equalsIgnoreCase("c-vagt")) {
+        } else if (args[1].equalsIgnoreCase("c-vagt")) {
             rank = "§cc-vagt";
             perm = "c-vagt";
             prePerm = "p-vagt";
             lon = settings.getLonc();
-        }
-        if(args[1].equalsIgnoreCase("b-vagt")) {
+        } else if (args[1].equalsIgnoreCase("b-vagt")) {
             rank = "§bb-vagt";
             perm = "b-vagt";
             prePerm = "c-vagt";
             lon = settings.getLonb();
-        }
-        if(args[1].equalsIgnoreCase("a-vagt")) {
+        } else if (args[1].equalsIgnoreCase("a-vagt")) {
             rank = "§aa-vagt";
             perm = "a-vagt";
             prePerm = "b-vagt";
             lon = settings.getLona();
-        }
-        if(args[1].equalsIgnoreCase("officer")) {
+        } else if (args[1].equalsIgnoreCase("officer")) {
             rank = "§6Officer";
             perm = "officer";
             prePerm = "a-vagt";
             lon = settings.getLonoffi();
         }
+        profiles.createVagt(p,profile);
+
+        profile.setLon(lon);
 
 
-        if (profile == null) {
-            profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon, 0,0);
-        } else {
-            profile.setLon(lon);
-        }
-        profiles.save(profile);
 
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent remove " + prePerm + " prison");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent add " + perm +" prison");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent add " + perm + " prison");
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
         Bukkit.broadcastMessage("§c§lVagten §6" + ansat.getName());
         Bukkit.broadcastMessage("§7Har lige Ranket up til " + rank);
         Bukkit.broadcastMessage("§7Ved hjælp af §4" + p.getName());
         Bukkit.broadcastMessage("             §a§lTILLYKKE!!!");
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
-
-
 
 
         return true;

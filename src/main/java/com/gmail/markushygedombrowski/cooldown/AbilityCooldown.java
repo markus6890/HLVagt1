@@ -1,4 +1,4 @@
-package com.gmail.markushygedombrowski.utils.cooldown;
+package com.gmail.markushygedombrowski.cooldown;
 
 import java.util.HashMap;
 
@@ -16,7 +16,7 @@ public class AbilityCooldown {
     public AbilityCooldown(String player) {
         this.player = player;
     }
-    public HashMap<String, AbilityCooldown> cooldownMap = new HashMap<String, AbilityCooldown>();
+    public HashMap<String, AbilityCooldown> cooldownMap = new HashMap<>();
 
 
 }
