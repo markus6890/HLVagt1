@@ -79,6 +79,7 @@ public class OnJoin implements Listener {
         time = (int) (VagtCooldown.getRemaining(p.getName(), "lon") * 60);
         VagtCooldown.removeCooldown(p.getName(), "lon");
         playerCooldownTime.replace(p.getUniqueId(), time);
+        playerProfiles.save(profile);
 
 
     }

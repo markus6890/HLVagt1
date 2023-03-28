@@ -11,6 +11,7 @@ com\gmail\markushygedombrowski\listners\VagtStav.class
 com\gmail\markushygedombrowski\config\ConfigManager.class
 com\gmail\markushygedombrowski\cooldown\utilMath.class
 com\gmail\markushygedombrowski\listners\OnJoin.class
+com\gmail\markushygedombrowski\utils\Logger.class
 com\gmail\markushygedombrowski\cooldown\AbilityCooldown.class
 com\gmail\markushygedombrowski\listners\DamageListener$1.class
 com\gmail\markushygedombrowski\commands\Rankupcommand.class

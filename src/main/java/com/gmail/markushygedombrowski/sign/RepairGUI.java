@@ -1,9 +1,11 @@
 package com.gmail.markushygedombrowski.sign;
 
 import com.gmail.markushygedombrowski.HLvagt;
+import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -14,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RepairGUI implements Listener {
@@ -24,8 +27,10 @@ public class RepairGUI implements Listener {
     private HLvagt plugin;
     private int fullKost;
     private int kost = 2000;
-    public RepairGUI(HLvagt plugin) {
+    private Logger logger;
+    public RepairGUI(HLvagt plugin, Logger logger) {
         this.plugin = plugin;
+        this.logger = logger;
     }
 
 
@@ -79,7 +84,7 @@ public class RepairGUI implements Listener {
             switch (clickedSlot) {
                 case (REPAIRONE_INDEX):
                     ItemStack item = p.getItemInHand();
-                    if (item.getType() == Material.AIR) {
+                    if (item.getType() == Material.AIR || item.getType() == Material.SKULL) {
                         p.sendMessage("§cDu har ikke noget i hånden!");
 
                     }else if (!plugin.econ.has(p, kost)) {
@@ -89,15 +94,18 @@ public class RepairGUI implements Listener {
                         short dura = (short) (item.getType().getMaxDurability() - item.getType().getMaxDurability());
                         item.setDurability(dura);
                         plugin.econ.withdrawPlayer(p, kost);
+                        logger.formatMessage("REPAIRSIGN: ", p.getName() + " has repaired item in hand: " + item);
                         p.sendMessage("§7Hånd §e repaired");
                     }
                     break;
                 case(REPAIRALL_INDEX):
                     ItemStack[] items = p.getInventory().getContents();
+                    List<String> logItems = new ArrayList<>();
                     int amount = 0;
                     for (ItemStack itemi : items) {
                         if(!(itemi == null)) {
                             amount = amount + 1;
+                            logItems.add(itemi.toString());
                         }
 
                     }
@@ -110,6 +118,10 @@ public class RepairGUI implements Listener {
 
                     }else {
                         VagtUtils.repairItems(p);
+
+                        logger.formatMessage(p.getName() + " has repaired all items in inventory", "REPAIRSIGN: ");
+                        logger.formatMessage(p.getName() + " items: " + logItems,"REPAIRSIGN: ");
+                        logItems.clear();
                         p.sendMessage("§7Alle items i dit inventory §e repaired");
                         plugin.econ.withdrawPlayer(p,fullKost);
 

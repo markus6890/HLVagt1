@@ -19,6 +19,8 @@ public class ConfigManager {
 
     public FileConfiguration vagtFangePvpcfg;
     public File vagtFangePvpFile;
+    public FileConfiguration playercfg;
+    public File playerFile;
 
     public void setup() {
         List<File> configList = new ArrayList<>();
@@ -27,7 +29,9 @@ public class ConfigManager {
 
         }
         vagtFangePvpFile = new File(plugin.getDataFolder(), "vagtFangePvp.yml");
+        playerFile = new File(plugin.getDataFolder(), "player.yml");
         configList.add(vagtFangePvpFile);
+        configList.add(playerFile);
         configList.forEach(file -> {
             if (!file.exists()) {
                 try {
@@ -38,10 +42,15 @@ public class ConfigManager {
             }
         });
         vagtFangePvpcfg = YamlConfiguration.loadConfiguration(vagtFangePvpFile);
+        playercfg = YamlConfiguration.loadConfiguration(playerFile);
     }
     public FileConfiguration getVagtFangePvpcfg() {
         return vagtFangePvpcfg;
     }
+    public FileConfiguration getPlayercfg() {
+        return playercfg;
+    }
+
     public void saveVagtFangePvp() {
         try {
             vagtFangePvpcfg.save(vagtFangePvpFile);
@@ -49,8 +58,18 @@ public class ConfigManager {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "could not save vagtFangePvp.yml File");
         }
     }
+    public void savePlayer() {
+        try {
+            playercfg.save(playerFile);
+        } catch (IOException e) {
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED + "could not save player.yml File");
+        }
+    }
 
     public void reloadVagtFangePvp() {
         vagtFangePvpcfg = YamlConfiguration.loadConfiguration(vagtFangePvpFile);
+    }
+    public void reloadPlayer() {
+        playercfg = YamlConfiguration.loadConfiguration(playerFile);
     }
 }

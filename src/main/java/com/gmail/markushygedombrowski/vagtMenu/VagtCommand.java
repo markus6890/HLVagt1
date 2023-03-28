@@ -18,11 +18,6 @@ public class VagtCommand implements CommandExecutor {
         Player p = (Player) sender;
         if (VagtUtils.notHasPermission(p,"vagt")) return true;
 
-
-
-
-
-
         mainMenu.create(p);
 
         return true;

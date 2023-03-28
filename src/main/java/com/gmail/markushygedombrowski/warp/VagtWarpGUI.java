@@ -87,6 +87,7 @@ public class VagtWarpGUI implements Listener {
                 } else {
                     p.sendMessage("§7Du er warpet til §aA");
                     p.teleport(vagtSpawnManager.getWarpInfo("vagta").getLocation());
+                    p.sendTitle("§4§lHusk! §c§log skifte gear!", " ");
                 }
 
 

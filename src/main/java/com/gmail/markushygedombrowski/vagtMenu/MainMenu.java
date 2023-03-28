@@ -149,27 +149,14 @@ public class MainMenu implements Listener {
         topVagterLore.add("§7Se §aTopVagterne");
 
         List<String> statsLore = new ArrayList<>();
-        statsLore.add("§4Død: §f" + p.getStatistic(Statistic.DEATHS));
+        statsLore.add("§4Død: §f" + profile.getDeaths());
         statsLore.add("§aDræbt: §f" + p.getStatistic(Statistic.PLAYER_KILLS));
         statsLore.add("§aPenge: §f$" + df.format(plugin.econ.getBalance(p)));
 
         List<String> spilletidlore = new ArrayList<>();
         spilletidlore.add("§6Spillet §7Tid: " + timeplayed + " Hours");
 
-        List<String> rankuplore = new ArrayList<>();
-        if (p.hasPermission("a-vagt")) {
-            rankuplore.add("§7Du kan ikke ranke up mere!");
-        } else if (p.hasPermission("c-vagt")) {
-            rankuplore.add("§7Til §bB-vagt §7koster:");
-            rankuplore.add("§7$50.000");
-            rankuplore.add("§7Du skal have $70.000");
-        } else if (p.hasPermission("b-vagt")) {
-            rankuplore.add("§7Til §aA-vagt §7koster:");
-            rankuplore.add("§7$1.000.000");
-            rankuplore.add("§730 timer spillet på serveren");
-        } else {
-            rankuplore.add("Hmmm der er vist en fejl kontakt Staff");
-        }
+
 
         List<String> lonLore = new ArrayList<>();
         lonLore.add("§7din §2løn: §a" + profile.getLon());
@@ -178,7 +165,7 @@ public class MainMenu implements Listener {
         //Setting Lore on Item
         metastats.setLore(statsLore);
         metatid.setLore(spilletidlore);
-        metarankup.setLore(rankuplore);
+        metarankup.setLore(rankupgui.meta(p,metarankup));
         metatopv.setLore(topVagterLore);
         metalon.setLore(lonLore);
 

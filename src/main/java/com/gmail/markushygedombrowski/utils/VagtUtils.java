@@ -9,6 +9,7 @@ import com.gmail.markushygedombrowski.model.Settings;
 
 import org.bukkit.Bukkit;
 
+import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,7 +28,8 @@ public class VagtUtils {
     private static HLvagt plugin;
     private static PlayerProfiles playerProfiles;
     private static Settings settings;
-    public VagtUtils(HLvagt plugin,PlayerProfiles playerProfiles,Settings settings) {
+
+    public VagtUtils(HLvagt plugin, PlayerProfiles playerProfiles, Settings settings) {
         VagtUtils.plugin = plugin;
         VagtUtils.playerProfiles = playerProfiles;
         VagtUtils.settings = settings;
@@ -52,8 +54,11 @@ public class VagtUtils {
         int amount = 0;
         for (ItemStack item : items) {
             if (!(item == null)) {
-                item.setDurability((short) (item.getType().getMaxDurability() - item.getType().getMaxDurability()));
-                amount = amount + 1;
+                if(item.getType() != Material.SKULL) {
+                    item.setDurability((short) (item.getType().getMaxDurability() - item.getType().getMaxDurability()));
+                    amount = amount + 1;
+                }
+
             }
 
         }
@@ -61,8 +66,6 @@ public class VagtUtils {
 
 
     }
-
-
 
 
     public static List<Player> getPlayers(String perm) {
@@ -112,15 +115,15 @@ public class VagtUtils {
     }
 
     public static boolean isSenderNotPlayer(CommandSender sender) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             System.out.println("denne command er kun for spillere");
             return true;
         }
         return false;
     }
 
-    public static boolean notHasPermission(Player p,String perm) {
-        if(!p.hasPermission(perm)) {
+    public static boolean notHasPermission(Player p, String perm) {
+        if (!p.hasPermission(perm)) {
             p.sendMessage("§cDet har du ikke Permission til!");
             return true;
         }
@@ -154,10 +157,9 @@ public class VagtUtils {
     public static boolean procent(double pro) {
         Random r = new Random();
         double num = r.nextInt(100);
-        return num < pro;
+        return num <= pro;
 
     }
-
 
 
 }

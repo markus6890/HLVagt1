@@ -1,9 +1,23 @@
 package com.gmail.markushygedombrowski.config;
 
-public class VagtFangePvpConfigManager {
-    private ConfigManager configM;
+import org.bukkit.configuration.file.FileConfiguration;
 
-    public VagtFangePvpConfigManager(ConfigManager configM) {
-        this.configM = configM;
+import java.util.ArrayList;
+import java.util.List;
+
+public class VagtFangePvpConfigManager {
+    private List<String> vFpvp = new ArrayList<>();
+
+
+
+    public void load(FileConfiguration config) {
+        vFpvp.clear();
+        vFpvp = config.getStringList("regions.name");
+
+    }
+
+
+    public List<String> getvFpvp() {
+        return vFpvp;
     }
 }

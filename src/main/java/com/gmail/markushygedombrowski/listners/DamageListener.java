@@ -1,6 +1,8 @@
 package com.gmail.markushygedombrowski.listners;
 
 import com.gmail.markushygedombrowski.HLvagt;
+import com.gmail.markushygedombrowski.combat.CombatList;
+import com.gmail.markushygedombrowski.config.VagtFangePvpConfigManager;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
@@ -12,7 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -20,6 +21,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 
 public class DamageListener implements Listener {
@@ -29,12 +33,16 @@ public class DamageListener implements Listener {
     private final VagtSpawnManager vagtSpawnManager;
     private final PlayerProfiles profiles;
     private HLvagt plugin;
+    private CombatList combatList;
+    private VagtFangePvpConfigManager vFPvpConfig;
 
-    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin) {
+    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig) {
         this.settings = settings;
         this.vagtSpawnManager = vagtSpawnManager;
         this.profiles = profiles;
         this.plugin = plugin;
+        this.combatList = combatList;
+        this.vFPvpConfig = vFPvpConfig;
     }
 
     @EventHandler
@@ -52,6 +60,8 @@ public class DamageListener implements Listener {
         }
         sendMessageToVagt(defender, attacker);
     }
+
+
 
 
     private void sendMessageToVagt(Player defender, Player attacker) {
@@ -82,31 +92,29 @@ public class DamageListener implements Listener {
         Player defender = (Player) event.getEntity();
         Player attacker = VagtUtils.getAttacker(event);
         if (defender.hasPermission("vagt.slag") || attacker.hasPermission("vagt.slag")) return;
-
+        List<String> vFpvp = vFPvpConfig.getvFpvp();
         Location attackerLoc = attacker.getLocation();
-        if (!VagtWorldGuardUtils.isLocInRegion(attackerLoc, "vagtfangepvp")
-                && !VagtWorldGuardUtils.isLocInRegion(attackerLoc, "vagtfangepvp2")) return;
+        Location defenderLoc = defender.getLocation();
+        vFpvp.forEach(s -> {
+            if (VagtWorldGuardUtils.isLocInRegion(attackerLoc, s) || VagtWorldGuardUtils.isLocInRegion(defenderLoc, s)) {
+                event.setCancelled(true);
+                attacker.sendMessage("§aDu kan ikke slå fanger her!");
 
-        attacker.sendMessage("§aDu kan ikke slå fanger her!");
-        event.setCancelled(true);
-
+            }
+        });
     }
 
 
     @EventHandler
-    public void vagtDeaths(PlayerDeathEvent event) {
+    public void onDeath(PlayerDeathEvent event) {
         Player defender = event.getEntity();
         Player attacker = defender.getKiller();
         PlayerProfile profile;
-        if (attacker == null) return;
-
-        if (attacker.hasPermission("vagt.slag")) {
-            attacker.sendMessage("§2Du §4Dræbte §8" + defender.getName());
-            profile = profiles.getPlayerProfile(attacker.getUniqueId());
-            profile.setKills(profile.getKills() + 1);
-            return;
+        if (attacker == null) {
+            if(combatList.getLastHit(defender) == null) return;
+            attacker = combatList.getLastHit(defender);
         }
-
+        if (attackerIsVagt(defender, attacker)) return;
         if (!defender.hasPermission("vagt.slag")) return;
 
         profile = profiles.getPlayerProfile(defender.getUniqueId());
@@ -117,13 +125,23 @@ public class DamageListener implements Listener {
         sendVagtDeathMessage(defender, attacker, rank, block);
 
         profile.setDeaths(profile.getDeaths() + 1);
-
         dropVagtHeadChance(attacker);
+        profiles.save(profile);
+    }
 
+    private boolean attackerIsVagt(Player defender, Player attacker) {
+        PlayerProfile profile;
+        if (attacker.hasPermission("vagt.slag")) {
+            attacker.sendMessage("§2Du §4Dræbte §8" + defender.getName());
+            profile = profiles.getPlayerProfile(attacker.getUniqueId());
+            profile.setKills(profile.getKills() + 1);
+            return true;
+        }
+        return false;
     }
 
     private void dropVagtHeadChance(Player p) {
-        if (VagtUtils.procent(0.5)) {
+        if (VagtUtils.procent(1)) {
             HeadDatabaseAPI api = new HeadDatabaseAPI();
             ItemStack item = api.getItemHead(settings.getVagthead());
             p.getInventory().addItem(item);
@@ -184,8 +202,17 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onArmorDamage(PlayerItemDamageEvent event) {
-        int dura = 1;
-        event.setDamage(dura);
+        if(event.getItem() == null) return;
+        ItemStack item = event.getItem();
+        ItemMeta itemMeta = item.getItemMeta();
+        if(itemMeta.getDisplayName() == null) {
+            return;
+        }
+        if(itemMeta.getDisplayName().contains("§aA") || itemMeta.getDisplayName().contains("§bB") || itemMeta.getDisplayName().contains("§cC")) {
+            int dura = 1;
+            event.setDamage(dura);
+        }
+
     }
 
 

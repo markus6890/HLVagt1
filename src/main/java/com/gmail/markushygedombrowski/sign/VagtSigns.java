@@ -3,6 +3,7 @@ package com.gmail.markushygedombrowski.sign;
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.buff.BuffGui;
 import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.utils.VagtWorldGuardUtils;
@@ -33,8 +34,9 @@ public class VagtSigns implements Listener {
     private VagtShop vagtShop;
     private VagtShopEnchant vagtShopEnchant;
     private BuffGui buffGui;
+    private Logger logger;
 
-    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant, BuffGui buffGui) {
+    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant, BuffGui buffGui, Logger logger) {
         this.vagtSpawnManager = vagtSpawnManager;
         this.settings = settings;
         this.plugin = plugin;
@@ -42,8 +44,7 @@ public class VagtSigns implements Listener {
         this.vagtShop = vagtShop;
         this.vagtShopEnchant = vagtShopEnchant;
         this.buffGui = buffGui;
-
-
+        this.logger = logger;
     }
 
 
@@ -108,7 +109,7 @@ public class VagtSigns implements Listener {
 
                 if (sign.getLine(0).equalsIgnoreCase("§e§lRepair") && sign.getLine(1).equalsIgnoreCase("Klik for at") && sign.getLine(2).equalsIgnoreCase("Repair dine ting") && sign.getLine(3).equalsIgnoreCase("§e===============")) {
                     if (VagtUtils.notHasPermission(p, "vagtRepair")) return;
-
+                    logger.formatMessage(p.getName() + " has opened repair sign", "REPAIRSIGN: ");
                     repairGUI.create(p);
                     return;
                 }

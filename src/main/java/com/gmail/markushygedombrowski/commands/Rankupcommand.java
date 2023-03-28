@@ -6,6 +6,7 @@ import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,10 +25,10 @@ public class Rankupcommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
-        if(VagtUtils.isSenderNotPlayer(sender)) return true;
+        if (VagtUtils.isSenderNotPlayer(sender)) return true;
 
         Player p = (Player) sender;
-        if (VagtUtils.notHasPermission(p,"direktør")) return true;
+        if (VagtUtils.notHasPermission(p, "direktør")) return true;
 
         if (args.length <= 1) {
             p.sendMessage("/ansat <Player> <Rank>");
@@ -35,20 +36,23 @@ public class Rankupcommand implements CommandExecutor {
             return true;
         }
         Player ansat = Bukkit.getPlayer(args[0]);
-        if(ansat == null) {
+
+        if (ansat == null) {
             p.sendMessage("er ikke en spiller");
             return true;
         }
+
+
         PlayerProfile profile = profiles.getPlayerProfile(ansat.getUniqueId());
 
+        profiles.createVagt(ansat, profile);
         String rank = "bob";
         String perm = "1";
         String prePerm = "0";
-        int lon = settings.getLonp();
         if (args[1].equalsIgnoreCase("p-vagt")) {
+            ansat.setStatistic(Statistic.PLAY_ONE_TICK, 1);
             rank = "§cp-vagt";
             perm = "p-vagt";
-            lon = settings.getLonp();
             if (ansat.hasPermission("a-fange")) {
                 prePerm = "a-fange";
             } else if (ansat.hasPermission("b-fange")) {
@@ -60,28 +64,19 @@ public class Rankupcommand implements CommandExecutor {
             rank = "§cc-vagt";
             perm = "c-vagt";
             prePerm = "p-vagt";
-            lon = settings.getLonc();
         } else if (args[1].equalsIgnoreCase("b-vagt")) {
             rank = "§bb-vagt";
             perm = "b-vagt";
             prePerm = "c-vagt";
-            lon = settings.getLonb();
         } else if (args[1].equalsIgnoreCase("a-vagt")) {
             rank = "§aa-vagt";
             perm = "a-vagt";
             prePerm = "b-vagt";
-            lon = settings.getLona();
         } else if (args[1].equalsIgnoreCase("officer")) {
             rank = "§6Officer";
             perm = "officer";
             prePerm = "a-vagt";
-            lon = settings.getLonoffi();
         }
-        profiles.createVagt(p,profile);
-
-        profile.setLon(lon);
-
-
 
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent remove " + prePerm + " prison");

@@ -95,6 +95,7 @@ public class BuffGui implements Listener {
                 }
 
 
+
             }else if (clickedSlot == OFFBUFF_INDEX) {
                 if (!p.hasPermission("extraBuff")) {
                     e.setCancelled(true);
@@ -106,8 +107,8 @@ public class BuffGui implements Listener {
                     p.sendMessage("§cDu har ikke penge nok!");
                     return;
                 }
-                p.removePotionEffect(PotionEffectType.WATER_BREATHING);
-                p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 24000, 1));
+                p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 1));
                 plugin.econ.withdrawPlayer(p, pay);
                 p.sendMessage("§aDu har taget Extra §cBuff");
 

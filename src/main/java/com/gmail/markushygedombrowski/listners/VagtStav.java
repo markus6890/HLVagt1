@@ -24,7 +24,7 @@ public class VagtStav implements Listener {
             Player attacker = ((Player) entity).getPlayer();
             ItemStack item = attacker.getItemInHand();
             Player defender = (Player) event.getEntity();
-            if(defender.hasPermission("vagt")) {
+            if (defender.hasPermission("vagt")) {
                 return;
             }
             if (item.getType() == Material.STICK && item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav") && attacker.hasPermission("vagt.stav")) {
@@ -37,17 +37,28 @@ public class VagtStav implements Listener {
 
     @EventHandler
     public void vagtRightClick(PlayerInteractAtEntityEvent event) {
+
         Player p = event.getPlayer();
-        if(!p.hasPermission("vagt")) {
+        if (!p.hasPermission("vagt")) {
             return;
         }
         ItemStack item = p.getItemInHand();
-        if(event.getRightClicked().getType().equals(EntityType.PLAYER) && item.getType() == Material.STICK && item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav")) {
-            Player defender = (Player) event.getRightClicked();
-            if(defender.hasPermission("vagt")) return;
-            defender.sendTitle("§4§lDROP", "§4 Til " + p.getName());
-            defender.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
-            p.sendMessage("§cDu har sagt drop til: " + defender.getDisplayName());
+        if (!(item.getType() == Material.STICK)) {
+            return;
         }
+
+        if(!item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav")) {
+            return;
+        }
+
+        if (!event.getRightClicked().getType().equals(EntityType.PLAYER)) {
+            return;
+        }
+
+        Player defender = (Player) event.getRightClicked();
+        if (defender.hasPermission("vagt")) return;
+        defender.sendTitle("§4§lDROP", "§4 Til " + p.getName());
+        defender.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
+        p.sendMessage("§cDu har sagt drop til: " + defender.getDisplayName());
     }
 }

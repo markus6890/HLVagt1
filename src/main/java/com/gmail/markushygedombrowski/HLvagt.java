@@ -1,16 +1,20 @@
 package com.gmail.markushygedombrowski;
 
 import com.gmail.markushygedombrowski.buff.BuffGui;
+import com.gmail.markushygedombrowski.combat.CombatList;
+import com.gmail.markushygedombrowski.combat.HotBarMessage;
 import com.gmail.markushygedombrowski.commands.Dropcommand;
 import com.gmail.markushygedombrowski.commands.FyrCommand;
 import com.gmail.markushygedombrowski.commands.Rankupcommand;
 import com.gmail.markushygedombrowski.commands.VagtChat;
 import com.gmail.markushygedombrowski.config.ConfigManager;
+import com.gmail.markushygedombrowski.config.VagtFangePvpConfigManager;
 import com.gmail.markushygedombrowski.listners.*;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.sign.*;
 import com.gmail.markushygedombrowski.config.Reconfigurations;
+import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.MainMenu;
@@ -38,19 +42,24 @@ public class HLvagt extends JavaPlugin {
     private PlayerProfiles playerProfiles;
     private Lon lon;
     private ConfigManager configM;
-
+    private Logger logger;
+    private CombatList combatList;
+    private VagtFangePvpConfigManager vagtFangePvpConfigManager;
     public void onEnable() {
+        HotBarMessage hotBarMessage = new HotBarMessage();
+        combatList = new CombatList(this,hotBarMessage);
         saveDefaultConfig();
         loadConfigManager();
         FileConfiguration config = getConfig();
+        vagtFangePvpConfigManager = new VagtFangePvpConfigManager();
+        vagtFangePvpConfigManager.load(configM.vagtFangePvpcfg);
         settings = new Settings();
         settings.load(config);
-        playerProfiles = new PlayerProfiles(this, settings);
+        playerProfiles = new PlayerProfiles(settings, configM);
         playerProfiles.load();
         VagtUtils vagtUtils = new VagtUtils(this,playerProfiles,settings);
 
         System.out.println("HL Plugin enabled!!");
-
         initWarps();
 
         initVagt();
@@ -100,14 +109,22 @@ public class HLvagt extends JavaPlugin {
         reloadConfig();
         FileConfiguration config = getConfig();
         loadConfigManager();
-        settings.load(config);
         playerProfiles.load();
+        vagtFangePvpConfigManager.load(configM.getVagtFangePvpcfg());
+        settings.load(config);
 
     }
     public void loadConfigManager() {
+        logger = new Logger(this);
+        logger.setup();
         configM = new ConfigManager();
         configM.setup();
+        configM.reloadVagtFangePvp();
+        configM.reloadPlayer();
         configM.saveVagtFangePvp();
+        configM.savePlayer();
+
+
     }
 
     private boolean setupEconomy() {
@@ -145,10 +162,10 @@ public class HLvagt extends JavaPlugin {
         VagtChat vagtChat = new VagtChat();
         getCommand("vc").setExecutor(vagtChat);
 
-        FyrCommand fyrCommand = new FyrCommand(this);
+        FyrCommand fyrCommand = new FyrCommand(this, playerProfiles);
         getCommand("fyr").setExecutor(fyrCommand);
 
-        RepairGUI repairGUI = new RepairGUI(this);
+        RepairGUI repairGUI = new RepairGUI(this, logger);
         Bukkit.getPluginManager().registerEvents(repairGUI, this);
 
 
@@ -166,7 +183,7 @@ public class HLvagt extends JavaPlugin {
 
         BuffGui buffGui = new BuffGui(settings,this);
         Bukkit.getPluginManager().registerEvents(buffGui,this);
-        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI,vagtShop,vagtShopEnchant,buffGui);
+        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI,vagtShop,vagtShopEnchant,buffGui, logger);
         Bukkit.getPluginManager().registerEvents(vagtSigns, this);
     }
 
@@ -174,7 +191,7 @@ public class HLvagt extends JavaPlugin {
         OnJoin onJoin = new OnJoin(playerProfiles, settings);
         Bukkit.getPluginManager().registerEvents(onJoin, this);
 
-        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles,this);
+        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles,this, combatList, vagtFangePvpConfigManager);
         Bukkit.getPluginManager().registerEvents(damageListener, this);
 
 

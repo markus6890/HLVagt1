@@ -30,6 +30,7 @@ public class VagtShop implements Listener {
     private final int AXE_INDEX = 24;
     private final int SHOVEL_INDEX = 29;
     private final int BUCKET_INDEX = 33;
+    private int armorSwordprize;
     private HLvagt plugin;
     private String region;
     private ItemStack sword;
@@ -41,9 +42,9 @@ public class VagtShop implements Listener {
     private ItemStack shovel;
     private ItemStack bucket;
     private ItemStack bow = new ItemStack(Material.BOW);
-    private ItemStack food = new ItemStack(Material.GRILLED_PORK,16);
+    private  ItemStack food;
     private ItemStack stick = new ItemStack(Material.STICK);
-    private ItemStack arrow = new ItemStack(Material.ARROW, 64);
+    private  ItemStack arrow;
 
 
     public VagtShop(HLvagt plugin) {
@@ -53,6 +54,8 @@ public class VagtShop implements Listener {
 
     public void vagtShop(Player p, String region) {
         this.region = region;
+        food = new ItemStack(Material.GRILLED_PORK,16);
+        arrow = new ItemStack(Material.ARROW, 64);
         Inventory inventory = Bukkit.createInventory(null, 36, region + "-Vagt §bShop §8");
         if (region.equalsIgnoreCase("§bB") || region.equalsIgnoreCase("§aA")) {
             bAndAItems();
@@ -94,17 +97,26 @@ public class VagtShop implements Listener {
         metaarrow.setDisplayName("§cVagt-Pile");
 
         List<String> lore = new ArrayList<>();
-        lore.add(0, "§7Koster: §a" + 400);
+
+        if (region.equalsIgnoreCase("§aA")) {
+            armorSwordprize = 2000;
+        } else if (region.equalsIgnoreCase("§bB")){
+            armorSwordprize = 1000;
+
+        } else {
+            armorSwordprize = 400;
+        }
+        lore.add(0, "§7Koster: §a" + armorSwordprize);
         metahelmet.setLore(lore);
         metachest.setLore(lore);
         metalegs.setLore(lore);
         metaboots.setLore(lore);
         metasword.setLore(lore);
-        lore.set(0, "§7Koster: §a" + 300);
+        lore.set(0, "§7Koster: §a" + 400);
         metabow.setLore(lore);
-        lore.set(0, "§7Koster: §a" + 200);
+        lore.set(0, "§7Koster: §a" + 300);
         metaarrow.setLore(lore);
-        lore.set(0, "§7Koster: §a" + 100);
+        lore.set(0, "§7Koster: §a" + 200);
         metafood.setLore(lore);
         metastick.setLore(lore);
 
@@ -152,7 +164,7 @@ public class VagtShop implements Listener {
             }
             switch (clickedSlot) {
                 case SWORD_INDEX:
-                    itembuy(sword, region + "-Sværd", p, pay);
+                    itembuy(sword, region + "-Sværd", p, armorSwordprize);
                     break;
                 case HELMET_INDEX:
                     if (p.hasPermission("diaHelmet")) {
@@ -161,31 +173,30 @@ public class VagtShop implements Listener {
                         helmet = new ItemStack(Material.CHAINMAIL_HELMET);
                     } else helmet = new ItemStack(Material.GOLD_HELMET);
 
-                    itembuy(helmet, region + "-Hjelm", p, pay );
+                    itembuy(helmet, region + "-Hjelm", p, armorSwordprize );
                     break;
                 case CHEST_INDEX:
-                    itembuy(chest, region + "-ChestPlate", p, pay );
+                    itembuy(chest, region + "-ChestPlate", p, armorSwordprize );
                     break;
                 case LEGS_INDEX:
-                    itembuy(legs, region + "-Bukser", p, pay );
+                    itembuy(legs, region + "-Bukser", p, armorSwordprize );
                     break;
                 case BOOTS_INDEX:
-                    itembuy(boots, region + "-Sko", p, pay );
+                    itembuy(boots, region + "-Sko", p, armorSwordprize );
                     break;
                 case BOW_INDEX:
-                    pay = 300;
                     itembuy(bow,region + "-Bue",p,pay);
                     break;
                 case ARROW_INDEX:
-                    pay = 200;
+                    pay = 300;
                     itembuy(arrow, "§cVagt §7Pile",p,pay);
                     break;
                 case FOOD_INDEX:
-                    pay = 100;
+                    pay = 200;
                     itembuy(food, "§cVagt §7Mad",p,pay);
                     break;
                 case STICK_INDEX:
-                    pay = 100;
+                    pay = 200;
                     itembuy(stick, "§cVagt Stav",p,pay);
                     break;
 
@@ -210,6 +221,7 @@ public class VagtShop implements Listener {
                 }
 
                 }
+
             event.setCancelled(true);
             event.setResult(Event.Result.DENY);
 
@@ -226,8 +238,9 @@ public class VagtShop implements Listener {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
         List<String> itemlore = new ArrayList<>();
-        itemlore.add("§cMå kun bruges i " + region + "!");
-
+        if(!(item.getType() == Material.ARROW) || !(item.getType() == Material.GRILLED_PORK) || !(item.getType() == Material.STICK)) {
+            itemlore.add("§cMå kun bruges i " + region + "!");
+        }
         itemlore.add(" ");
         itemlore.add("§7Købt af: §c" + p.getName());
         meta.setLore(itemlore);

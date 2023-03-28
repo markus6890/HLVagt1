@@ -30,6 +30,7 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+
         </repository>
         <repository>
             <id>sk89q-repo</id>
@@ -46,11 +47,11 @@
 
 
 
-
     </repositories>
 
 
     <dependencies>
+
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -88,5 +89,11 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.markus6890</groupId>
+            <artifactId>Combat</artifactId>
+            <version>995059871d</version>
+        </dependency>
     </dependencies>
+
 </project>

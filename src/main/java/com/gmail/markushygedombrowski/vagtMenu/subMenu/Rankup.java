@@ -40,8 +40,10 @@ public class Rankup implements Listener {
 
     public void create(Player p) {
         Inventory inventory = Bukkit.createInventory(null, 9, "Rankup");
-        meta(p);
-
+        ItemMeta metaRankup = rankup.getItemMeta();
+         List<String> lore = meta(p,metaRankup);
+         metaRankup.setLore(lore);
+        rankup.setItemMeta(metaRankup);
         inventory.setItem(RANKUP_INDEX, rankup);
 
 
@@ -49,48 +51,25 @@ public class Rankup implements Listener {
     }
 
     @EventHandler
-    public void onClickEvent (InventoryClickEvent event) {
+    public void onClickEvent(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
         Inventory inventory = event.getClickedInventory();
         ItemStack clickeditem = event.getCurrentItem();
-        PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
 
         int clickedSlot = event.getRawSlot();
         if (clickeditem == null) {
             return;
         }
         if (inventory.getTitle().equalsIgnoreCase("Rankup")) {
-            int pay;
-            int moneyneeded;
-            if(clickedSlot == RANKUP_INDEX) {
+            if (clickedSlot == RANKUP_INDEX) {
                 if (p.hasPermission("a-vagt")) {
                     p.sendMessage("§aDu kan ikke ranke up mere!");
-                }else if (p.hasPermission("c-vagt")) {
-                    moneyneeded = 70000;
-                    pay = 50000;
-                    boolean kills = p.getStatistic(Statistic.PLAYER_KILLS) >= 10;
-                    if (plugin.econ.getBalance(p) >= moneyneeded && kills) {
-                        plugin.econ.withdrawPlayer(p, pay);
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove c-vagt prison");
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent add b-vagt prison");
-                        profile.setLon(settings.getLonb());
-                        p.closeInventory();
-                        Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
-                        Bukkit.broadcastMessage("§c§lVagten §6" + p.getName());
-                        Bukkit.broadcastMessage("§7Har lige Ranket up til §l§9B-Vagt");
-                        Bukkit.broadcastMessage("             §a§lTILLYKKE!!!");
-                        Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
-
-                    } else {
-                        p.sendMessage("§aDu har ikke nok til rankup!!");
-
-                    }
-
-
+                } else if (p.hasPermission("c-vagt")) {
+                    rankupRequarid(50000, 75000, p, "§l§bB-Vagt", "b-vagt", 10);
 
                 } else if (p.hasPermission("b-vagt")) {
-                    rankupRequarid(100,1000000, 1500000,p,"§l§aA-Vagt","a-vagt");
-                    
+                    rankupRequarid(1000000, 1500000, p, "§l§aA-Vagt", "a-vagt", 30);
+
                 } else {
                     p.sendMessage("kontakt admin+");
                 }
@@ -99,34 +78,38 @@ public class Rankup implements Listener {
             event.setResult(Event.Result.DENY);
 
         }
+    }
 
+    public void rankupRequarid(int money, int moneyneed, Player p, String rank, String perm, int hours) {
+        PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
+        long timeplayed = (p.getStatistic(Statistic.PLAY_ONE_TICK) / 20 / 60 / 60);
+        if (isProfileNull(p, profile)) return;
+        if (!hasMoney(moneyneed, p)) return;
 
+        if (!(timeplayed >= hours)) {
+            p.sendMessage("§aDu har ikke nok til rankup!!");
+            return;
         }
+        plugin.econ.withdrawPlayer(p, money);
 
-        public void rankupRequarid(int kills, int money,int moneyneed,Player p,String rank,String perm) {
-            PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
-            if (isProfileNull(p, profile)) return;
-            if (!hasMoney(moneyneed, p)) return;
-            if(!(p.getStatistic(Statistic.PLAYER_KILLS) >= kills)) {
-                p.sendMessage("§aDu har ikke nok til rankup!!");
-                return;
-            }
-            plugin.econ.withdrawPlayer(p, money);
-
-            int lon = settings.getLonb();
-            if(perm.equalsIgnoreCase("a-vagt")) {
-                lon = settings.getLona();
-            }
-            profile.setLon(lon);
-            profiles.save(profile);
-
-            setVagtPerms(p, perm);
-
-            p.closeInventory();
-            vagtRankupMessage(p, rank);
+        setLon(perm, profile);
 
 
+        setVagtPerms(p, perm);
+        profiles.save(profile);
+        p.closeInventory();
+        vagtRankupMessage(p, rank);
+
+
+    }
+
+    private void setLon(String perm, PlayerProfile profile) {
+        int lon = settings.getLonb();
+        if (perm.equalsIgnoreCase("a-vagt")) {
+            lon = settings.getLona();
         }
+        profile.setLon(lon);
+    }
 
     private void setVagtPerms(Player p, String perm) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " parent remove c-vagt prison");
@@ -143,7 +126,7 @@ public class Rankup implements Listener {
     }
 
     private boolean isProfileNull(Player p, PlayerProfile profile) {
-        if(profile == null) {
+        if (profile == null) {
             p.sendMessage("Du har ikke en loaded profile skriv til en admin+");
             return true;
         }
@@ -151,40 +134,37 @@ public class Rankup implements Listener {
     }
 
     private boolean hasMoney(int moneyneed, Player p) {
-        if(!(plugin.econ.getBalance(p) >= moneyneed))  {
+        if (!(plugin.econ.getBalance(p) >= moneyneed)) {
             p.sendMessage("§aDu har ikke nok penge!!");
             return false;
         }
         return true;
     }
 
-    public void meta(Player p) {
+    public List<String> meta(Player p,ItemMeta metaRankup) {
         String pattern = "###,###.##";
         DecimalFormat df = new DecimalFormat(pattern);
-        ItemMeta metaRankup = rankup.getItemMeta();
-        int bal = (int)plugin.econ.getBalance(p);
+        long timeplayed = (p.getStatistic(Statistic.PLAY_ONE_TICK) / 20 / 60 / 60);
+        int bal = (int) plugin.econ.getBalance(p);
         List<String> rankuplore = new ArrayList<>();
         if (p.hasPermission("a-vagt")) {
             rankuplore.add("Du kan ikke ranke up mere!");
-        }else if (p.hasPermission("c-vagt")) {
+        } else if (p.hasPermission("c-vagt")) {
             metaRankup.setDisplayName("§cRank up til §b§lB-Vagt");
             rankuplore.add("§bB-vagt koster:");
-            rankuplore.add("§7$50.000 §8[§f" + df.format(bal) + "/50.000§8]" );
-            rankuplore.add("§7Du skal have $70.000§8[§f" + df.format(bal) + "/70.000§8]");
-            rankuplore.add("§7Dræb 10 fanger §8[§f" + p.getStatistic(Statistic.PLAYER_KILLS) + "/10§8]");
+            rankuplore.add("§7$50.000 §8[§f" + df.format(bal) + "/50.000§8]");
+            rankuplore.add("§7Du skal have $75.000§8[§f" + df.format(bal) + "/75.000§8]");
+            rankuplore.add("§7Du skal havet været på vagt i 10 timer §8[§f" + timeplayed + "/10§8]");
         } else if (p.hasPermission("b-vagt")) {
             rankuplore.add("§aA-vagt koster:");
-            rankuplore.add("§71.000.000");
-            rankuplore.add("§730 timer spillet på serveren");
+            rankuplore.add("§71.000.000§8[§f" + df.format(bal) + "/1.000.000§8]");
+            rankuplore.add("§7Du skal have $1.500.000§8[§f" + df.format(bal) + "/1.500.000§8]");
+            rankuplore.add("§7Du skal havet været på vagt i 30 timer §8[§f" + timeplayed + "/30§8]");
         } else {
             rankuplore.add("Hmmm der er vist en fejl kontakt Staff");
         }
-        metaRankup.setLore(rankuplore);
-        rankup.setItemMeta(metaRankup);
-
+        return rankuplore;
     }
-
-
 
 
 }
