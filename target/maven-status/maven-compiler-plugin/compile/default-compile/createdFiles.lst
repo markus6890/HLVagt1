@@ -14,7 +14,9 @@ com\gmail\markushygedombrowski\listners\OnJoin.class
 com\gmail\markushygedombrowski\utils\Logger.class
 com\gmail\markushygedombrowski\cooldown\AbilityCooldown.class
 com\gmail\markushygedombrowski\listners\DamageListener$1.class
+com\gmail\markushygedombrowski\rasmus\NewSign.class
 com\gmail\markushygedombrowski\commands\Rankupcommand.class
+com\gmail\markushygedombrowski\rasmus\GiveItems.class
 com\gmail\markushygedombrowski\commands\Dropcommand.class
 com\gmail\markushygedombrowski\commands\FineCommand.class
 com\gmail\markushygedombrowski\utils\VagtWorldGuardUtils.class

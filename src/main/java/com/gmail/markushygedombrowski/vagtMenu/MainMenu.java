@@ -56,10 +56,10 @@ public class MainMenu implements Listener {
 
     }
 
-    public void create(Player p) {
+    public void create(Player p, PlayerProfile profile) {
         Inventory inventory = Bukkit.createInventory(null, 36, "§cVagt Menu §8" + p.getName());
 
-        PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
+
 
         meta(p, profile);
 

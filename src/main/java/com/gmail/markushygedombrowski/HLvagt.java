@@ -118,11 +118,11 @@ public class HLvagt extends JavaPlugin {
         logger = new Logger(this);
         logger.setup();
         configM = new ConfigManager();
-        configM.setup();
-        configM.reloadVagtFangePvp();
-        configM.reloadPlayer();
+        configM.setup();;
         configM.saveVagtFangePvp();
         configM.savePlayer();
+        configM.reloadVagtFangePvp();
+        configM.reloadPlayer();
 
 
     }
@@ -147,13 +147,13 @@ public class HLvagt extends JavaPlugin {
         Rankup rankup = new Rankup(this, playerProfiles, settings, vagtSpawnManager);
         Bukkit.getPluginManager().registerEvents(rankup, this);
 
-        TopVagterGUI topVagterGUI = new TopVagterGUI();
+        TopVagterGUI topVagterGUI = new TopVagterGUI(playerProfiles);
         Bukkit.getPluginManager().registerEvents(topVagterGUI, this);
 
         MainMenu mainMenu = new MainMenu(this, pvgui, topVagterGUI, playerProfiles, rankup);
         Bukkit.getPluginManager().registerEvents(mainMenu, this);
 
-        VagtCommand vagtCommand = new VagtCommand(mainMenu);
+        VagtCommand vagtCommand = new VagtCommand(mainMenu, playerProfiles);
         getCommand("vagt").setExecutor(vagtCommand);
 
         Rankupcommand rankupcommand = new Rankupcommand(settings, playerProfiles,vagtSpawnManager);

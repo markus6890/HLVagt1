@@ -1,6 +1,7 @@
 package com.gmail.markushygedombrowski.buff;
 
 import com.gmail.markushygedombrowski.HLvagt;
+import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
@@ -44,7 +45,7 @@ public class BuffGui implements Listener {
         meta.setDisplayName("§CBuff");
         buff.setItemMeta(meta);
         if (p.hasPermission("extraBuff")) {
-            pay = 1500;
+            pay = settings.getExtraBuffPay();
             lore.set(0, "§7Koster: §b" + pay);
             ItemStack extraBuff = new ItemStack(Material.POTION,1,(short) 3);
             ItemMeta extraBuffItemMeta = extraBuff.getItemMeta();
@@ -102,18 +103,28 @@ public class BuffGui implements Listener {
                     e.setResult(Event.Result.DENY);
                     return;
                 }
-                pay = 1500;
+                pay = settings.getExtraBuffPay();
                 if (!plugin.econ.has(p, pay)) {
                     p.sendMessage("§cDu har ikke penge nok!");
+                    e.setCancelled(true);
+                    e.setResult(Event.Result.DENY);
+                    return;
+                }
+                if(VagtCooldown.isCooling(p.getName(), "extraBuff")){
+                    p.sendMessage("§cDu kan først bruge denne buff igen om §b" + VagtCooldown.getRemaining(p.getName(), "extraBuff") + "§c minutter");
+                    e.setCancelled(true);
+                    e.setResult(Event.Result.DENY);
                     return;
                 }
                 p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-                p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 1));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
                 plugin.econ.withdrawPlayer(p, pay);
                 p.sendMessage("§aDu har taget Extra §cBuff");
+                VagtCooldown.add(p.getName(), "extraBuff", settings.getExtraBuffLength(),System.currentTimeMillis());
 
 
             }
+            p.sendMessage("§aDu har betalt §b" + pay + "§a for §cBuff");
             e.setCancelled(true);
             e.setResult(Event.Result.DENY);
         }

@@ -9,6 +9,7 @@ import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.utils.VagtWorldGuardUtils;
 import com.gmail.markushygedombrowski.vagtShop.VagtShop;
 import com.gmail.markushygedombrowski.vagtShop.VagtShopEnchant;
+import com.gmail.markushygedombrowski.warp.VagtSpawnInfo;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,7 +36,6 @@ public class VagtSigns implements Listener {
     private VagtShopEnchant vagtShopEnchant;
     private BuffGui buffGui;
     private Logger logger;
-
     public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant, BuffGui buffGui, Logger logger) {
         this.vagtSpawnManager = vagtSpawnManager;
         this.settings = settings;
@@ -127,7 +127,7 @@ public class VagtSigns implements Listener {
                     itemMeta.setDisplayName("§cGratis pickaxe!");
                     itemStack.setItemMeta(itemMeta);
                     p.getInventory().addItem(itemStack);
-                    VagtCooldown.add(p.getName(), "sppickaxe", 400, System.currentTimeMillis());
+                    VagtCooldown.add(p.getName(), "sppickaxe", settings.getVagtPickaxeTime(), System.currentTimeMillis());
                     return;
 
                 }
@@ -150,6 +150,15 @@ public class VagtSigns implements Listener {
                         vagtShop.vagtShop(p, "§cC");
                     }
 
+
+                }
+
+                if(sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik her for") && sign.getLine(2).equalsIgnoreCase("§cAt komme op") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
+                    if (VagtUtils.notHasPermission(p, "vagt")) return;
+
+                    VagtSpawnInfo vagtSpawnInfo = vagtSpawnManager.getWarpInfo("spassermine");
+                    p.teleport(vagtSpawnInfo.getLocation());
+                    return;
 
                 }
             }

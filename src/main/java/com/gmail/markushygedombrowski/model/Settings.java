@@ -23,6 +23,9 @@ public class Settings {
     private int lonins;
     private int londire;
     private int lonTime;
+    private int vagtPickaxeTime;
+    private int extraBuffPay;
+    private int extraBuffLength;
 
 
 
@@ -38,6 +41,9 @@ public class Settings {
         this.speed = config.getInt("buff.buffamplifer.speed");
         this.strengh = config.getInt("buff.buffamplifer.strengh");
         this.absorption = config.getInt("buff.buffamplifer.absorption");
+        this.buffPay = config.getInt("buff.buffamplifer.pay");
+        this.extraBuffPay = config.getInt("buff.buffamplifer.extraPay");
+        this.extraBuffLength = config.getInt("buff.buffamplifer.extraBuffLength");
         this.lonc = config.getInt("vagt.lonc");
         this.lonb = config.getInt("vagt.lonb");
         this.lona = config.getInt("vagt.lona");
@@ -47,9 +53,10 @@ public class Settings {
         this.lonins = config.getInt("vagt.lonins");
         this.londire = config.getInt("vagt.londire");
         this.lonTime = config.getInt("vagt.lontime");
-        this.buffPay = config.getInt("buff.buffamplifer.pay");
         this.vagthead = config.getString("vagt.vagthead");
         this.vagtheaddrop = config.getInt("vagt.vagtheaddrop");
+        this.vagtPickaxeTime = config.getInt("vagt.vagtPickaxeTime");
+
 
 
     }
@@ -81,8 +88,7 @@ public class Settings {
         return lonoffi;
     }
     public int getLonTime() {
-        int timesend = (lonTime * 60);
-        return timesend;
+        return (lonTime * 60);
     }
     public int getBuffPay() {
         return buffPay;
@@ -101,6 +107,16 @@ public class Settings {
     }
     public void setVagtheaddrop(int vagtheaddrop) {
         this.vagtheaddrop = vagtheaddrop;
+    }
+
+    public int getVagtPickaxeTime() {
+        return (vagtPickaxeTime * 60);
+    }
+    public int getExtraBuffPay() {
+        return extraBuffPay;
+    }
+    public int getExtraBuffLength() {
+        return (extraBuffLength * 60);
     }
 
 }

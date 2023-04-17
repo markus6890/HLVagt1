@@ -68,7 +68,7 @@ public class Rankup implements Listener {
                     rankupRequarid(50000, 75000, p, "§l§bB-Vagt", "b-vagt", 10);
 
                 } else if (p.hasPermission("b-vagt")) {
-                    rankupRequarid(1000000, 1500000, p, "§l§aA-Vagt", "a-vagt", 30);
+                    rankupRequarid(1000000, 1500000, p, "§l§aA-Vagt", "a-vagt", 25);
 
                 } else {
                     p.sendMessage("kontakt admin+");
@@ -159,7 +159,7 @@ public class Rankup implements Listener {
             rankuplore.add("§aA-vagt koster:");
             rankuplore.add("§71.000.000§8[§f" + df.format(bal) + "/1.000.000§8]");
             rankuplore.add("§7Du skal have $1.500.000§8[§f" + df.format(bal) + "/1.500.000§8]");
-            rankuplore.add("§7Du skal havet været på vagt i 30 timer §8[§f" + timeplayed + "/30§8]");
+            rankuplore.add("§7Du skal havet været på vagt i 30 timer §8[§f" + timeplayed + "/25§8]");
         } else {
             rankuplore.add("Hmmm der er vist en fejl kontakt Staff");
         }

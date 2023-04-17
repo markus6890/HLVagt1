@@ -1,5 +1,7 @@
 package com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter;
 
+import com.gmail.markushygedombrowski.model.PlayerProfile;
+import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,6 +26,11 @@ public class TopVagterGUI implements Listener {
     private ItemStack deaths = new ItemStack(Material.SKULL_ITEM);
     private ItemStack walked = new ItemStack(Material.DIAMOND_BOOTS);
     private ItemStack money = new ItemStack(Material.GOLD_INGOT);
+    private PlayerProfiles playerProfiles;
+
+    public TopVagterGUI(PlayerProfiles playerProfiles) {
+        this.playerProfiles = playerProfiles;
+    }
 
     public void create(Player p) {
         Inventory inventory = Bukkit.createInventory(null, 9, "top10");
@@ -55,20 +62,20 @@ public class TopVagterGUI implements Listener {
 
 
     public void meta(Player p) {
-
+        PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
         ItemMeta metakills = kills.getItemMeta();
         metakills.setDisplayName("§7Top 10 §cKills");
-        metakills.setLore(VagtUtils.top10("vagt", Statistic.PLAYER_KILLS));
+        metakills.setLore(VagtUtils.top10("vagt", profile.getKills()));
         kills.setItemMeta(metakills);
 
         ItemMeta metaDeaths = deaths.getItemMeta();
         metaDeaths.setDisplayName("§7Top 10 §4Deaths");
-        metaDeaths.setLore(VagtUtils.top10("vagt",Statistic.DEATHS));
+        metaDeaths.setLore(VagtUtils.top10("vagt", profile.getDeaths()));
         deaths.setItemMeta(metaDeaths);
 
         ItemMeta metaWalked = walked.getItemMeta();
         metaWalked.setDisplayName("§7Top 10 §eGået");
-        metaWalked.setLore(VagtUtils.top10("vagt",Statistic.WALK_ONE_CM));
+        metaWalked.setLore(VagtUtils.top10("vagt",(p.getStatistic(Statistic.WALK_ONE_CM) / 100)));
         walked.setItemMeta(metaWalked);
 
         ItemMeta metaMoney = money.getItemMeta();

@@ -23,14 +23,17 @@ public class VagtStav implements Listener {
         if (entity instanceof Player) {
             Player attacker = ((Player) entity).getPlayer();
             ItemStack item = attacker.getItemInHand();
-            Player defender = (Player) event.getEntity();
-            if (defender.hasPermission("vagt")) {
-                return;
+            if(event.getEntity() instanceof Player){
+                Player defender = (Player) event.getEntity();
+                if (defender.hasPermission("vagt")) {
+                    return;
+                }
+                if (item.getType() == Material.STICK && item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav") && attacker.hasPermission("vagt.stav")) {
+                    defender.sendTitle("§4GÅ VÆK FRA!", "§4" + attacker.getName());
+                    defender.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
+                }
             }
-            if (item.getType() == Material.STICK && item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav") && attacker.hasPermission("vagt.stav")) {
-                defender.sendTitle("§4GÅ VÆK FRA!", "§4" + attacker.getName());
-                defender.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
-            }
+
 
         }
     }

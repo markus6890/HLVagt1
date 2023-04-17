@@ -91,26 +91,23 @@ public class VagtUtils {
     }
 
 
-    public static List<String> top10(String perm, Statistic statistic) {
+    public static List<String> top10(String perm, int stat) {
         HashMap<String, Integer> stats = new HashMap<>();
         List<Player> players = VagtUtils.getPlayers(perm);
         List<String> list = new ArrayList<>();
-        for (Player player : players) {
 
-            stats.put(player.getName(), player.getStatistic(statistic));
-        }
+        players.forEach(player -> stats.put(player.getName(), stat));
         List<Integer> sortmap = new LinkedList<>(stats.values());
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
-        for (int values : sortmap) {
-            for (String name : stats.keySet()) {
-                if (stats.get(name) == values) {
-                    if (!list.contains(name + ": " + values)) {
-                        list.add("§6" + name + ": §7" + values);
-                    }
+
+        sortmap.forEach(values -> stats.forEach((name, value) -> {
+            if (value.equals(values)) {
+                if (!list.contains(name + ": " + values)) {
+                    list.add("§6" + name + ": §7" + values);
                 }
             }
-        }
+        }));
         return list;
     }
 
