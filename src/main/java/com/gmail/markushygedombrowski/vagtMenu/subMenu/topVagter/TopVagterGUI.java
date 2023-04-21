@@ -65,17 +65,17 @@ public class TopVagterGUI implements Listener {
         PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
         ItemMeta metakills = kills.getItemMeta();
         metakills.setDisplayName("§7Top 10 §cKills");
-        metakills.setLore(VagtUtils.top10("vagt", profile.getKills()));
+        metakills.setLore(VagtUtils.top10Kills("vagt"));
         kills.setItemMeta(metakills);
 
         ItemMeta metaDeaths = deaths.getItemMeta();
         metaDeaths.setDisplayName("§7Top 10 §4Deaths");
-        metaDeaths.setLore(VagtUtils.top10("vagt", profile.getDeaths()));
+        metaDeaths.setLore(VagtUtils.top10Deaths("vagt"));
         deaths.setItemMeta(metaDeaths);
 
         ItemMeta metaWalked = walked.getItemMeta();
         metaWalked.setDisplayName("§7Top 10 §eGået");
-        metaWalked.setLore(VagtUtils.top10("vagt",(p.getStatistic(Statistic.WALK_ONE_CM) / 100)));
+        metaWalked.setLore(VagtUtils.top10Walk("vagt"));
         walked.setItemMeta(metaWalked);
 
         ItemMeta metaMoney = money.getItemMeta();

@@ -6,15 +6,12 @@ import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -26,8 +23,8 @@ import java.util.List;
 public class BuffGui implements Listener {
     private int BUFF_INDEX = 4;
     private final int OFFBUFF_INDEX = 6;
-    private Settings settings;
-    private HLvagt plugin;
+    private final Settings settings;
+    private final HLvagt plugin;
 
     public BuffGui(Settings settings, HLvagt plugin) {
         this.settings = settings;
@@ -75,12 +72,12 @@ public class BuffGui implements Listener {
         }
 
         if (inventory.getTitle().equalsIgnoreCase("§c§lBuff")) {
+            e.setCancelled(true);
+            e.setResult(Event.Result.DENY);
             int pay = settings.getBuffPay();
             if (clickedSlot == BUFF_INDEX) {
                 if (!plugin.econ.has(p, pay)) {
                     p.sendMessage("§cDu har ikke penge nok!");
-                    e.setCancelled(true);
-                    e.setResult(Event.Result.DENY);
                     return;
                 }
                 p.removePotionEffect(PotionEffectType.ABSORPTION);
@@ -95,25 +92,18 @@ public class BuffGui implements Listener {
                     p.sendMessage("pika pika");
                 }
 
-
-
             }else if (clickedSlot == OFFBUFF_INDEX) {
                 if (!p.hasPermission("extraBuff")) {
-                    e.setCancelled(true);
-                    e.setResult(Event.Result.DENY);
                     return;
                 }
                 pay = settings.getExtraBuffPay();
-                if (!plugin.econ.has(p, pay)) {
-                    p.sendMessage("§cDu har ikke penge nok!");
-                    e.setCancelled(true);
-                    e.setResult(Event.Result.DENY);
-                    return;
-                }
+
                 if(VagtCooldown.isCooling(p.getName(), "extraBuff")){
                     p.sendMessage("§cDu kan først bruge denne buff igen om §b" + VagtCooldown.getRemaining(p.getName(), "extraBuff") + "§c minutter");
-                    e.setCancelled(true);
-                    e.setResult(Event.Result.DENY);
+                    return;
+                }
+                if (!plugin.econ.has(p, pay)) {
+                    p.sendMessage("§cDu har ikke penge nok!");
                     return;
                 }
                 p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
@@ -122,8 +112,8 @@ public class BuffGui implements Listener {
                 p.sendMessage("§aDu har taget Extra §cBuff");
                 VagtCooldown.add(p.getName(), "extraBuff", settings.getExtraBuffLength(),System.currentTimeMillis());
 
-
             }
+
             p.sendMessage("§aDu har betalt §b" + pay + "§a for §cBuff");
             e.setCancelled(true);
             e.setResult(Event.Result.DENY);

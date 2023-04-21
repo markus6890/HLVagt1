@@ -6,9 +6,6 @@ import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
-import com.gmail.markushygedombrowski.utils.VagtWorldGuardUtils;
-import com.gmail.markushygedombrowski.vagtShop.VagtShop;
-import com.gmail.markushygedombrowski.vagtShop.VagtShopEnchant;
 import com.gmail.markushygedombrowski.warp.VagtSpawnInfo;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;
@@ -32,17 +29,16 @@ public class VagtSigns implements Listener {
     private int pay;
     private VagtSpawnManager vagtSpawnManager;
     private RepairGUI repairGUI;
-    private VagtShop vagtShop;
-    private VagtShopEnchant vagtShopEnchant;
+
+
     private BuffGui buffGui;
     private Logger logger;
-    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, VagtShop vagtShop, VagtShopEnchant vagtShopEnchant, BuffGui buffGui, Logger logger) {
+    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, BuffGui buffGui, Logger logger) {
         this.vagtSpawnManager = vagtSpawnManager;
         this.settings = settings;
         this.plugin = plugin;
         this.repairGUI = repairGUI;
-        this.vagtShop = vagtShop;
-        this.vagtShopEnchant = vagtShopEnchant;
+
         this.buffGui = buffGui;
         this.logger = logger;
     }
@@ -129,27 +125,6 @@ public class VagtSigns implements Listener {
                     p.getInventory().addItem(itemStack);
                     VagtCooldown.add(p.getName(), "sppickaxe", settings.getVagtPickaxeTime(), System.currentTimeMillis());
                     return;
-
-                }
-
-                if (sign.getLine(0).equalsIgnoreCase("§1===============") && sign.getLine(1).equalsIgnoreCase("§cVagt Shop") && sign.getLine(2).equalsIgnoreCase("§8Klik her") && sign.getLine(3).equalsIgnoreCase("§1===============")) {
-                    if (VagtUtils.notHasPermission(p, "vagt")) return;
-
-                    ItemStack hand = p.getItemInHand();
-                    if (!(hand.getType() == Material.AIR)) {
-                        if (hand.getItemMeta().getDisplayName().contains("§cC") || hand.getItemMeta().getDisplayName().contains("§bB") || hand.getItemMeta().getDisplayName().contains("§aA")) {
-                            vagtShopEnchant.enchantItem(p, hand);
-                            return;
-                        }
-                    }
-                    if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "A")) {
-                        vagtShop.vagtShop(p, "§aA");
-                    } else if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "B")) {
-                        vagtShop.vagtShop(p, "§bB");
-                    } else {
-                        vagtShop.vagtShop(p, "§cC");
-                    }
-
 
                 }
 

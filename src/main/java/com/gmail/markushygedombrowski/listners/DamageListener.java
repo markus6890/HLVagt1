@@ -32,9 +32,9 @@ public class DamageListener implements Listener {
     private final Settings settings;
     private final VagtSpawnManager vagtSpawnManager;
     private final PlayerProfiles profiles;
-    private HLvagt plugin;
-    private CombatList combatList;
-    private VagtFangePvpConfigManager vFPvpConfig;
+    private final HLvagt plugin;
+    private final CombatList combatList;
+    private final VagtFangePvpConfigManager vFPvpConfig;
 
     public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig) {
         this.settings = settings;

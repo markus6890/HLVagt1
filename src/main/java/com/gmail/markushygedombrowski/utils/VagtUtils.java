@@ -91,12 +91,15 @@ public class VagtUtils {
     }
 
 
-    public static List<String> top10(String perm, int stat) {
+    public static List<String> top10Deaths(String perm) {
         HashMap<String, Integer> stats = new HashMap<>();
         List<Player> players = VagtUtils.getPlayers(perm);
         List<String> list = new ArrayList<>();
 
-        players.forEach(player -> stats.put(player.getName(), stat));
+        players.forEach(player -> {
+            PlayerProfile profile = playerProfiles.getPlayerProfile(player.getUniqueId());
+            stats.put(player.getName(), profile.getDeaths());
+        });
         List<Integer> sortmap = new LinkedList<>(stats.values());
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
@@ -110,6 +113,53 @@ public class VagtUtils {
         }));
         return list;
     }
+    public static List<String> top10Kills(String perm) {
+        HashMap<String, Integer> stats = new HashMap<>();
+        List<Player> players = VagtUtils.getPlayers(perm);
+        List<String> list = new ArrayList<>();
+
+        players.forEach(player -> {
+            PlayerProfile profile = playerProfiles.getPlayerProfile(player.getUniqueId());
+            stats.put(player.getName(), profile.getKills());
+        });
+        List<Integer> sortmap = new LinkedList<>(stats.values());
+        Collections.sort(sortmap);
+        Collections.reverse(sortmap);
+
+        sortmap.forEach(values -> stats.forEach((name, value) -> {
+            if (value.equals(values)) {
+                if (!list.contains(name + ": " + values)) {
+                    list.add("§6" + name + ": §7" + values);
+                }
+            }
+        }));
+        return list;
+    }
+    public static List<String> top10Walk(String perm) {
+        HashMap<String, Integer> stats = new HashMap<>();
+        List<Player> players = VagtUtils.getPlayers(perm);
+        List<String> list = new ArrayList<>();
+
+        players.forEach(player -> {
+
+            stats.put(player.getName(), player.getStatistic(Statistic.WALK_ONE_CM ) / 100);
+        });
+        List<Integer> sortmap = new LinkedList<>(stats.values());
+        Collections.sort(sortmap);
+        Collections.reverse(sortmap);
+
+        sortmap.forEach(values -> stats.forEach((name, value) -> {
+            if (value.equals(values)) {
+                if (!list.contains(name + ": " + values)) {
+                    list.add("§6" + name + ": §7" + values);
+                }
+            }
+        }));
+        return list;
+    }
+
+
+
 
     public static boolean isSenderNotPlayer(CommandSender sender) {
         if (!(sender instanceof Player)) {

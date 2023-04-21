@@ -19,8 +19,7 @@ import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.MainMenu;
 import com.gmail.markushygedombrowski.vagtMenu.VagtCommand;
-import com.gmail.markushygedombrowski.vagtShop.VagtShop;
-import com.gmail.markushygedombrowski.vagtShop.VagtShopEnchant;
+
 import com.gmail.markushygedombrowski.warp.VagtWarpGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Rankup;
@@ -58,9 +57,9 @@ public class HLvagt extends JavaPlugin {
         playerProfiles = new PlayerProfiles(settings, configM);
         playerProfiles.load();
         VagtUtils vagtUtils = new VagtUtils(this,playerProfiles,settings);
-
         System.out.println("HL Plugin enabled!!");
         initWarps();
+
 
         initVagt();
 
@@ -175,15 +174,10 @@ public class HLvagt extends JavaPlugin {
 
         lon = new Lon(this, playerProfiles, settings);
 
-        VagtShop vagtShop = new VagtShop(this);
-        Bukkit.getPluginManager().registerEvents(vagtShop,this);
-
-        VagtShopEnchant vagtShopEnchant = new VagtShopEnchant(this);
-        Bukkit.getPluginManager().registerEvents(vagtShopEnchant,this);
 
         BuffGui buffGui = new BuffGui(settings,this);
         Bukkit.getPluginManager().registerEvents(buffGui,this);
-        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI,vagtShop,vagtShopEnchant,buffGui, logger);
+        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI,buffGui, logger);
         Bukkit.getPluginManager().registerEvents(vagtSigns, this);
     }
 
