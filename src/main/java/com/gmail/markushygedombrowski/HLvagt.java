@@ -2,7 +2,6 @@ package com.gmail.markushygedombrowski;
 
 import com.gmail.markushygedombrowski.buff.BuffGui;
 import com.gmail.markushygedombrowski.combat.CombatList;
-import com.gmail.markushygedombrowski.combat.HotBarMessage;
 import com.gmail.markushygedombrowski.commands.Dropcommand;
 import com.gmail.markushygedombrowski.commands.FyrCommand;
 import com.gmail.markushygedombrowski.commands.Rankupcommand;
@@ -45,8 +44,8 @@ public class HLvagt extends JavaPlugin {
     private CombatList combatList;
     private VagtFangePvpConfigManager vagtFangePvpConfigManager;
     public void onEnable() {
-        HotBarMessage hotBarMessage = new HotBarMessage();
-        combatList = new CombatList(this,hotBarMessage);
+
+        combatList = CombatMain.getInstance().getCombatList();
         saveDefaultConfig();
         loadConfigManager();
         FileConfiguration config = getConfig();
@@ -117,7 +116,7 @@ public class HLvagt extends JavaPlugin {
         logger = new Logger(this);
         logger.setup();
         configM = new ConfigManager();
-        configM.setup();;
+        configM.setup();
         configM.saveVagtFangePvp();
         configM.savePlayer();
         configM.reloadVagtFangePvp();

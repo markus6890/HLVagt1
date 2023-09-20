@@ -23,10 +23,16 @@ public class Lon {
 
     public void giveLon(Player p) {
         if (p.hasPermission("vagt")) {
+
             PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
 
-                plugin.econ.depositPlayer(p, profile.getLon());
-                p.sendMessage(ChatColor.GRAY + "Du har fået" + ChatColor.AQUA + " Løn!");
+            if(p.getGameMode() == org.bukkit.GameMode.CREATIVE){
+                p.sendMessage(ChatColor.RED + "Du kan ikke få løn i Creative!");
+                VagtCooldown.add(p.getName(), "lon", settings.getLonTime(), System.currentTimeMillis());
+                return;
+            }
+            plugin.econ.depositPlayer(p, profile.getLon());
+            p.sendMessage(ChatColor.GRAY + "Du har fået" + ChatColor.AQUA + " Løn!");
 
             VagtCooldown.add(p.getName(), "lon", settings.getLonTime(), System.currentTimeMillis());
 

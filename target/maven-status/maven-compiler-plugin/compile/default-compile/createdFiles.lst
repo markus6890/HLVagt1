@@ -5,8 +5,8 @@ com\gmail\markushygedombrowski\config\VagtFangePvpConfigManager.class
 com\gmail\markushygedombrowski\sign\VagtSigns.class
 com\gmail\markushygedombrowski\commands\FineCommand.class
 com\gmail\markushygedombrowski\warp\VagtWarpGUI.class
+com\gmail\markushygedombrowski\cooldown\VagtAbilityCooldown.class
 com\gmail\markushygedombrowski\commands\VagtChat.class
-com\gmail\markushygedombrowski\utils\VagtWorldGuardUtils.class
 com\gmail\markushygedombrowski\commands\FyrCommand.class
 com\gmail\markushygedombrowski\cooldown\VagtCooldown.class
 com\gmail\markushygedombrowski\warp\VagtSpawnManager.class
@@ -18,12 +18,10 @@ com\gmail\markushygedombrowski\listners\VagtStav.class
 com\gmail\markushygedombrowski\config\ConfigManager.class
 com\gmail\markushygedombrowski\cooldown\TimeUnit.class
 com\gmail\markushygedombrowski\sign\RepairGUI.class
-com\gmail\markushygedombrowski\jail\JailCommand.class
 com\gmail\markushygedombrowski\config\Reconfigurations.class
 com\gmail\markushygedombrowski\cooldown\utilMath.class
 com\gmail\markushygedombrowski\listners\OnJoin.class
 com\gmail\markushygedombrowski\utils\Logger.class
-com\gmail\markushygedombrowski\cooldown\AbilityCooldown.class
 com\gmail\markushygedombrowski\listners\DamageListener$1.class
 com\gmail\markushygedombrowski\commands\Rankupcommand.class
 com\gmail\markushygedombrowski\vagtMenu\subMenu\Lon.class

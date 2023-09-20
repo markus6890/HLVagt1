@@ -35,6 +35,7 @@ public class OnJoin implements Listener {
         if (!p.hasPermission("Vagt")) {
             return;
         }
+        p.sendTitle("§4Husk og sid i Vagt Call!",null);
 
         PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
         playerProfiles.createVagt(p, profile);

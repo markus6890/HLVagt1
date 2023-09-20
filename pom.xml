@@ -77,7 +77,12 @@
         <dependency>
             <groupId>com.github.markus6890</groupId>
             <artifactId>Combat</artifactId>
-            <version>995059871d</version>
+            <version>3e0b950398</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.markus6890</groupId>
+            <artifactId>HLUtils</artifactId>
+            <version>master-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

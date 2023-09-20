@@ -1,7 +1,7 @@
 main: com.gmail.markushygedombrowski.HLvagt
 name: HLvagt
 version: "1.0"
-softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase]
+softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase,Combat,HLUtils]
 commands:
   vagtspawn:
     aliases: ["setvagtspawn", "resetvagtspawn"]
@@ -20,5 +20,3 @@ commands:
     description: "må droppe"
   fyr:
     description: "fyr vagter"
-  jail:
-    description: "jail system"

@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class MainMenu implements Listener {
@@ -122,7 +123,12 @@ public class MainMenu implements Listener {
     public void meta(Player p, PlayerProfile profile) {
         String pattern = "###,###.##";
         DecimalFormat df = new DecimalFormat(pattern);
-        long timeplayed = (p.getStatistic(Statistic.PLAY_ONE_TICK) / 20 / 60 / 60);
+        int seconds = p.getStatistic(Statistic.PLAY_ONE_TICK) / 20;
+        int minutes = (seconds / 60);
+        int hours = (minutes / 60);
+        int actualMinutes = minutes - (hours * 60);
+
+
         // Getting Meta
         ItemMeta metastats = stats.getItemMeta();
         ItemMeta metatopv = topvagt.getItemMeta();
@@ -134,14 +140,14 @@ public class MainMenu implements Listener {
         ItemMeta metalon = lon.getItemMeta();
 
         // DisplayName
-        metastats.setDisplayName("§f> §aStats§f <");
-        metatopv.setDisplayName("§f> §cTopVagter§f <");
-        metatid.setDisplayName("§f> §aSpilleTid§f <");
-        metapv.setDisplayName("§f> §cPV§f <");
-        metaachive.setDisplayName("§f> §aAchivements§f <");
-        metarankup.setDisplayName("§f> §2Rank up§f <");
-        metavagtlvl.setDisplayName("§f> §cVagt-Levels§f <");
-        metalon.setDisplayName("§f> §aLøn§f <");
+        metastats.setDisplayName("§7[§aStats§7]");
+        metatopv.setDisplayName("§7[§cTopVagter§7]");
+        metatid.setDisplayName("§7[§aSpilleTid§7]");
+        metapv.setDisplayName("§7[§cPV§7]");
+        metaachive.setDisplayName("§7[§aAchivements§7]");
+        metarankup.setDisplayName("§7[§2Rank up§7]");
+        metavagtlvl.setDisplayName("§7[§cVagt-Levels§7]");
+        metalon.setDisplayName("§7[§aLøn§7]");
 
         // Lores
 
@@ -150,11 +156,12 @@ public class MainMenu implements Listener {
 
         List<String> statsLore = new ArrayList<>();
         statsLore.add("§4Død: §f" + profile.getDeaths());
-        statsLore.add("§aDræbt: §f" + p.getStatistic(Statistic.PLAYER_KILLS));
+        statsLore.add("§aDræbt: §f" + profile.getKills());
         statsLore.add("§aPenge: §f$" + df.format(plugin.econ.getBalance(p)));
 
         List<String> spilletidlore = new ArrayList<>();
-        spilletidlore.add("§6Spillet §7Tid: " + timeplayed + " Hours");
+        spilletidlore.add("§9" + hours + " §6Hours");
+        spilletidlore.add("§9"+actualMinutes + " §6Minutes");
 
 
 

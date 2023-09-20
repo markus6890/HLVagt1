@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class VagtCooldown {
     public VagtCooldown(Lon lon) {
@@ -15,13 +14,13 @@ public class VagtCooldown {
 
     private Lon lon;
 
-    public static HashMap<String, AbilityCooldown> cooldownPlayers = new HashMap<String, AbilityCooldown>();
+    public static HashMap<String, VagtAbilityCooldown> cooldownPlayers = new HashMap<String, VagtAbilityCooldown>();
 
 
     public static void add(String player, String ability, long seconds, long systime) {
-        if (!cooldownPlayers.containsKey(player)) cooldownPlayers.put(player, new AbilityCooldown(player));
+        if (!cooldownPlayers.containsKey(player)) cooldownPlayers.put(player, new VagtAbilityCooldown(player));
         if (isCooling(player, ability)) return;
-        cooldownPlayers.get(player).cooldownMap.put(ability, new AbilityCooldown(player, seconds * 1000, System.currentTimeMillis()));
+        cooldownPlayers.get(player).cooldownMap.put(ability, new VagtAbilityCooldown(player, seconds * 1000, System.currentTimeMillis()));
     }
 
     public static boolean isCooling(String player, String ability) {
@@ -88,14 +87,17 @@ public class VagtCooldown {
         if (cooldownPlayers.isEmpty()) {
             return;
         }
-        for (Iterator<String> it = cooldownPlayers.keySet().iterator(); it.hasNext(); ) {
-            String key = it.next();
-            for (Iterator<String> iter = cooldownPlayers.get(key).cooldownMap.keySet().iterator(); iter.hasNext(); ) {
-                String name = iter.next();
-                if (getRemaining(key, name) <= 0.0) {
-                    removeCooldownLon(key, name);
-                }
+        cooldownPlayers.forEach((player, abilityCooldown) -> {
+            if (abilityCooldown.cooldownMap.isEmpty()) {
+                return;
             }
-        }
+            abilityCooldown.cooldownMap.forEach((ability, cooldown) -> {
+                if (getRemaining(player, ability) <= 0.0) {
+                    removeCooldownLon(player, ability);
+                }
+
+            });
+        });
+
     }
 }

@@ -6,8 +6,8 @@ import com.gmail.markushygedombrowski.config.VagtFangePvpConfigManager;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.utils.Utils;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
-import com.gmail.markushygedombrowski.utils.VagtWorldGuardUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
@@ -48,6 +48,11 @@ public class DamageListener implements Listener {
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
+        if(entity.hasMetadata("NPC")) {
+            event.setCancelled(true);
+            event.isCancelled();
+            return;
+        }
         if (!(entity instanceof Player)) return;
 
         Player defender = (Player) entity;
@@ -96,7 +101,7 @@ public class DamageListener implements Listener {
         Location attackerLoc = attacker.getLocation();
         Location defenderLoc = defender.getLocation();
         vFpvp.forEach(s -> {
-            if (VagtWorldGuardUtils.isLocInRegion(attackerLoc, s) || VagtWorldGuardUtils.isLocInRegion(defenderLoc, s)) {
+            if (Utils.isLocInRegion(attackerLoc, s) || Utils.isLocInRegion(defenderLoc, s)) {
                 event.setCancelled(true);
                 attacker.sendMessage("§aDu kan ikke slå fanger her!");
 
@@ -160,11 +165,11 @@ public class DamageListener implements Listener {
 
     private String getBlockDisplayName(Player p) {
         String block = "bobi";
-        if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "c")) {
+        if (Utils.isLocInRegion(p.getLocation(), "c")) {
             block = "§cC";
-        } else if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "b")) {
+        } else if (Utils.isLocInRegion(p.getLocation(), "b")) {
             block = "§bB";
-        } else if (VagtWorldGuardUtils.isLocInRegion(p.getLocation(), "a")) {
+        } else if (Utils.isLocInRegion(p.getLocation(), "a")) {
             block = "§aA";
         }
         return block;
