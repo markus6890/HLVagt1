@@ -19,10 +19,13 @@ com\gmail\markushygedombrowski\config\ConfigManager.class
 com\gmail\markushygedombrowski\cooldown\TimeUnit.class
 com\gmail\markushygedombrowski\sign\RepairGUI.class
 com\gmail\markushygedombrowski\config\Reconfigurations.class
+com\gmail\markushygedombrowski\model\SqlSettings.class
 com\gmail\markushygedombrowski\cooldown\utilMath.class
+com\gmail\markushygedombrowski\model\Sql.class
 com\gmail\markushygedombrowski\listners\OnJoin.class
 com\gmail\markushygedombrowski\utils\Logger.class
 com\gmail\markushygedombrowski\listners\DamageListener$1.class
 com\gmail\markushygedombrowski\commands\Rankupcommand.class
 com\gmail\markushygedombrowski\vagtMenu\subMenu\Lon.class
 com\gmail\markushygedombrowski\cooldown\UtilTime.class
+com\gmail\markushygedombrowski\buff\AktivBuffCmd.class

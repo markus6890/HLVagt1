@@ -50,7 +50,7 @@ public class VagtStav implements Listener {
             return;
         }
 
-        if(!item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav")) {
+        if(item.getItemMeta() == null || !item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav")) {
             return;
         }
 

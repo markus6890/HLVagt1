@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +39,11 @@ public class OnJoin implements Listener {
         p.sendTitle("§4Husk og sid i Vagt Call!",null);
 
         PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
-        playerProfiles.createVagt(p, profile);
+        try {
+            playerProfiles.createVagt(p, profile);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         addPlayerToCooldown(p);
     }
 
@@ -80,7 +85,11 @@ public class OnJoin implements Listener {
         time = (int) (VagtCooldown.getRemaining(p.getName(), "lon") * 60);
         VagtCooldown.removeCooldown(p.getName(), "lon");
         playerCooldownTime.replace(p.getUniqueId(), time);
-        playerProfiles.save(profile);
+        try {
+            playerProfiles.save(profile);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }

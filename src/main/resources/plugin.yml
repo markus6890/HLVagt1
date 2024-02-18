@@ -20,3 +20,5 @@ commands:
     description: "må droppe"
   fyr:
     description: "fyr vagter"
+  aktivbuff:
+    description: "vagt buff aktiv"

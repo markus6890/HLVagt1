@@ -6,20 +6,24 @@ import java.util.UUID;
 
 public class PlayerProfile {
 
-    private UUID uuid;
-    private String name;
+    private final double x = 0.1;
+    private final double y = 2;
+    private final UUID uuid;
+    private final String name;
     private int pv;
     private int lvl;
     private int lon;
-
-
     private int kills;
-
-
     private int deaths;
+    private int xp;
+    private int achievements;
 
 
-    public PlayerProfile(UUID uuid, String name, int pv, int lvl, int lon, int deaths, int kills) {
+
+    private int vagtposter;
+
+
+    public PlayerProfile(UUID uuid, String name, int pv, int lvl, int lon, int deaths, int kills, int xp, int vagtposter, int achievements) {
         this.uuid = uuid;
         this.name = name;
         this.pv = pv;
@@ -27,6 +31,35 @@ public class PlayerProfile {
         this.lon = lon;
         this.deaths = deaths;
         this.kills = kills;
+        this.xp = xp;
+        this.vagtposter = vagtposter;
+        this.achievements = achievements;
+    }
+    public int getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(int achievements) {
+        this.achievements = achievements;
+    }
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+
+    public double getXpToNextLvl() {
+        return (lvl/x) *y;
+    }
+
+    public int getVagtposter() {
+        return vagtposter;
+    }
+
+    public void setVagtposter(int vagtposter) {
+        this.vagtposter = vagtposter;
     }
 
     // get players info

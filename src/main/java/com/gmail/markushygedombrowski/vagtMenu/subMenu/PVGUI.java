@@ -89,8 +89,6 @@ public class PVGUI implements Listener {
 
                     p.sendMessage("Du har nu adgang til " + pvNr + " Pv");
                     profile.setPv(pvNr);
-                    profiles.save(profile);
-
                     pvNr = profile.getPv() + 1;
                     kost = (100000 * profile.getPv());
                     kost = kost + kost;

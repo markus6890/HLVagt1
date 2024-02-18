@@ -77,12 +77,17 @@
         <dependency>
             <groupId>com.github.markus6890</groupId>
             <artifactId>Combat</artifactId>
-            <version>3e0b950398</version>
+            <version>887177b3f2</version>
         </dependency>
         <dependency>
             <groupId>com.github.markus6890</groupId>
             <artifactId>HLUtils</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>c6f2d4a451</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version>
         </dependency>
     </dependencies>
 

@@ -140,7 +140,7 @@ public class MainMenu implements Listener {
         ItemMeta metalon = lon.getItemMeta();
 
         // DisplayName
-        metastats.setDisplayName("§7[§aStats§7]");
+        metastats.setDisplayName("§7[§a§lStats§7]");
         metatopv.setDisplayName("§7[§cTopVagter§7]");
         metatid.setDisplayName("§7[§aSpilleTid§7]");
         metapv.setDisplayName("§7[§cPV§7]");
@@ -155,9 +155,13 @@ public class MainMenu implements Listener {
         topVagterLore.add("§7Se §aTopVagterne");
 
         List<String> statsLore = new ArrayList<>();
-        statsLore.add("§4Død: §f" + profile.getDeaths());
-        statsLore.add("§aDræbt: §f" + profile.getKills());
-        statsLore.add("§aPenge: §f$" + df.format(plugin.econ.getBalance(p)));
+        statsLore.add("§6§lSe dine Stats§7");
+        statsLore.add("§a§lLevel: §f" + profile.getLvl());
+        statsLore.add("§b§lXP: §f" + profile.getXp() + "/" + profile.getXpToNextLvl());
+        statsLore.add("§c§lDød: §f" + profile.getDeaths());
+        statsLore.add("§a§lDræbt: §f" + profile.getKills());
+        statsLore.add("§a§lPenge: §f$" + df.format(plugin.econ.getBalance(p)));
+
 
         List<String> spilletidlore = new ArrayList<>();
         spilletidlore.add("§9" + hours + " §6Hours");

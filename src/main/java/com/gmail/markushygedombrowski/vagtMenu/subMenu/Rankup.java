@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Wool;
 
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +97,11 @@ public class Rankup implements Listener {
 
 
         setVagtPerms(p, perm);
-        profiles.save(profile);
+        try {
+            profiles.save(profile);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         p.closeInventory();
         vagtRankupMessage(p, rank);
 
@@ -150,20 +155,28 @@ public class Rankup implements Listener {
         if (p.hasPermission("a-vagt")) {
             rankuplore.add("Du kan ikke ranke up mere!");
         } else if (p.hasPermission("c-vagt")) {
-            metaRankup.setDisplayName("§cRank up til §b§lB-Vagt");
-            rankuplore.add("§bB-vagt koster:");
-            rankuplore.add("§7$50.000 §8[§f" + df.format(bal) + "/50.000§8]");
-            rankuplore.add("§7Du skal have $75.000§8[§f" + df.format(bal) + "/75.000§8]");
-            rankuplore.add("§7Du skal havet været på vagt i 10 timer §8[§f" + timeplayed + "/10§8]");
+            rankupToBVagtMeta(metaRankup, df, timeplayed, bal, rankuplore);
         } else if (p.hasPermission("b-vagt")) {
-            rankuplore.add("§aA-vagt koster:");
-            rankuplore.add("§71.000.000§8[§f" + df.format(bal) + "/1.000.000§8]");
-            rankuplore.add("§7Du skal have $1.500.000§8[§f" + df.format(bal) + "/1.500.000§8]");
-            rankuplore.add("§7Du skal havet været på vagt i 30 timer §8[§f" + timeplayed + "/25§8]");
+            rankupToAVagtMeta(df, timeplayed, bal, rankuplore);
         } else {
             rankuplore.add("Hmmm der er vist en fejl kontakt Staff");
         }
         return rankuplore;
+    }
+
+    private static void rankupToAVagtMeta(DecimalFormat df, long timeplayed, int bal, List<String> rankuplore) {
+        rankuplore.add("§aA-vagt koster:");
+        rankuplore.add("§71.000.000§8[§f" + df.format(bal) + "/1.000.000§8]");
+        rankuplore.add("§7Du skal have $1.500.000§8[§f" + df.format(bal) + "/1.500.000§8]");
+        rankuplore.add("§7Du skal havet været på vagt i 30 timer §8[§f" + timeplayed + "/25§8]");
+    }
+
+    private static void rankupToBVagtMeta(ItemMeta metaRankup, DecimalFormat df, long timeplayed, int bal, List<String> rankuplore) {
+        metaRankup.setDisplayName("§cRank up til §b§lB-Vagt");
+        rankuplore.add("§bB-vagt koster:");
+        rankuplore.add("§7$50.000 §8[§f" + df.format(bal) + "/50.000§8]");
+        rankuplore.add("§7Du skal have $75.000§8[§f" + df.format(bal) + "/75.000§8]");
+        rankuplore.add("§7Du skal havet været på vagt i 10 timer §8[§f" + timeplayed + "/10§8]");
     }
 
 

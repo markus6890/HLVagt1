@@ -26,6 +26,7 @@ public class Settings {
     private int vagtPickaxeTime;
     private int extraBuffPay;
     private int extraBuffLength;
+    private boolean aktivbuff = true;
 
 
 
@@ -119,5 +120,12 @@ public class Settings {
         return (extraBuffLength * 60);
     }
 
+    public boolean isAktivbuff() {
+        return aktivbuff;
+    }
+
+    public void setAktivbuff(boolean aktivbuff) {
+        this.aktivbuff = aktivbuff;
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.gmail.markushygedombrowski;
 
+import com.gmail.markushygedombrowski.buff.AktivBuffCmd;
 import com.gmail.markushygedombrowski.buff.BuffGui;
 import com.gmail.markushygedombrowski.combat.CombatList;
 import com.gmail.markushygedombrowski.commands.Dropcommand;
@@ -11,6 +12,8 @@ import com.gmail.markushygedombrowski.config.VagtFangePvpConfigManager;
 import com.gmail.markushygedombrowski.listners.*;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.model.Sql;
+import com.gmail.markushygedombrowski.model.SqlSettings;
 import com.gmail.markushygedombrowski.sign.*;
 import com.gmail.markushygedombrowski.config.Reconfigurations;
 import com.gmail.markushygedombrowski.utils.Logger;
@@ -33,6 +36,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
+
 public class HLvagt extends JavaPlugin {
     public Economy econ = null;
     private Settings settings;
@@ -43,18 +48,27 @@ public class HLvagt extends JavaPlugin {
     private Logger logger;
     private CombatList combatList;
     private VagtFangePvpConfigManager vagtFangePvpConfigManager;
+    private Sql sql;
     public void onEnable() {
 
         combatList = CombatMain.getInstance().getCombatList();
         saveDefaultConfig();
-        loadConfigManager();
         FileConfiguration config = getConfig();
+        SqlSettings sqlSettings = new SqlSettings();
+        sqlSettings.load(config);
+        sql = new Sql(sqlSettings);
+        loadConfigManager();
+
         vagtFangePvpConfigManager = new VagtFangePvpConfigManager();
         vagtFangePvpConfigManager.load(configM.vagtFangePvpcfg);
         settings = new Settings();
         settings.load(config);
-        playerProfiles = new PlayerProfiles(settings, configM);
-        playerProfiles.load();
+        playerProfiles = new PlayerProfiles(settings, configM, sql);
+        try {
+            playerProfiles.load();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         VagtUtils vagtUtils = new VagtUtils(this,playerProfiles,settings);
         System.out.println("HL Plugin enabled!!");
         initWarps();
@@ -107,9 +121,15 @@ public class HLvagt extends JavaPlugin {
         reloadConfig();
         FileConfiguration config = getConfig();
         loadConfigManager();
-        playerProfiles.load();
+        playerProfiles = new PlayerProfiles(settings, configM, sql);
+        try {
+            playerProfiles.load();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         vagtFangePvpConfigManager.load(configM.getVagtFangePvpcfg());
         settings.load(config);
+
 
     }
     public void loadConfigManager() {
@@ -154,7 +174,7 @@ public class HLvagt extends JavaPlugin {
         VagtCommand vagtCommand = new VagtCommand(mainMenu, playerProfiles);
         getCommand("vagt").setExecutor(vagtCommand);
 
-        Rankupcommand rankupcommand = new Rankupcommand(settings, playerProfiles,vagtSpawnManager);
+        Rankupcommand rankupcommand = new Rankupcommand(settings, playerProfiles);
         getCommand("ansat").setExecutor(rankupcommand);
 
         VagtChat vagtChat = new VagtChat();
@@ -178,6 +198,9 @@ public class HLvagt extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(buffGui,this);
         VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI,buffGui, logger);
         Bukkit.getPluginManager().registerEvents(vagtSigns, this);
+
+        AktivBuffCmd aktivBuffCmd = new AktivBuffCmd(settings);
+        getCommand("aktivbuff").setExecutor(aktivBuffCmd);
     }
 
     public void initListener() {

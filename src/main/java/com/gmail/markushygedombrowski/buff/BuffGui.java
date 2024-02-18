@@ -3,7 +3,6 @@ package com.gmail.markushygedombrowski.buff;
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class BuffGui implements Listener {
     private int BUFF_INDEX = 4;
-    private final int OFFBUFF_INDEX = 6;
+    private final int EXTRABUFF_INDEX = 6;
     private final Settings settings;
     private final HLvagt plugin;
 
@@ -60,7 +59,7 @@ public class BuffGui implements Listener {
             extraBuffItemMeta.setDisplayName("§bExtra §cBuff");
             extraBuff.setItemMeta(extraBuffItemMeta);
             BUFF_INDEX = 2;
-            inventory.setItem(OFFBUFF_INDEX, extraBuff);
+            inventory.setItem(EXTRABUFF_INDEX, extraBuff);
         } else {
             BUFF_INDEX = 4;
         }
@@ -85,6 +84,11 @@ public class BuffGui implements Listener {
             e.setCancelled(true);
             e.setResult(Event.Result.DENY);
             int pay = settings.getBuffPay();
+            if(!settings.isAktivbuff()) {
+                p.sendMessage("§cBuff er ikke aktiv!");
+                p.sendMessage("§cHAHAAHA");
+                return;
+            }
             if (clickedSlot == BUFF_INDEX) {
                 if (!plugin.econ.has(p, pay)) {
                     p.sendMessage("§cDu har ikke penge nok!");
@@ -96,11 +100,7 @@ public class BuffGui implements Listener {
                 }
                 giveBuff(p, pay);
 
-                if (VagtUtils.procent(1)) {
-                    p.sendMessage("pika pika");
-                }
-
-            }else if (clickedSlot == OFFBUFF_INDEX) {
+            }else if (clickedSlot == EXTRABUFF_INDEX) {
                 if (!p.hasPermission("extraBuff")) {
                     return;
                 }
@@ -114,11 +114,7 @@ public class BuffGui implements Listener {
                     return;
                 }
 
-                p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-                p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
-                plugin.econ.withdrawPlayer(p, pay);
-                p.sendMessage("§aDu har taget Extra §cBuff");
-                VagtCooldown.add(p.getName(), "extraBuff", settings.getExtraBuffLength(),System.currentTimeMillis());
+                giveExtraBuff(p, pay);
 
             }
 
@@ -129,6 +125,14 @@ public class BuffGui implements Listener {
 
     }
 
+    private void giveExtraBuff(Player p, int pay) {
+        p.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+        p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
+        plugin.econ.withdrawPlayer(p, pay);
+        p.sendMessage("§aDu har taget Extra §cBuff");
+        VagtCooldown.add(p.getName(), "extraBuff", settings.getExtraBuffLength(),System.currentTimeMillis());
+    }
+
     private void giveBuff(Player p, int pay) {
         p.removePotionEffect(PotionEffectType.ABSORPTION);
         p.removePotionEffect(PotionEffectType.SPEED);
@@ -136,7 +140,7 @@ public class BuffGui implements Listener {
         p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, settings.getBufflength(), settings.getAbsorption()));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, settings.getBufflength(), settings.getSpeed()));
         p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, settings.getBufflength(), settings.getStrengh()));
-        VagtCooldown.add(p.getName(), "buff", 300,System.currentTimeMillis());
+        VagtCooldown.add(p.getName(), "buff", 120,System.currentTimeMillis());
         plugin.econ.withdrawPlayer(p, pay);
         p.sendMessage("§aDu har taget §cBuff");
     }

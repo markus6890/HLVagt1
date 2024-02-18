@@ -22,7 +22,9 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -122,6 +124,11 @@ public class DamageListener implements Listener {
         if (attackerIsVagt(defender, attacker)) return;
         if (!defender.hasPermission("vagt.slag")) return;
 
+        vagtDeath(defender, attacker);
+    }
+
+    private void vagtDeath(Player defender, Player attacker) {
+        PlayerProfile profile;
         profile = profiles.getPlayerProfile(defender.getUniqueId());
 
         String rank = getRankName(defender);
@@ -129,9 +136,19 @@ public class DamageListener implements Listener {
 
         sendVagtDeathMessage(defender, attacker, rank, block);
 
-        profile.setDeaths(profile.getDeaths() + 1);
+        if(Utils.isLocInRegion(defender.getLocation(),"bandekrig")) {
+            defender.sendMessage("§7[§cBandeKrig§7] §cDu døde til bandekrig event");
+            defender.setMetadata("bandekrigDeathvagt",new FixedMetadataValue(plugin,true));
+        } else {
+            profile.setDeaths(profile.getDeaths() + 1);
+        }
+
         dropVagtHeadChance(attacker);
-        profiles.save(profile);
+        try {
+            profiles.save(profile);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean attackerIsVagt(Player defender, Player attacker) {
@@ -171,6 +188,8 @@ public class DamageListener implements Listener {
             block = "§bB";
         } else if (Utils.isLocInRegion(p.getLocation(), "a")) {
             block = "§aA";
+        } else if(Utils.isLocInRegion(p.getLocation(), "BandeKrig")) {
+            block = "§c§lBandeKrig";
         }
         return block;
     }
@@ -194,10 +213,14 @@ public class DamageListener implements Listener {
     public void onVagtRespawn(PlayerRespawnEvent event) {
         Player p = event.getPlayer();
         if (p.hasPermission("vagt")) {
+            Location loc;
+
+                loc = vagtSpawnManager.getWarpInfo("spassermine").getLocation();
+
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    p.teleport(vagtSpawnManager.getWarpInfo("spassermine").getLocation());
+                    p.teleport(loc);
                 }
             }, 2);
 

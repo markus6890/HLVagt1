@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class VagtCooldown {
     public VagtCooldown(Lon lon) {
@@ -42,7 +43,7 @@ public class VagtCooldown {
         if (!isCooling(player.getName(), ability)) {
             return;
         }
-        if(ability.equalsIgnoreCase("lon")) {
+        if (ability.equalsIgnoreCase("lon")) {
             player.sendMessage(ChatColor.GRAY + " du får løn om " + ChatColor.AQUA + getRemaining(player.getName(), ability) + " Minuter");
         }
 
@@ -69,15 +70,14 @@ public class VagtCooldown {
         if (!cooldownPlayers.get(player).cooldownMap.containsKey(ability)) {
             return;
         }
-        cooldownPlayers.get(player).cooldownMap.remove(ability);
+
         Player cPlayer = Bukkit.getPlayer(player);
         if (cPlayer != null) {
-            if(ability.equalsIgnoreCase("lon")) {
+            if (ability.equalsIgnoreCase("lon")) {
                 lon.giveLon(cPlayer);
             }
-
-
         }
+        cooldownPlayers.get(player).cooldownMap.remove(ability);
 
 
     }
@@ -91,12 +91,13 @@ public class VagtCooldown {
             if (abilityCooldown.cooldownMap.isEmpty()) {
                 return;
             }
-            abilityCooldown.cooldownMap.forEach((ability, cooldown) -> {
-                if (getRemaining(player, ability) <= 0.0) {
-                    removeCooldownLon(player, ability);
-                }
+            abilityCooldown.cooldownMap.entrySet().stream().filter(vagt -> {
+                        return getRemaining(player, vagt.getKey()) <= 0.0;
+                    }).forEach((cooldownEntry) -> {
+                        removeCooldownLon(player,cooldownEntry.getKey());
 
-            });
+
+                    });
         });
 
     }
