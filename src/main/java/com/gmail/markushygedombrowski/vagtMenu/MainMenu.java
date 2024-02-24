@@ -1,8 +1,8 @@
 package com.gmail.markushygedombrowski.vagtMenu;
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Rankup;
@@ -21,7 +21,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class MainMenu implements Listener {

@@ -1,7 +1,7 @@
-package com.gmail.markushygedombrowski.config;
+package com.gmail.markushygedombrowski.settings.config;
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.Settings;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

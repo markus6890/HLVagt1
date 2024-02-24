@@ -1,0 +1,31 @@
+deliveredItems:
+  ironhelmet:
+    exp: 10
+    name: "§f§lIron Helmet"
+  ironchestplate:
+    exp: 10
+    name: "§f§lIron Chestplate"
+  ironleggings:
+    exp: 10
+    name: "§f§lIron Leggings"
+  ironboots:
+    exp: 10
+    name: "§f§lIron Boots"
+  ironsword:
+    exp: 10
+    name: "§f§lIron Sword"
+  diamondhelmet:
+    exp: 20
+    name: "§b§lDiamond Helmet"
+  diamondchestplate:
+    exp: 20
+    name: "§b§lDiamond Chestplate"
+  diamondleggings:
+    exp: 20
+    name: "§b§lDiamond Leggings"
+  diamondboots:
+    exp: 20
+    name: "§b§lDiamond Boots"
+  diamondsword:
+    exp: 20
+    name: "§b§lDiamond Sword"

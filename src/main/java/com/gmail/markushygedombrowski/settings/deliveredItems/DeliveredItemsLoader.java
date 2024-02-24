@@ -1,6 +1,6 @@
-package com.gmail.markushygedombrowski.model.items;
+package com.gmail.markushygedombrowski.settings.deliveredItems;
 
-import com.gmail.markushygedombrowski.model.Sql;
+import com.gmail.markushygedombrowski.settings.Sql;
 
 import java.sql.*;
 import java.util.UUID;
@@ -17,9 +17,9 @@ public class DeliveredItemsLoader {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try  {
-             connection = sql.getConnection();
-             statement = connection.prepareStatement("SELECT * FROM DeliveredItems WHERE uuid = ?");
+        try {
+            connection = sql.getConnection();
+            statement = connection.prepareStatement("SELECT * FROM DeliveredItems WHERE uuid = ?");
             sql.createDeliveredItemsTableIfNotExists();
             statement.setString(1, uuid.toString());
 
@@ -66,6 +66,7 @@ public class DeliveredItemsLoader {
         }
         return new PLayerDeliveredItems(uuid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
+
     public void saveDeliveredItems(DeliveredItems deliveredItems) {
         String updateQuery = "UPDATE DeliveredItems SET seed = ?, bread = ?, ironHelmet = ?, ironChestplate = ?, ironLeggings = ?, ironBoots = ?, ironSword = ?, diamondHelmet = ?, diamondChestplate = ?, diamondLeggings = ?, diamondBoots = ?, diamondSword = ?, heads = ? WHERE uuid = ?";
 

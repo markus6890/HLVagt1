@@ -1,10 +1,10 @@
-package com.gmail.markushygedombrowski.model;
+package com.gmail.markushygedombrowski.settings.playerProfiles;
 
-import com.gmail.markushygedombrowski.config.ConfigManager;
-import com.gmail.markushygedombrowski.model.items.DeliveredItems;
-import com.gmail.markushygedombrowski.model.items.DeliveredItemsLoader;
-import com.gmail.markushygedombrowski.model.items.PLayerDeliveredItems;
-import org.bukkit.configuration.file.FileConfiguration;
+import com.gmail.markushygedombrowski.settings.Settings;
+import com.gmail.markushygedombrowski.settings.Sql;
+import com.gmail.markushygedombrowski.settings.deliveredItems.DeliveredItems;
+import com.gmail.markushygedombrowski.settings.deliveredItems.DeliveredItemsLoader;
+import com.gmail.markushygedombrowski.settings.deliveredItems.PLayerDeliveredItems;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -30,31 +30,31 @@ public class PlayerProfiles {
     }
 
     public void load() throws SQLException {
-        Connection connection = sql.getConnection();
-        profileMap.clear();
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM vagtprofile");
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            UUID uuid = UUID.fromString(resultSet.getString("UUID"));
-            String name = resultSet.getString("name");
-            int deaths = resultSet.getInt("deaths");
-            int kills = resultSet.getInt("kills");
-            int pvs = resultSet.getInt("pvs");
-            int level = resultSet.getInt("level");
-            int exp = resultSet.getInt("exp");
-            int vagtposter = resultSet.getInt("vagtposter");
-            int salary = resultSet.getInt("salary");
-            int achevments = resultSet.getInt("achevments");
-            sql.closeAllSQL(connection, statement, resultSet);
-            DeliveredItems deliveredItems = deliveredItemsLoader.loadDeliveredItems(uuid);
-            PlayerProfile profile = new PlayerProfile(uuid, name, pvs, level, salary, deaths, kills, exp, vagtposter, achevments, deliveredItems);
-            deliveredItems.debug();
-            profileMap.put(uuid, profile);
+        try (Connection connection = sql.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM vagtprofile");
+             ResultSet resultSet = statement.executeQuery()) {
+
+            profileMap.clear();
+
+            while (resultSet.next()) {
+                UUID uuid = UUID.fromString(resultSet.getString("UUID"));
+                String name = resultSet.getString("name");
+                int deaths = resultSet.getInt("deaths");
+                int kills = resultSet.getInt("kills");
+                int pvs = resultSet.getInt("pvs");
+                int level = resultSet.getInt("level");
+                int exp = resultSet.getInt("exp");
+                int vagtposter = resultSet.getInt("vagtposter");
+                int salary = resultSet.getInt("salary");
+                int achevments = resultSet.getInt("achevments");
+                DeliveredItems deliveredItems = deliveredItemsLoader.loadDeliveredItems(uuid);
+                PlayerProfile profile = new PlayerProfile(uuid, name, pvs, level, salary, deaths, kills, exp, vagtposter, achevments, deliveredItems);
+                deliveredItems.debug();
+                profileMap.put(uuid, profile);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-
-
-
     }
 
     public void saveAll() {
@@ -100,10 +100,9 @@ public class PlayerProfiles {
         statement.setInt(21, profile.getAchievements());
 
         statement.executeUpdate();
-        sql.closeAllSQL(connection, statement, null);
         deliveredItemsLoader.saveDeliveredItems(profile.getDeliveredItems());
         profileMap.put(profile.getUuid(), profile);
-
+        sql.closeAllSQL(connection, statement, null);
     }
 
     public PlayerProfile getPlayerProfile(UUID uuid) {
@@ -125,7 +124,7 @@ public class PlayerProfiles {
         }
 
         PLayerDeliveredItems deliveredItems = new PLayerDeliveredItems(p.getUniqueId(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon, 0, 0, 0, 0,0, deliveredItems);
+        profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon, 0, 0, 0, 0, 0, deliveredItems);
         System.out.println("name" + profile.getName());
         System.out.println("UUID" + profile.getUuid());
         System.out.println("løn" + profile.getLon());

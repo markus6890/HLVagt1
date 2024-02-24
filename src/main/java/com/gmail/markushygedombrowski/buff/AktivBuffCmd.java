@@ -1,7 +1,7 @@
 package com.gmail.markushygedombrowski.buff;
 
 
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.Settings;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

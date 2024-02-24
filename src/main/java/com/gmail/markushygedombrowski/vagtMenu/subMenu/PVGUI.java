@@ -1,8 +1,8 @@
 package com.gmail.markushygedombrowski.vagtMenu.subMenu;
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;

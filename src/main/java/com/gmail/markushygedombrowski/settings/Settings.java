@@ -1,4 +1,4 @@
-package com.gmail.markushygedombrowski.model;
+package com.gmail.markushygedombrowski.settings;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -28,8 +28,6 @@ public class Settings {
     private int extraBuffLength;
     private boolean aktivbuff = true;
 
-
-
     private int vagtheaddrop;
 
     private String vagthead;
@@ -57,55 +55,81 @@ public class Settings {
         this.vagthead = config.getString("vagt.vagthead");
         this.vagtheaddrop = config.getInt("vagt.vagtheaddrop");
         this.vagtPickaxeTime = config.getInt("vagt.vagtPickaxeTime");
-
-
-
     }
-    public int getBufflength () {
+
+
+    public int getLonviceins() {
+        return lonviceins;
+    }
+
+    public int getLonins() {
+        return lonins;
+    }
+
+    public int getLondire() {
+        return londire;
+    }
+
+    public int getBufflength() {
         return bufflength;
     }
+
     public int getSpeed() {
         return speed;
     }
+
     public int getStrengh() {
         return strengh;
     }
+
     public int getAbsorption() {
         return absorption;
     }
+
     public int getLonc() {
         return lonc;
     }
+
     public int getLonb() {
         return lonb;
     }
+
     public int getLona() {
         return lona;
     }
+
     public int getLonp() {
         return lonp;
     }
+
     public int getLonoffi() {
         return lonoffi;
     }
+
     public int getLonTime() {
         return (lonTime * 60);
     }
+
     public int getBuffPay() {
         return buffPay;
     }
+
     public String getVagthead() {
         return vagthead;
     }
+
     public void setVagthead(String vagthead) {
         this.vagthead = vagthead;
     }
+
     public void setLonTime(int lonTime) {
         this.lonTime = lonTime;
     }
+
     public int getVagtheaddrop() {
         return vagtheaddrop;
     }
+
     public void setVagtheaddrop(int vagtheaddrop) {
         this.vagtheaddrop = vagtheaddrop;
     }
@@ -113,9 +137,11 @@ public class Settings {
     public int getVagtPickaxeTime() {
         return (vagtPickaxeTime * 60);
     }
+
     public int getExtraBuffPay() {
         return extraBuffPay;
     }
+
     public int getExtraBuffLength() {
         return (extraBuffLength * 60);
     }

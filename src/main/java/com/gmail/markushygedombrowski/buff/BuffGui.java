@@ -2,7 +2,7 @@ package com.gmail.markushygedombrowski.buff;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

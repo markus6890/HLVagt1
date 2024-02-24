@@ -2,7 +2,7 @@ package com.gmail.markushygedombrowski.sign;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.buff.BuffGui;
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.Settings;
 import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;

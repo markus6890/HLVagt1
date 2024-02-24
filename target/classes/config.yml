@@ -18,6 +18,22 @@ vagt:
   vagthead: "50524"
   vagtheaddrop: 0
 
+
+deliveritemsexp:
+  iron:
+    ironhelmet:
+    ironchestplate:
+    ironleggings:
+    ironboots:
+    ironsword:
+  diamond:
+    diamondhelmet:
+    diamondchestplate:
+    diamondleggings:
+    diamondboots:
+    diamondsword:
+
+
 warps:
   1:
     name: "defaultwarp"

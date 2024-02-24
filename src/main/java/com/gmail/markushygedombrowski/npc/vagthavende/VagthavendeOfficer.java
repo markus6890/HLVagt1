@@ -18,6 +18,12 @@ public class VagthavendeOfficer implements Listener {
     private final int SEEDS_INDEX = 10;
     private final int GEAR_INDEX = 13;
     private final int BREAD_INDEX = 15;
+    private DeliverGearGUI deliverGearGUI;
+
+    public VagthavendeOfficer(DeliverGearGUI deliverGearGUI) {
+        this.deliverGearGUI = deliverGearGUI;
+    }
+
     public void create(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 27, "Vagthavende Officer");
         ItemStack seeds = new ItemStack(Material.SEEDS, 1);
@@ -31,13 +37,13 @@ public class VagthavendeOfficer implements Listener {
         breadMeta.setDisplayName("§e§lBread");
         List<String> lore = new ArrayList<>();
         lore.add(0,"§7Aflever §9§lSeeds §7her!");
-        lore.add(1,"§7Du for §b10 §3exp");
+        lore.add(1,"§7Du for §b5 §3exp");
         seedsMeta.setLore(lore);
         lore.set(0,"§7Aflever §6§lGear §7her!");
         lore.remove(1);
         gearMeta.setLore(lore);
         lore.set(0,"§7Aflever §e§lBread §7her!");
-        lore.add(1,"§7Du for §b50 §3exp");
+        lore.add(1,"§7Du for §b30 §3exp");
         breadMeta.setLore(lore);
         seeds.setItemMeta(seedsMeta);
         gear.setItemMeta(gearMeta);
@@ -62,7 +68,9 @@ public class VagthavendeOfficer implements Listener {
                 p.sendMessage("§7Du har afleveret §9§lSeeds");
                 p.closeInventory();
             }
-
+            if (clickedSlot == GEAR_INDEX) {
+                deliverGearGUI.create(p);
+            }
             if (clickedSlot == BREAD_INDEX) {
                 p.sendMessage("§7Du har afleveret §e§lBread");
                 p.closeInventory();

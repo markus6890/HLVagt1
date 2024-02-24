@@ -2,10 +2,10 @@ package com.gmail.markushygedombrowski.listners;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.combat.CombatList;
-import com.gmail.markushygedombrowski.config.VagtFangePvpConfigManager;
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.config.VagtFangePvpConfigManager;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.Settings;
 import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.Utils;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
@@ -185,10 +185,15 @@ public class DamageListener implements Listener {
         Bukkit.broadcastMessage("§e§lBlock§c§l: " + block);
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
         ItemStack[] defenderInv = defender.getInventory().getContents();
+        logger.formatMessage(defender.getName() + "died to " + attacker.getName(),"VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage("Block: " + block,"VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage("Rank: " + rank,"VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage("Vagt Inventory:","VagtDeath: ", "vagtdeathlog");
         for (ItemStack item : defenderInv) {
             if (item == null) continue;
-            logger.formatMessage("VagtDeath: ", defender.getName() + "dropped " + item.getType().name() + " amount: " + item.getAmount() + " displayname: " + item.getItemMeta().getDisplayName(), "vagtdeathlog");
+            logger.formatMessage(defender.getName() + "dropped " + item.getType().name() + " amount: " + item.getAmount() + " displayname: " + item.getItemMeta().getDisplayName(),"VagtDeath: ", "vagtdeathlog");
         }
+        logger.formatMessage("END OF " + defender.getName() + " DEATH LOG","VagtDeath: ", "vagtdeathlog");
     }
 
     private String getBlockDisplayName(Player p) {

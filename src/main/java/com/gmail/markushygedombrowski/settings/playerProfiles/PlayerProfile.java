@@ -1,6 +1,6 @@
-package com.gmail.markushygedombrowski.model;
+package com.gmail.markushygedombrowski.settings.playerProfiles;
 
-import com.gmail.markushygedombrowski.model.items.DeliveredItems;
+import com.gmail.markushygedombrowski.settings.deliveredItems.DeliveredItems;
 
 import java.util.UUID;
 

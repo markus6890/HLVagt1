@@ -1,8 +1,8 @@
 package com.gmail.markushygedombrowski.commands;
 
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.Settings;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import org.bukkit.Bukkit;

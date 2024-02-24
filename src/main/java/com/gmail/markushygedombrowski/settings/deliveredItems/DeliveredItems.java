@@ -1,4 +1,4 @@
-package com.gmail.markushygedombrowski.model.items;
+package com.gmail.markushygedombrowski.settings.deliveredItems;
 
 import java.util.UUID;
 

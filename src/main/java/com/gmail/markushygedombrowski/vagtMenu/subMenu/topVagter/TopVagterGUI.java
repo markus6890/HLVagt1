@@ -1,12 +1,11 @@
 package com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter;
 
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
-import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;

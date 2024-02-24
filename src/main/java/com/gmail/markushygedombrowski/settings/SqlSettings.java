@@ -1,4 +1,4 @@
-package com.gmail.markushygedombrowski.model;
+package com.gmail.markushygedombrowski.settings;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

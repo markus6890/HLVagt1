@@ -2,9 +2,9 @@ package com.gmail.markushygedombrowski.utils;
 
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.Settings;
 
 
 import org.bukkit.Bukkit;

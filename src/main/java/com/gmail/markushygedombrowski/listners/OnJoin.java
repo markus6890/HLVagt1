@@ -1,15 +1,13 @@
 package com.gmail.markushygedombrowski.listners;
 
-import com.gmail.markushygedombrowski.model.PlayerProfile;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
-import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.Settings;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
-import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;

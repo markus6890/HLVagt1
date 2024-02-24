@@ -7,16 +7,20 @@ import com.gmail.markushygedombrowski.commands.Dropcommand;
 import com.gmail.markushygedombrowski.commands.FyrCommand;
 import com.gmail.markushygedombrowski.commands.Rankupcommand;
 import com.gmail.markushygedombrowski.commands.VagtChat;
-import com.gmail.markushygedombrowski.config.ConfigManager;
-import com.gmail.markushygedombrowski.config.VagtFangePvpConfigManager;
+import com.gmail.markushygedombrowski.npc.VagtNPCer;
+import com.gmail.markushygedombrowski.npc.vagthavende.DeliverGearGUI;
+import com.gmail.markushygedombrowski.npc.vagthavende.VagthavendeOfficer;
+import com.gmail.markushygedombrowski.settings.config.ConfigManager;
+import com.gmail.markushygedombrowski.settings.config.VagtFangePvpConfigManager;
 import com.gmail.markushygedombrowski.listners.*;
-import com.gmail.markushygedombrowski.model.PlayerProfiles;
-import com.gmail.markushygedombrowski.model.Settings;
-import com.gmail.markushygedombrowski.model.Sql;
-import com.gmail.markushygedombrowski.model.SqlSettings;
-import com.gmail.markushygedombrowski.model.items.DeliveredItemsLoader;
+import com.gmail.markushygedombrowski.settings.deliveredItems.ItemProfileLoader;
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.settings.Settings;
+import com.gmail.markushygedombrowski.settings.Sql;
+import com.gmail.markushygedombrowski.settings.SqlSettings;
+import com.gmail.markushygedombrowski.settings.deliveredItems.DeliveredItemsLoader;
 import com.gmail.markushygedombrowski.sign.*;
-import com.gmail.markushygedombrowski.config.Reconfigurations;
+import com.gmail.markushygedombrowski.settings.config.Reconfigurations;
 import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
@@ -58,7 +62,7 @@ public class HLvagt extends JavaPlugin {
         FileConfiguration config = getConfig();
         loadSQL(config);
         loadConfigManager();
-
+        npcEvents();
         vagtFangePvpConfigManager = new VagtFangePvpConfigManager();
         vagtFangePvpConfigManager.load(configM.vagtFangePvpcfg);
         settings = new Settings();
@@ -102,6 +106,19 @@ public class HLvagt extends JavaPlugin {
 
     }
 
+    private void npcEvents() {
+        ItemProfileLoader itemProfileLoader = new ItemProfileLoader();
+        itemProfileLoader.load(configM.getDeliveredItemsCfg());
+
+        DeliverGearGUI deliverGearGUI = new DeliverGearGUI(itemProfileLoader);
+        Bukkit.getPluginManager().registerEvents(deliverGearGUI, this);
+
+        VagthavendeOfficer vagthavendeOfficer = new VagthavendeOfficer(deliverGearGUI);
+        Bukkit.getPluginManager().registerEvents(vagthavendeOfficer, this);
+
+        VagtNPCer vagtNPCer = new VagtNPCer(vagthavendeOfficer);
+        Bukkit.getPluginManager().registerEvents(vagtNPCer, this);
+    }
     private void loadSQL(FileConfiguration config) {
         SqlSettings sqlSettings = new SqlSettings();
         sqlSettings.load(config);
@@ -145,9 +162,8 @@ public class HLvagt extends JavaPlugin {
         configM = new ConfigManager();
         configM.setup();
         configM.saveVagtFangePvp();
-        configM.savePlayer();
-        configM.reloadVagtFangePvp();
-        configM.reloadPlayer();
+        configM.saveDeliveredItems();
+
 
 
     }
