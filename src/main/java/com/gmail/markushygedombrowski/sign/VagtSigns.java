@@ -105,7 +105,7 @@ public class VagtSigns implements Listener {
 
                 if (sign.getLine(0).equalsIgnoreCase("§e§lRepair") && sign.getLine(1).equalsIgnoreCase("Klik for at") && sign.getLine(2).equalsIgnoreCase("Repair dine ting") && sign.getLine(3).equalsIgnoreCase("§e===============")) {
                     if (VagtUtils.notHasPermission(p, "vagtRepair")) return;
-                    logger.formatMessage(p.getName() + " has opened repair sign", "REPAIRSIGN: ");
+                    logger.formatMessage(p.getName() + " has opened repair sign", "REPAIRSIGN: ","generalreport");
                     repairGUI.create(p);
                     return;
                 }

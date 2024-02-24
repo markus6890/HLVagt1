@@ -92,7 +92,7 @@ public class RepairGUI implements Listener {
                         short dura = (short) (item.getType().getMaxDurability() - item.getType().getMaxDurability());
                         item.setDurability(dura);
                         plugin.econ.withdrawPlayer(p, kost);
-                        logger.formatMessage("REPAIRSIGN: ", p.getName() + " has repaired item in hand: " + item);
+                        logger.formatMessage("REPAIRSIGN: ", p.getName() + " has repaired item in hand: " + item,"generalreport");
                         p.sendMessage("§7Hånd §e repaired");
                     }
                     break;
@@ -117,8 +117,8 @@ public class RepairGUI implements Listener {
                     }else {
                         VagtUtils.repairItems(p);
 
-                        logger.formatMessage(p.getName() + " has repaired all items in inventory", "REPAIRSIGN: ");
-                        logger.formatMessage(p.getName() + " items: " + logItems,"REPAIRSIGN: ");
+                        logger.formatMessage(p.getName() + " has repaired all items in inventory", "REPAIRSIGN: ","generalreport");
+                        logger.formatMessage(p.getName() + " items: " + logItems,"REPAIRSIGN: ","generalreport");
                         logItems.clear();
                         p.sendMessage("§7Alle items i dit inventory §e repaired");
                         plugin.econ.withdrawPlayer(p,fullKost);

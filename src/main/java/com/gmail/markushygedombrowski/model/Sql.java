@@ -43,4 +43,30 @@ public class Sql {
 
         return DriverManager.getConnection(connectionString, username, password);
     }
+
+    public void createDeliveredItemsTableIfNotExists() {
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS DeliveredItems (" +
+                "uuid VARCHAR(50) PRIMARY KEY," +
+                "seed INT DEFAULT 0," +
+                "bread INT DEFAULT 0," +
+                "ironHelmet INT DEFAULT 0," +
+                "ironChestplate INT DEFAULT 0," +
+                "ironLeggings INT DEFAULT 0," +
+                "ironBoots INT DEFAULT 0," +
+                "ironSword INT DEFAULT 0," +
+                "diamondHelmet INT DEFAULT 0," +
+                "diamondChestplate INT DEFAULT 0," +
+                "diamondLeggings INT DEFAULT 0," +
+                "diamondBoots INT DEFAULT 0," +
+                "diamondSword INT DEFAULT 0," +
+                "heads INT DEFAULT 0" +
+                ")";
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.execute(createTableQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

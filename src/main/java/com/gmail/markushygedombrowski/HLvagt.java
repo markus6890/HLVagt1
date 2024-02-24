@@ -14,6 +14,7 @@ import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
 import com.gmail.markushygedombrowski.model.Sql;
 import com.gmail.markushygedombrowski.model.SqlSettings;
+import com.gmail.markushygedombrowski.model.items.DeliveredItemsLoader;
 import com.gmail.markushygedombrowski.sign.*;
 import com.gmail.markushygedombrowski.config.Reconfigurations;
 import com.gmail.markushygedombrowski.utils.Logger;
@@ -49,21 +50,21 @@ public class HLvagt extends JavaPlugin {
     private CombatList combatList;
     private VagtFangePvpConfigManager vagtFangePvpConfigManager;
     private Sql sql;
+    private DeliveredItemsLoader deliveredItemsLoader;
     public void onEnable() {
 
         combatList = CombatMain.getInstance().getCombatList();
         saveDefaultConfig();
         FileConfiguration config = getConfig();
-        SqlSettings sqlSettings = new SqlSettings();
-        sqlSettings.load(config);
-        sql = new Sql(sqlSettings);
+        loadSQL(config);
         loadConfigManager();
 
         vagtFangePvpConfigManager = new VagtFangePvpConfigManager();
         vagtFangePvpConfigManager.load(configM.vagtFangePvpcfg);
         settings = new Settings();
         settings.load(config);
-        playerProfiles = new PlayerProfiles(settings, configM, sql);
+        deliveredItemsLoader = new DeliveredItemsLoader(sql);
+        playerProfiles = new PlayerProfiles(settings, sql, deliveredItemsLoader);
         try {
             playerProfiles.load();
         } catch (SQLException e) {
@@ -101,6 +102,12 @@ public class HLvagt extends JavaPlugin {
 
     }
 
+    private void loadSQL(FileConfiguration config) {
+        SqlSettings sqlSettings = new SqlSettings();
+        sqlSettings.load(config);
+        sql = new Sql(sqlSettings);
+    }
+
 
     private void initWarps() {
         vagtSpawnManager = new VagtSpawnManager(this);
@@ -121,7 +128,7 @@ public class HLvagt extends JavaPlugin {
         reloadConfig();
         FileConfiguration config = getConfig();
         loadConfigManager();
-        playerProfiles = new PlayerProfiles(settings, configM, sql);
+        playerProfiles = new PlayerProfiles(settings, sql, deliveredItemsLoader);
         try {
             playerProfiles.load();
         } catch (SQLException e) {
@@ -207,7 +214,7 @@ public class HLvagt extends JavaPlugin {
         OnJoin onJoin = new OnJoin(playerProfiles, settings);
         Bukkit.getPluginManager().registerEvents(onJoin, this);
 
-        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles,this, combatList, vagtFangePvpConfigManager);
+        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles,this, combatList, vagtFangePvpConfigManager, logger);
         Bukkit.getPluginManager().registerEvents(damageListener, this);
 
 

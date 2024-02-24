@@ -113,6 +113,9 @@ public class VagtUtils {
         }));
         return list;
     }
+    public static boolean isPlayerNotOnline(Player player) {
+        return player == null;
+    }
     public static List<String> top10Kills(String perm) {
         HashMap<String, Integer> stats = new HashMap<>();
         List<Player> players = VagtUtils.getPlayers(perm);

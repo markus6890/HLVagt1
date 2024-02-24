@@ -16,6 +16,7 @@ import java.sql.SQLException;
 public class Rankupcommand implements CommandExecutor {
     private Settings settings;
     private PlayerProfiles profiles;
+    private VagtSpawnManager vagtSpawnManager;
 
     public Rankupcommand(Settings settings, PlayerProfiles profiles) {
         this.settings = settings;
@@ -48,6 +49,9 @@ public class Rankupcommand implements CommandExecutor {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        ansat.teleport(vagtSpawnManager.getWarpInfo("vagtc").getLocation());
+
+
 
         return true;
     }

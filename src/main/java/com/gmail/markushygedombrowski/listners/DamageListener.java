@@ -6,6 +6,7 @@ import com.gmail.markushygedombrowski.config.VagtFangePvpConfigManager;
 import com.gmail.markushygedombrowski.model.PlayerProfile;
 import com.gmail.markushygedombrowski.model.PlayerProfiles;
 import com.gmail.markushygedombrowski.model.Settings;
+import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.Utils;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
@@ -15,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -37,14 +39,16 @@ public class DamageListener implements Listener {
     private final HLvagt plugin;
     private final CombatList combatList;
     private final VagtFangePvpConfigManager vFPvpConfig;
+    private final Logger logger;
 
-    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig) {
+    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig, Logger logger) {
         this.settings = settings;
         this.vagtSpawnManager = vagtSpawnManager;
         this.profiles = profiles;
         this.plugin = plugin;
         this.combatList = combatList;
         this.vFPvpConfig = vFPvpConfig;
+        this.logger = logger;
     }
 
     @EventHandler
@@ -112,11 +116,11 @@ public class DamageListener implements Listener {
     }
 
 
-    @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onDeath(PlayerDeathEvent event ) {
         Player defender = event.getEntity();
         Player attacker = defender.getKiller();
-        PlayerProfile profile;
+
         if (attacker == null) {
             if(combatList.getLastHit(defender) == null) return;
             attacker = combatList.getLastHit(defender);
@@ -149,6 +153,8 @@ public class DamageListener implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+
     }
 
     private boolean attackerIsVagt(Player defender, Player attacker) {
@@ -178,6 +184,11 @@ public class DamageListener implements Listener {
         Bukkit.broadcastMessage("§7blev dræbt af fangen §a§l" + attacker.getName());
         Bukkit.broadcastMessage("§e§lBlock§c§l: " + block);
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
+        ItemStack[] defenderInv = defender.getInventory().getContents();
+        for (ItemStack item : defenderInv) {
+            if (item == null) continue;
+            logger.formatMessage("VagtDeath: ", defender.getName() + "dropped " + item.getType().name() + " amount: " + item.getAmount() + " displayname: " + item.getItemMeta().getDisplayName(), "vagtdeathlog");
+        }
     }
 
     private String getBlockDisplayName(Player p) {

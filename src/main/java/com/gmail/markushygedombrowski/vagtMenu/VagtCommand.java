@@ -27,7 +27,11 @@ public class VagtCommand implements CommandExecutor {
             profile = playerProfiles.getPlayerProfile(p.getUniqueId());
 
         } else {
+            if(VagtUtils.notHasPermission(p,"vagt.admin")) return true;
             Player player = Bukkit.getPlayer(args[0]);
+            if(VagtUtils.isPlayerNotOnline(player)) {
+                player = Bukkit.getOfflinePlayer(args[0]).getPlayer();
+            }
             profile = playerProfiles.getPlayerProfile(player.getUniqueId());
         }
 

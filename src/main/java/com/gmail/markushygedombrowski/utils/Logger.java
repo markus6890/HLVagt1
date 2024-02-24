@@ -11,38 +11,53 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
-    File file;
+    File generalReports;
+    File vagtdeathlog;
     private HLvagt plugin;
     public Logger(HLvagt plugin) {
         this.plugin = plugin;
         System.out.println(plugin.getDataFolder()+"");
-        file = new File(plugin.getDataFolder() + "/reports.txt");
+        generalReports = new File(plugin.getDataFolder() + "/reports.txt");
+        vagtdeathlog = new File(plugin.getDataFolder() + "/vagtdeathlog.txt");
     }
 
-    public void addMessage(String message){
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
-            bw.append(message);
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void addMessage(String message,String fileName){
+        if(fileName.equalsIgnoreCase("generalReports")){
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(generalReports, true));
+                bw.append(message);
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if(fileName.equalsIgnoreCase("vagtdeathlog")){
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(vagtdeathlog, true));
+                bw.append(message);
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+
     }
 
     public void setup(){
-        if(!file.exists()){
+        if(!generalReports.exists()){
             try {
-                file.createNewFile();
+                generalReports.createNewFile();
+                vagtdeathlog.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void formatMessage(String msg, String name){
+    public void formatMessage(String msg, String name, String fileName){
         DateFormat dateFormat = new SimpleDateFormat("dd/MM HH:mm:ss");
         String date = dateFormat.format(new Date());
         String finalMessage = date + " - "+ name + ": " + msg + "\n";
-        addMessage(finalMessage);
+        addMessage(finalMessage,fileName);
     }
 }

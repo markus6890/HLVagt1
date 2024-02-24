@@ -1,6 +1,9 @@
 package com.gmail.markushygedombrowski.model;
 
 import com.gmail.markushygedombrowski.config.ConfigManager;
+import com.gmail.markushygedombrowski.model.items.DeliveredItems;
+import com.gmail.markushygedombrowski.model.items.DeliveredItemsLoader;
+import com.gmail.markushygedombrowski.model.items.PLayerDeliveredItems;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -15,14 +18,15 @@ import java.util.UUID;
 public class PlayerProfiles {
     private Map<UUID, PlayerProfile> profileMap = new HashMap<>();
     private Settings settings;
-    private ConfigManager configManager;
-    private Sql sql;
 
-    public PlayerProfiles(Settings settings, ConfigManager configManager, Sql sql) {
+    private Sql sql;
+    private DeliveredItemsLoader deliveredItemsLoader;
+
+    public PlayerProfiles(Settings settings, Sql sql, DeliveredItemsLoader deliveredItemsLoader) {
 
         this.settings = settings;
-        this.configManager = configManager;
         this.sql = sql;
+        this.deliveredItemsLoader = deliveredItemsLoader;
     }
 
     public void load() throws SQLException {
@@ -41,9 +45,13 @@ public class PlayerProfiles {
             int vagtposter = resultSet.getInt("vagtposter");
             int salary = resultSet.getInt("salary");
             int achevments = resultSet.getInt("achevments");
-            PlayerProfile profile = new PlayerProfile(uuid, name, pvs, level, salary, deaths, kills, exp, vagtposter, achevments);
+            sql.closeAllSQL(connection, statement, resultSet);
+            DeliveredItems deliveredItems = deliveredItemsLoader.loadDeliveredItems(uuid);
+            PlayerProfile profile = new PlayerProfile(uuid, name, pvs, level, salary, deaths, kills, exp, vagtposter, achevments, deliveredItems);
+            deliveredItems.debug();
             profileMap.put(uuid, profile);
         }
+
 
 
 
@@ -93,6 +101,7 @@ public class PlayerProfiles {
 
         statement.executeUpdate();
         sql.closeAllSQL(connection, statement, null);
+        deliveredItemsLoader.saveDeliveredItems(profile.getDeliveredItems());
         profileMap.put(profile.getUuid(), profile);
 
     }
@@ -114,7 +123,9 @@ public class PlayerProfiles {
         } else if (p.hasPermission("c-vagt")) {
             lon = settings.getLonc();
         }
-        profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon, 0, 0, 0, 0,0);
+
+        PLayerDeliveredItems deliveredItems = new PLayerDeliveredItems(p.getUniqueId(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        profile = new PlayerProfile(p.getUniqueId(), p.getName(), 1, 1, lon, 0, 0, 0, 0,0, deliveredItems);
         System.out.println("name" + profile.getName());
         System.out.println("UUID" + profile.getUuid());
         System.out.println("løn" + profile.getLon());
@@ -124,10 +135,19 @@ public class PlayerProfiles {
     }
 
     public void removeVagt(PlayerProfile profile) {
-        FileConfiguration config = configManager.getPlayercfg();
-        String key = profile.getName();
-        config.set("vagter." + key, null);
-        configManager.savePlayer();
+        try {
+            Connection connection = sql.getConnection();
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM vagtprofile WHERE UUID = ?");
+            statement.setString(1, profile.getUuid().toString());
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement("DELETE FROM DeliveredItems WHERE UUID = ?");
+            statement.setString(1, profile.getUuid().toString());
+            statement.executeUpdate();
+            sql.closeAllSQL(connection, statement, null);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         profileMap.remove(profile.getUuid());
     }
 

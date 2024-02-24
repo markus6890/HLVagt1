@@ -1,6 +1,6 @@
 package com.gmail.markushygedombrowski.model;
 
-import org.bukkit.entity.Player;
+import com.gmail.markushygedombrowski.model.items.DeliveredItems;
 
 import java.util.UUID;
 
@@ -19,11 +19,13 @@ public class PlayerProfile {
     private int achievements;
 
 
+    private DeliveredItems deliveredItems;
+
 
     private int vagtposter;
 
 
-    public PlayerProfile(UUID uuid, String name, int pv, int lvl, int lon, int deaths, int kills, int xp, int vagtposter, int achievements) {
+    public PlayerProfile(UUID uuid, String name, int pv, int lvl, int lon, int deaths, int kills, int xp, int vagtposter, int achievements, DeliveredItems deliveredItems) {
         this.uuid = uuid;
         this.name = name;
         this.pv = pv;
@@ -34,7 +36,17 @@ public class PlayerProfile {
         this.xp = xp;
         this.vagtposter = vagtposter;
         this.achievements = achievements;
+        this.deliveredItems = deliveredItems;
     }
+
+    public DeliveredItems getDeliveredItems() {
+        return deliveredItems;
+    }
+
+    public void setDeliveredItems(DeliveredItems deliveredItems) {
+        this.deliveredItems = deliveredItems;
+    }
+
     public int getAchievements() {
         return achievements;
     }
@@ -42,6 +54,7 @@ public class PlayerProfile {
     public void setAchievements(int achievements) {
         this.achievements = achievements;
     }
+
     public int getXp() {
         return xp;
     }
@@ -51,7 +64,7 @@ public class PlayerProfile {
     }
 
     public double getXpToNextLvl() {
-        return (lvl/x) *y;
+        return (lvl / x) * y;
     }
 
     public int getVagtposter() {
