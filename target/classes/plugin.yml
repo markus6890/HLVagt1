@@ -22,3 +22,8 @@ commands:
     description: "fyr vagter"
   aktivbuff:
     description: "vagt buff aktiv"
+  guitest:
+    description: "test gui"
+  vresetall:
+    aliases: ["vconfirmresetall", "vreset", "vexp", "vlevel",]
+    description: "resetter alle vagter"

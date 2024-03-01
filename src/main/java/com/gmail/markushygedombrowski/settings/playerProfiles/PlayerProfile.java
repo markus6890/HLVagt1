@@ -64,8 +64,9 @@ public class PlayerProfile {
     }
 
     public double getXpToNextLvl() {
-        return (lvl / x) * y;
+        return Math.pow((lvl/x),y);
     }
+
 
     public int getVagtposter() {
         return vagtposter;

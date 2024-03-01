@@ -49,7 +49,6 @@ public class PlayerProfiles {
                 int achevments = resultSet.getInt("achevments");
                 DeliveredItems deliveredItems = deliveredItemsLoader.loadDeliveredItems(uuid);
                 PlayerProfile profile = new PlayerProfile(uuid, name, pvs, level, salary, deaths, kills, exp, vagtposter, achevments, deliveredItems);
-                deliveredItems.debug();
                 profileMap.put(uuid, profile);
             }
         } catch (SQLException e) {
@@ -67,6 +66,10 @@ public class PlayerProfiles {
         });
 
 
+    }
+
+    public Map<UUID, PlayerProfile> getProfileMap() {
+        return profileMap;
     }
 
 

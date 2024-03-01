@@ -6,6 +6,8 @@ import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.Rankup;
+import com.gmail.markushygedombrowski.vagtMenu.subMenu.RankupGUI;
+import com.gmail.markushygedombrowski.vagtMenu.subMenu.StatsGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -45,15 +47,19 @@ public class MainMenu implements Listener {
     private ItemStack vagtlvl = new ItemStack(Material.BEACON);
     private ItemStack lon = new ItemStack(Material.GOLD_INGOT);
     private PlayerProfiles playerProfiles;
+    private StatsGUI statsGUI;
+    private RankupGUI rankupGUI;
 
 
-    public MainMenu(HLvagt plugin, PVGUI pvgui, TopVagterGUI topVagterGUI, PlayerProfiles playerProfiles, Rankup rankupgui) {
+    public MainMenu(HLvagt plugin, PVGUI pvgui, TopVagterGUI topVagterGUI, PlayerProfiles playerProfiles, Rankup rankupgui, StatsGUI statsGUI, RankupGUI rankupGUI) {
         this.plugin = plugin;
         this.pvgui = pvgui;
         this.topVagterGUI = topVagterGUI;
         this.playerProfiles = playerProfiles;
         this.rankupgui = rankupgui;
 
+        this.statsGUI = statsGUI;
+        this.rankupGUI = rankupGUI;
     }
 
     public void create(Player p, PlayerProfile profile) {
@@ -100,7 +106,7 @@ public class MainMenu implements Listener {
                         p.sendMessage("§cDu kan ikke rankup som P-vagt!!");
                         break;
                     }
-                    rankupgui.create(p);
+                    rankupGUI.create(p);
                     break;
                 case L0N_INDEX:
                     if (VagtCooldown.isCooling(p.getName(), "lon")) {
@@ -109,6 +115,9 @@ public class MainMenu implements Listener {
                     break;
                 case TOPVAGT_INDEX:
                     topVagterGUI.create(p);
+                    break;
+                case STATS_INDEX:
+                    statsGUI.create(p);
                     break;
             }
 

@@ -1,5 +1,7 @@
 package com.gmail.markushygedombrowski.rankup;
 
+import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
+
 public class RankupKrav {
     private String rankup;
     private int bread;
@@ -23,6 +25,9 @@ public class RankupKrav {
         this.onTime = onTime;
         this.vagtlevel = vagtlevel;
         this.money = money;
+    }
+    public String getRankup() {
+        return rankup;
     }
     public int getMoney() {
         return money;
@@ -49,6 +54,10 @@ public class RankupKrav {
 
     public int getVagtlevel() {
         return vagtlevel;
+    }
+
+    public boolean canRankup(PlayerProfile profile) {
+        return profile.getDeliveredItems().getBread() >= bread && profile.getDeliveredItems().getSeed() >= seeds && profile.getVagtposter() >= vagtposter && profile.getLvl() >= vagtlevel;
     }
 
 }
