@@ -51,9 +51,12 @@ public class HLvagt extends JavaPlugin {
     private VagtFangePvpConfigManager vagtFangePvpConfigManager;
     private Sql sql;
     private DeliveredItemsLoader deliveredItemsLoader;
+    private static HLvagt instance;
+
+
 
     public void onEnable() {
-
+        instance = this;
         combatList = CombatMain.getInstance().getCombatList();
         saveDefaultConfig();
         FileConfiguration config = getConfig();
@@ -253,6 +256,13 @@ public class HLvagt extends JavaPlugin {
 
         Dropcommand dropcommand = new Dropcommand(dropItemListener);
         getCommand("drop").setExecutor(dropcommand);
+    }
+
+    public PlayerProfiles getPlayerProfiles() {
+        return playerProfiles;
+    }
+    public static HLvagt getInstance() {
+        return instance;
     }
 
 
