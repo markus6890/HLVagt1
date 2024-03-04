@@ -1,25 +1,17 @@
 package com.gmail.markushygedombrowski.utils;
-
-
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
-
-
 import org.bukkit.Bukkit;
 
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-
-
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;

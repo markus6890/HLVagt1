@@ -25,12 +25,6 @@ public class VagtNPCer implements Listener {
             }
             vagthavendeOfficer.create(player);
         }
-        if (npc.getFullName().equalsIgnoreCase("§6§lVagt §7§lRankup")) {
-            if (!isVagt(event, player)) {
-                return;
-            }
-
-        }
     }
 
 

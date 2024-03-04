@@ -1,11 +1,10 @@
 package com.gmail.markushygedombrowski.vagtMenu;
 
 import com.gmail.markushygedombrowski.HLvagt;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
-import com.gmail.markushygedombrowski.vagtMenu.subMenu.Rankup;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.RankupGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.StatsGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
@@ -28,7 +27,6 @@ import java.util.List;
 public class MainMenu implements Listener {
     private HLvagt plugin;
     private PVGUI pvgui;
-    private Rankup rankupgui;
     private TopVagterGUI topVagterGUI;
     private final int SPILTID_INDEX = 1;
     private final int TOPVAGT_INDEX = 4;
@@ -51,12 +49,12 @@ public class MainMenu implements Listener {
     private RankupGUI rankupGUI;
 
 
-    public MainMenu(HLvagt plugin, PVGUI pvgui, TopVagterGUI topVagterGUI, PlayerProfiles playerProfiles, Rankup rankupgui, StatsGUI statsGUI, RankupGUI rankupGUI) {
+    public MainMenu(HLvagt plugin, PVGUI pvgui, TopVagterGUI topVagterGUI, PlayerProfiles playerProfiles, StatsGUI statsGUI, RankupGUI rankupGUI) {
         this.plugin = plugin;
         this.pvgui = pvgui;
         this.topVagterGUI = topVagterGUI;
         this.playerProfiles = playerProfiles;
-        this.rankupgui = rankupgui;
+
 
         this.statsGUI = statsGUI;
         this.rankupGUI = rankupGUI;
@@ -169,6 +167,8 @@ public class MainMenu implements Listener {
         statsLore.add("§c§lDød: §f" + profile.getDeaths());
         statsLore.add("§a§lDræbt: §f" + profile.getKills());
         statsLore.add("§a§lPenge: §f$" + df.format(plugin.econ.getBalance(p)));
+        statsLore.add("§a§lVagt Poster: §f" + profile.getVagtposter());
+
 
 
         List<String> spilletidlore = new ArrayList<>();
@@ -184,7 +184,6 @@ public class MainMenu implements Listener {
         //Setting Lore on Item
         metastats.setLore(statsLore);
         metatid.setLore(spilletidlore);
-        metarankup.setLore(rankupgui.meta(p,metarankup));
         metatopv.setLore(topVagterLore);
         metalon.setLore(lonLore);
 

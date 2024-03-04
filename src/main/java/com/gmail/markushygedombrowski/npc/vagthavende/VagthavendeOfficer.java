@@ -1,8 +1,8 @@
 package com.gmail.markushygedombrowski.npc.vagthavende;
 
-import com.gmail.markushygedombrowski.settings.deliveredItems.ItemProfileLoader;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.deliveredItems.ItemProfileLoader;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class VagthavendeOfficer implements Listener {
 
-    private final int SEEDS_INDEX = 11;
+    private final int SHARDS_INDEX = 11;
     private final int GEAR_INDEX = 13;
     private final int BREAD_INDEX = 15;
     private DeliverGearGUI deliverGearGUI;
@@ -35,29 +35,29 @@ public class VagthavendeOfficer implements Listener {
 
     public void create(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 27, "Vagthavende Officer");
-        ItemStack seeds = new ItemStack(Material.SEEDS, 1);
+        ItemStack shards = new ItemStack(Material.PRISMARINE_CRYSTALS, 1);
         ItemStack gear = new ItemStack(Material.IRON_HELMET, 1);
         ItemStack bread = new ItemStack(Material.BREAD, 1);
-        ItemMeta seedsMeta = seeds.getItemMeta();
+        ItemMeta shardsMeta = shards.getItemMeta();
         ItemMeta gearMeta = gear.getItemMeta();
         ItemMeta breadMeta = bread.getItemMeta();
-        seedsMeta.setDisplayName("§9§lSeeds");
+        shardsMeta.setDisplayName("§9§lShards");
         gearMeta.setDisplayName("§6§lGear");
         breadMeta.setDisplayName("§e§lBread");
         List<String> lore = new ArrayList<>();
-        lore.add(0, "§7Aflever §9§lSeeds §7her!");
-        lore.add(1, "§7Du for §b" + itemProfileLoader.getItemProfile(seedsMeta.getDisplayName()).getExp() + " §3exp");
-        seedsMeta.setLore(lore);
+        lore.add(0, "§7Aflever §9§lShards §7her!");
+        lore.add(1, "§7Du for §b" + itemProfileLoader.getItemProfile(shardsMeta.getDisplayName()).getExp() + " §3exp");
+        shardsMeta.setLore(lore);
         lore.set(0, "§7Aflever §6§lGear §7her!");
         lore.remove(1);
         gearMeta.setLore(lore);
         lore.set(0, "§7Aflever §e§lBread §7her!");
         lore.add(1, "§7Du for §b" + itemProfileLoader.getItemProfile(breadMeta.getDisplayName()).getExp() + " §3exp");
         breadMeta.setLore(lore);
-        seeds.setItemMeta(seedsMeta);
+        shards.setItemMeta(shardsMeta);
         gear.setItemMeta(gearMeta);
         bread.setItemMeta(breadMeta);
-        inventory.setItem(SEEDS_INDEX, seeds);
+        inventory.setItem(SHARDS_INDEX, shards);
         inventory.setItem(GEAR_INDEX, gear);
         inventory.setItem(BREAD_INDEX, bread);
         player.openInventory(inventory);
@@ -76,15 +76,13 @@ public class VagthavendeOfficer implements Listener {
         if (inventory.getTitle().equalsIgnoreCase("Vagthavende Officer")) {
             PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
             switch (clickedSlot) {
-                case SEEDS_INDEX:
+                case SHARDS_INDEX:
                     int amount = deliverItem(p, clickeditem);
                    if(amount == 0){
-                       p.sendMessage("§7Du har ikke §9§lSeeds §7i dit inventory");
+                       p.sendMessage("§7Du har ikke §9§lShards §7i dit inventory");
                        break;
                    }
-                   profile.getDeliveredItems().setSeed(profile.getDeliveredItems().getSeed() + amount);
-
-
+                   profile.getDeliveredItems().setShards(profile.getDeliveredItems().getShards() + amount);
                     break;
                 case GEAR_INDEX:
                     deliverGearGUI.create(p);

@@ -1,7 +1,7 @@
 package com.gmail.markushygedombrowski.vagtMenu.subMenu;
 
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,10 +18,9 @@ import java.util.List;
 public class StatsGUI implements Listener {
 
     private PlayerProfiles playerProfiles;
-    private final int SEEDS_INDEX = 10;
-    private final int IRON_GEAR_INDEX = 12;
-    private final int DIA_GEAR_INDEX = 14;
-    private final int BREAD_INDEX = 16;
+    private final int[] ITEM_INDEXES = {10, 12, 14, 16};
+    private final Material[] MATERIALS = {Material.PRISMARINE_CRYSTALS, Material.IRON_HELMET, Material.DIAMOND_HELMET, Material.BREAD};
+    private final String[] ITEM_NAMES = {"§9§lShards", "§6§lIron Gear", "§b§lDiamond Gear", "§e§lBread"};
 
     public StatsGUI(PlayerProfiles playerProfiles) {
         this.playerProfiles = playerProfiles;
@@ -29,24 +28,24 @@ public class StatsGUI implements Listener {
 
     public void create(Player p) {
         Inventory inv = Bukkit.createInventory(null, 27, "§a§lStats");
-        ItemStack seeds = new ItemStack(Material.SEEDS, 1);
+        ItemStack shards = new ItemStack(Material.PRISMARINE_CRYSTALS, 1);
         ItemStack ironGear = new ItemStack(Material.IRON_HELMET, 1);
         ItemStack diaGear = new ItemStack(Material.DIAMOND_HELMET, 1);
         ItemStack bread = new ItemStack(Material.BREAD, 1);
 
-        ItemMeta seedsMeta = seeds.getItemMeta();
+        ItemMeta shardsItemMeta = shards.getItemMeta();
         ItemMeta ironGearMeta = ironGear.getItemMeta();
         ItemMeta diaGearMeta = diaGear.getItemMeta();
         ItemMeta breadMeta = bread.getItemMeta();
 
-        seedsMeta.setDisplayName("§9§lSeeds");
+        shardsItemMeta.setDisplayName("§9§lShards");
         ironGearMeta.setDisplayName("§6§lIron Gear");
         diaGearMeta.setDisplayName("§b§lDiamond Gear");
         breadMeta.setDisplayName("§e§lBread");
         PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
         List<String> lore = new ArrayList<>();
-        lore.add(0, "§7Afleveret §9§lSeeds: §b" + profile.getDeliveredItems().getSeed());
-        seedsMeta.setLore(lore);
+        lore.add(0, "§7Afleveret §9§lShards: §b" + profile.getDeliveredItems().getShards());
+        shardsItemMeta.setLore(lore);
 
         lore.set(0, "§7Afleveret §e§lBread: §b" + profile.getDeliveredItems().getBread());
         breadMeta.setLore(lore);
@@ -65,26 +64,25 @@ public class StatsGUI implements Listener {
         lore.set(4, "§7Afleveret §b§lDiamond Swords: §b" + profile.getDeliveredItems().getDiamondSword());
         diaGearMeta.setLore(lore);
 
-        seeds.setItemMeta(seedsMeta);
+        shards.setItemMeta(shardsItemMeta);
         ironGear.setItemMeta(ironGearMeta);
         diaGear.setItemMeta(diaGearMeta);
         bread.setItemMeta(breadMeta);
 
-        inv.setItem(SEEDS_INDEX, seeds);
-        inv.setItem(IRON_GEAR_INDEX, ironGear);
-        inv.setItem(DIA_GEAR_INDEX, diaGear);
-        inv.setItem(BREAD_INDEX, bread);
         p.openInventory(inv);
 
     }
 
-
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player p = (Player) event.getWhoClicked();
+        if (event.getClickedInventory() == null) {
+            return;
+        }
         if (event.getClickedInventory().getTitle().equals("§a§lStats")) {
             event.setCancelled(true);
             event.setResult(InventoryClickEvent.Result.DENY);
         }
     }
+
 }

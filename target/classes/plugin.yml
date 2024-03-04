@@ -1,7 +1,7 @@
 main: com.gmail.markushygedombrowski.HLvagt
 name: HLvagt
 version: "1.0"
-softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase,Combat,HLUtils,Citizens]
+softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase,Combat,HLUtils,Citizens,VagtProfiler]
 commands:
   vagtspawn:
     aliases: ["setvagtspawn", "resetvagtspawn"]

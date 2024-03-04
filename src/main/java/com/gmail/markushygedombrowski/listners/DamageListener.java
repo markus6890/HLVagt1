@@ -2,10 +2,10 @@ package com.gmail.markushygedombrowski.listners;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.combat.CombatList;
-import com.gmail.markushygedombrowski.settings.config.VagtFangePvpConfigManager;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfile;
-import com.gmail.markushygedombrowski.settings.playerProfiles.PlayerProfiles;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
+import com.gmail.markushygedombrowski.settings.VagtFangePvpConfigManager;
 import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.Utils;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
