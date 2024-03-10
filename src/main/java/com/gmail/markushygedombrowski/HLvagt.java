@@ -30,13 +30,12 @@ import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
 import com.gmail.markushygedombrowski.warp.VagtSpawnCommand;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import com.gmail.markushygedombrowski.warp.Warpsign;
+import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.sql.SQLException;
 
 public class HLvagt extends JavaPlugin {
     public Economy econ = null;
@@ -51,7 +50,7 @@ public class HLvagt extends JavaPlugin {
     private ItemProfileLoader itemProfileLoader;
     private VagtProfiler vagtProfiler;
     private static HLvagt instance;
-
+    private LuckPerms luckPerms;
 
 
     public void onEnable() {
@@ -64,6 +63,7 @@ public class HLvagt extends JavaPlugin {
         settings = vagtProfiler.getSettings();
         configM = vagtProfiler.getConfigManager();
         itemProfileLoader = vagtProfiler.getItemProfileLoader();
+        vagtFangePvpConfigManager = vagtProfiler.getVagtFangePvpConfigManager();
         saveDefaultConfig();
         FileConfiguration config = getConfig();
         loadConfigManager();
@@ -72,6 +72,9 @@ public class HLvagt extends JavaPlugin {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+        if(Bukkit.getPluginManager().getPlugin("LuckPerms") != null) {
+            luckPerms = Bukkit.getServicesManager().getRegistration(LuckPerms.class).getProvider();
         }
 
 
@@ -166,7 +169,10 @@ public class HLvagt extends JavaPlugin {
         RankupGUI rankupGUI = new RankupGUI(playerProfiles, econ, rankupLoader);
         Bukkit.getPluginManager().registerEvents(rankupGUI, this);
 
-        MainMenu mainMenu = new MainMenu(this, pvgui, topVagterGUI, playerProfiles, statsGUI, rankupGUI);
+        VagtLevelGUI vagtLevelGUI = new VagtLevelGUI(playerProfiles);
+        Bukkit.getPluginManager().registerEvents(vagtLevelGUI, this);
+
+        MainMenu mainMenu = new MainMenu(this, pvgui, topVagterGUI, playerProfiles, statsGUI, rankupGUI, vagtLevelGUI);
         Bukkit.getPluginManager().registerEvents(mainMenu, this);
 
         VagtCommand vagtCommand = new VagtCommand(mainMenu, playerProfiles);
@@ -204,7 +210,7 @@ public class HLvagt extends JavaPlugin {
         OnJoin onJoin = new OnJoin(playerProfiles, settings);
         Bukkit.getPluginManager().registerEvents(onJoin, this);
 
-        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles, this, combatList, vagtFangePvpConfigManager, logger);
+        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles, this, combatList, vagtFangePvpConfigManager, logger, luckPerms);
         Bukkit.getPluginManager().registerEvents(damageListener, this);
 
 
@@ -213,6 +219,9 @@ public class HLvagt extends JavaPlugin {
 
         Dropcommand dropcommand = new Dropcommand(dropItemListener);
         getCommand("drop").setExecutor(dropcommand);
+
+        RegionEnterlistener regionEnterlistener = new RegionEnterlistener(logger);
+        Bukkit.getPluginManager().registerEvents(regionEnterlistener, this);
     }
 
 

@@ -7,6 +7,7 @@ import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.PVGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.RankupGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.StatsGUI;
+import com.gmail.markushygedombrowski.vagtMenu.subMenu.VagtLevelGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -47,9 +48,10 @@ public class MainMenu implements Listener {
     private PlayerProfiles playerProfiles;
     private StatsGUI statsGUI;
     private RankupGUI rankupGUI;
+    private VagtLevelGUI vagtLevelGUI;
 
 
-    public MainMenu(HLvagt plugin, PVGUI pvgui, TopVagterGUI topVagterGUI, PlayerProfiles playerProfiles, StatsGUI statsGUI, RankupGUI rankupGUI) {
+    public MainMenu(HLvagt plugin, PVGUI pvgui, TopVagterGUI topVagterGUI, PlayerProfiles playerProfiles, StatsGUI statsGUI, RankupGUI rankupGUI, VagtLevelGUI vagtLevelGUI) {
         this.plugin = plugin;
         this.pvgui = pvgui;
         this.topVagterGUI = topVagterGUI;
@@ -58,6 +60,7 @@ public class MainMenu implements Listener {
 
         this.statsGUI = statsGUI;
         this.rankupGUI = rankupGUI;
+        this.vagtLevelGUI = vagtLevelGUI;
     }
 
     public void create(Player p, PlayerProfile profile) {
@@ -116,6 +119,9 @@ public class MainMenu implements Listener {
                     break;
                 case STATS_INDEX:
                     statsGUI.create(p);
+                    break;
+                case VAGTLVL_INDEX:
+                    vagtLevelGUI.openVagtLevelGUI(p);
                     break;
             }
 

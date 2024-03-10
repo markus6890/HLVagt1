@@ -123,30 +123,11 @@ public class VagthavendeOfficer implements Listener {
             p.sendMessage("§7Du har fået §b" + exp + "§3 exp");
             profile.setXp(profile.getXp() + exp);
 
-            if(profile.getXp() >= profile.getXpToNextLvl()){
-                levelUp(p, profile);
-
-
-            }
-
-
             return amount;
         }
 
         return 0;
     }
 
-    private void levelUp(Player p, PlayerProfile profile) {
-        profile.setLvl(profile.getLvl() + 1);
-        p.sendMessage("§6§l--------§a§lLevel Up!§6§l--------");
-        p.sendMessage("Tillykke du er nu level §b" + profile.getLvl());
-        p.sendMessage("Du skal bruge §b" + profile.getXpToNextLvl() + " §3exp til næste level");
-        p.sendMessage("§6§l--------§a§lLevel Up!§6§l--------");
-        profile.setXp(0);
-        try {
-            playerProfiles.save(profile);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 }

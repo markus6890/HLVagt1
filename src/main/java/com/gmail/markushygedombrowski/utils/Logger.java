@@ -13,12 +13,14 @@ import java.util.Date;
 public class Logger {
     File generalReports;
     File vagtdeathlog;
+    File vagtcellelog;
     private HLvagt plugin;
     public Logger(HLvagt plugin) {
         this.plugin = plugin;
         System.out.println(plugin.getDataFolder()+"");
         generalReports = new File(plugin.getDataFolder() + "/reports.txt");
         vagtdeathlog = new File(plugin.getDataFolder() + "/vagtdeathlog.txt");
+        vagtcellelog = new File(plugin.getDataFolder() + "/vagtcellelog.txt");
     }
 
     public void addMessage(String message,String fileName){
@@ -38,6 +40,14 @@ public class Logger {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if(fileName.equalsIgnoreCase("vagtcellelog")){
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(vagtcellelog, true));
+                bw.append(message);
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -48,6 +58,7 @@ public class Logger {
             try {
                 generalReports.createNewFile();
                 vagtdeathlog.createNewFile();
+                vagtcellelog.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }

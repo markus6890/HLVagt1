@@ -11,6 +11,8 @@ import com.gmail.markushygedombrowski.utils.Utils;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -40,8 +42,9 @@ public class DamageListener implements Listener {
     private final CombatList combatList;
     private final VagtFangePvpConfigManager vFPvpConfig;
     private final Logger logger;
+    private LuckPerms luckPerms;
 
-    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig, Logger logger) {
+    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig, Logger logger, LuckPerms luckPerms) {
         this.settings = settings;
         this.vagtSpawnManager = vagtSpawnManager;
         this.profiles = profiles;
@@ -49,6 +52,7 @@ public class DamageListener implements Listener {
         this.combatList = combatList;
         this.vFPvpConfig = vFPvpConfig;
         this.logger = logger;
+        this.luckPerms = luckPerms;
     }
 
     @EventHandler
@@ -185,6 +189,11 @@ public class DamageListener implements Listener {
         Bukkit.broadcastMessage("§e§lBlock§c§l: " + block);
         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
         ItemStack[] defenderInv = defender.getInventory().getContents();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + defender.getName() + " permission set playervaults.commands.use false prison");
+        log(defender, attacker, rank, block, defenderInv);
+    }
+
+    private void log(Player defender, Player attacker, String rank, String block, ItemStack[] defenderInv) {
         logger.formatMessage(defender.getName() + "died to " + attacker.getName(),"VagtDeath: ", "vagtdeathlog");
         logger.formatMessage("Block: " + block,"VagtDeath: ", "vagtdeathlog");
         logger.formatMessage("Rank: " + rank,"VagtDeath: ", "vagtdeathlog");

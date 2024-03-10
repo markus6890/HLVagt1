@@ -69,6 +69,11 @@ public class StatsGUI implements Listener {
         diaGear.setItemMeta(diaGearMeta);
         bread.setItemMeta(breadMeta);
 
+        inv.setItem(ITEM_INDEXES[0], shards);
+        inv.setItem(ITEM_INDEXES[1], ironGear);
+        inv.setItem(ITEM_INDEXES[2], diaGear);
+        inv.setItem(ITEM_INDEXES[3], bread);
+
         p.openInventory(inv);
 
     }

@@ -84,21 +84,30 @@ public class VagtCooldown {
 
 
     public void handleCooldowns() {
-        if (cooldownPlayers.isEmpty()) {
+        if (cooldownPlayers == null || cooldownPlayers.isEmpty()) {
             return;
         }
-        cooldownPlayers.forEach((player, abilityCooldown) -> {
+        new HashMap<>(cooldownPlayers).forEach((player, abilityCooldown) -> {
+            if (abilityCooldown == null || abilityCooldown.cooldownMap == null || abilityCooldown.cooldownMap.isEmpty()) {
+                return;
+            }
+            abilityCooldown.cooldownMap.entrySet().stream().filter(vagt -> {
+                return getRemaining(player, vagt.getKey()) <= 0.0;
+            }).forEach((cooldownEntry) -> {
+                removeCooldownLon(player, cooldownEntry.getKey());
+            });
+        });
+        /*
+        new HashMap<>(cooldownPlayers).forEach((player, abilityCooldown) -> {
             if (abilityCooldown.cooldownMap.isEmpty()) {
                 return;
             }
             abilityCooldown.cooldownMap.entrySet().stream().filter(vagt -> {
                         return getRemaining(player, vagt.getKey()) <= 0.0;
                     }).forEach((cooldownEntry) -> {
-                        removeCooldownLon(player,cooldownEntry.getKey());
-
-
+                        removeCooldown(player,cooldownEntry.getKey());
                     });
-        });
+        }); */
 
     }
 }
