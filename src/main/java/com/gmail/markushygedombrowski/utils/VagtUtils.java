@@ -1,10 +1,12 @@
 package com.gmail.markushygedombrowski.utils;
+
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
 import org.bukkit.Bukkit;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.command.CommandSender;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
@@ -46,7 +49,7 @@ public class VagtUtils {
         int amount = 0;
         for (ItemStack item : items) {
             if (!(item == null)) {
-                if(item.getType() != Material.SKULL) {
+                if (item.getType() != Material.SKULL) {
                     item.setDurability((short) (item.getType().getMaxDurability() - item.getType().getMaxDurability()));
                     amount = amount + 1;
                 }
@@ -83,53 +86,53 @@ public class VagtUtils {
     }
 
 
-    public static List<String> top10Deaths(String perm) {
-        HashMap<String, Integer> stats = new HashMap<>();
-        List<Player> players = VagtUtils.getPlayers(perm);
+    public static List<String> top10Deaths() {
         List<String> list = new ArrayList<>();
-
-        players.forEach(player -> {
-            PlayerProfile profile = playerProfiles.getPlayerProfile(player.getUniqueId());
-            stats.put(player.getName(), profile.getDeaths());
+        List<Integer> sortmap = new LinkedList<>();
+        playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            sortmap.add(profile.getDeaths());
         });
-        List<Integer> sortmap = new LinkedList<>(stats.values());
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
-
-        sortmap.forEach(values -> stats.forEach((name, value) -> {
-            if (value.equals(values)) {
-                if (!list.contains(name + ": " + values)) {
-                    list.add("§6" + name + ": §7" + values);
+        sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            if (profile.getDeaths() == values) {
+                if (list.size() == 10) {
+                    return;
+                }
+                if (!list.contains("§6" + profile.getName() + ": §7" + values)) {
+                    list.add("§6" + profile.getName() + ": §7" + values);
                 }
             }
         }));
         return list;
     }
+
     public static boolean isPlayerNotOnline(Player player) {
         return player == null;
     }
-    public static List<String> top10Kills(String perm) {
-        HashMap<String, Integer> stats = new HashMap<>();
-        List<Player> players = VagtUtils.getPlayers(perm);
-        List<String> list = new ArrayList<>();
 
-        players.forEach(player -> {
-            PlayerProfile profile = playerProfiles.getPlayerProfile(player.getUniqueId());
-            stats.put(player.getName(), profile.getKills());
+    public static List<String> top10Kills() {
+
+        List<String> list = new ArrayList<>();
+        List<Integer> sortmap = new LinkedList<>();
+        playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            sortmap.add(profile.getKills());
         });
-        List<Integer> sortmap = new LinkedList<>(stats.values());
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
-
-        sortmap.forEach(values -> stats.forEach((name, value) -> {
-            if (value.equals(values)) {
-                if (!list.contains(name + ": " + values)) {
-                    list.add("§6" + name + ": §7" + values);
+        sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            if (profile.getKills() == values) {
+                if (list.size() == 10) {
+                    return;
+                }
+                if (!list.contains("§6" + profile.getName() + ": §7" + values)) {
+                    list.add("§6" + profile.getName() + ": §7" + values);
                 }
             }
         }));
         return list;
     }
+
     public static List<String> top10Walk(String perm) {
         HashMap<String, Integer> stats = new HashMap<>();
         List<Player> players = VagtUtils.getPlayers(perm);
@@ -137,7 +140,7 @@ public class VagtUtils {
 
         players.forEach(player -> {
 
-            stats.put(player.getName(), player.getStatistic(Statistic.WALK_ONE_CM ) / 100);
+            stats.put(player.getName(), player.getStatistic(Statistic.WALK_ONE_CM) / 100);
         });
         List<Integer> sortmap = new LinkedList<>(stats.values());
         Collections.sort(sortmap);
@@ -152,8 +155,6 @@ public class VagtUtils {
         }));
         return list;
     }
-
-
 
 
     public static boolean isSenderNotPlayer(CommandSender sender) {
@@ -173,28 +174,55 @@ public class VagtUtils {
     }
 
     public static List<String> top10Money(String perm) {
-        HashMap<String, Integer> stats = new HashMap<>();
-        List<Player> players = VagtUtils.getPlayers(perm);
         List<String> list = new ArrayList<>();
-        for (Player player : players) {
-            stats.put(player.getName(), (int) plugin.econ.getBalance(player));
-        }
-        String pattern = "###,###.##";
-        DecimalFormat df = new DecimalFormat(pattern);
-        List<Integer> sortmap = new LinkedList<>(stats.values());
-        Collections.sort(sortmap);
-        Collections.reverse(sortmap);
-        for (int values : sortmap) {
-            for (String name : stats.keySet()) {
-                if (stats.get(name) == values) {
-                    if (!list.contains(name + ": " + values)) {
-                        list.add("§6" + name + ": §7" + df.format(values));
-                    }
-                }
-            }
-        }
+        List<Integer> sortmap = new LinkedList<>();
+
+
         return list;
     }
+
+    public static List<String> top10Level() {
+        List<String> list = new ArrayList<>();
+        List<Integer> sortmap = new LinkedList<>();
+        playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            sortmap.add(profile.getLvl());
+        });
+        Collections.sort(sortmap);
+        Collections.reverse(sortmap);
+        sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            if (profile.getLvl() == values) {
+                if (list.size() == 10) {
+                    return;
+                }
+                if (!list.contains("§6" + profile.getName() + ": §7" + values)) {
+                    list.add("§6" + profile.getName() + ": §7" + values);
+                }
+            }
+        }));
+        return list;
+    }
+
+    public static List<String> top10VagtPoster() {
+        List<String> list = new ArrayList<>();
+        List<Integer> sortmap = new LinkedList<>();
+        playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            sortmap.add(profile.getVagtposter());
+        });
+        Collections.sort(sortmap);
+        Collections.reverse(sortmap);
+        sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
+            if (profile.getVagtposter() == values) {
+                if (list.size() == 10) {
+                    return;
+                }
+                if (!list.contains("§6" + profile.getName() + ": §7" + values)) {
+                    list.add("§6" + profile.getName() + ": §7" + values);
+                }
+            }
+        }));
+        return list;
+    }
+
 
     public static boolean procent(double pro) {
         Random r = new Random();
@@ -204,8 +232,20 @@ public class VagtUtils {
     }
 
 
+    public static ItemStack getGlass() {
+        Random r = new Random();
+        return new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) r.nextInt(15));
+    }
+    public static String getRegion(Location location) {
 
-
+        if (Utils.isLocInRegion(location, "a")) {
+            return "a";
+        } else if (Utils.isLocInRegion(location, "b")) {
+            return "b";
+        } else {
+            return "c";
+        }
+    }
 }
 
 

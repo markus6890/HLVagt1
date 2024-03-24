@@ -85,7 +85,15 @@ public class DeliverGearGUI implements Listener {
                 return false;
             }
             p.sendMessage("§7Du har afleveret §a" + gear.getItemMeta().getDisplayName() + "§7!");
-            p.getInventory().removeItem(new ItemStack(gear.getType(), 1));
+            ItemStack itemStack = new ItemStack(gear.getType(), 1);
+            if(item.getItemMeta().getDisplayName() != null) {
+                ItemMeta meta = item.getItemMeta();
+                itemStack.setItemMeta(meta);
+            }
+            itemStack.setDurability(item.getDurability());
+            itemStack.addEnchantments(item.getEnchantments());
+
+            p.getInventory().removeItem(itemStack);
             return true;
         }
         return false;

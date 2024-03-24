@@ -1,7 +1,7 @@
 main: com.gmail.markushygedombrowski.HLvagt
 name: HLvagt
 version: "1.0"
-softdepend:  [Vault,WorldGuard,WorldEdit,HeadDatabase,Combat,HLUtils,Citizens,VagtProfiler,WGRegionEvents]
+depend:  [Vault,WorldGuard,WorldEdit,HeadDatabase,Combat,HLUtils,Citizens,VagtProfiler,WGRegionEvents]
 commands:
   vagtspawn:
     aliases: ["setvagtspawn", "resetvagtspawn"]
@@ -25,3 +25,5 @@ commands:
   vresetall:
     aliases: ["vconfirmresetall", "vreset", "vexp", "vlevel",]
     description: "resetter alle vagter"
+  panikrum:
+    description: "panikrum"

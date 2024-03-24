@@ -2,6 +2,7 @@ package com.gmail.markushygedombrowski.warp;
 
 
 
+import com.gmail.markushygedombrowski.utils.VagtUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -30,7 +31,8 @@ public class Warpsign implements Listener {
                         p.sendMessage("§4Det har du ikke permission til!");
                         return;
                     }
-                    vagtWarpGUI.create(p);
+                    String block = VagtUtils.getRegion(p.getLocation());
+                    vagtWarpGUI.create(p,block);
                 }
 
             }

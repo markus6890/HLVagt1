@@ -9,6 +9,7 @@ import com.gmail.markushygedombrowski.vagtMenu.subMenu.RankupGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.StatsGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.VagtLevelGUI;
 import com.gmail.markushygedombrowski.vagtMenu.subMenu.topVagter.TopVagterGUI;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
@@ -20,6 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -29,22 +31,16 @@ public class MainMenu implements Listener {
     private HLvagt plugin;
     private PVGUI pvgui;
     private TopVagterGUI topVagterGUI;
-    private final int SPILTID_INDEX = 1;
-    private final int TOPVAGT_INDEX = 4;
-    private final int STATS_INDEX = 7;
-    private final int ACHIVEMENT_INDEX = 22;
-    private final int PV_INDEX = 19;
-    private final int RANKUP_INDEX = 25;
-    private final int VAGTLVL_INDEX = 30;
-    private final int L0N_INDEX = 32;
-    private ItemStack stats = new ItemStack(Material.DIAMOND_SWORD);
-    private ItemStack topvagt = new ItemStack(Material.BUCKET);
-    private ItemStack spilletid = new ItemStack(Material.WATCH);
-    private ItemStack pv = new ItemStack(Material.CHEST);
-    private ItemStack achivement = new ItemStack(Material.EXP_BOTTLE);
-    private ItemStack rankup = new ItemStack(Material.GOLD_SWORD);
-    private ItemStack vagtlvl = new ItemStack(Material.BEACON);
-    private ItemStack lon = new ItemStack(Material.GOLD_INGOT);
+    private final int SPILTID_INDEX = 11;
+    private final int STATS_INDEX = 13;
+    private final int TOPVAGT_INDEX = 28;
+    private final int ACHIVEMENT_INDEX = 49;
+    private final int PV_INDEX = 31;
+    private final int RANKUP_INDEX = 34;
+    private final int VAGTLVL_INDEX = 47;
+    private final int L0N_INDEX = 15;
+    private final int SETTINGS_INDEX = 51;
+    private HeadDatabaseAPI api = new HeadDatabaseAPI();
     private PlayerProfiles playerProfiles;
     private StatsGUI statsGUI;
     private RankupGUI rankupGUI;
@@ -56,28 +52,15 @@ public class MainMenu implements Listener {
         this.pvgui = pvgui;
         this.topVagterGUI = topVagterGUI;
         this.playerProfiles = playerProfiles;
-
-
         this.statsGUI = statsGUI;
         this.rankupGUI = rankupGUI;
         this.vagtLevelGUI = vagtLevelGUI;
     }
 
     public void create(Player p, PlayerProfile profile) {
-        Inventory inventory = Bukkit.createInventory(null, 36, "§cVagt Menu §8" + p.getName());
+        Inventory inventory = Bukkit.createInventory(null, 54, "§cVagt Menu §8" + p.getName());
+        meta(p, profile, inventory);
 
-
-
-        meta(p, profile);
-
-        inventory.setItem(STATS_INDEX, stats);
-        inventory.setItem(TOPVAGT_INDEX, topvagt);
-        inventory.setItem(SPILTID_INDEX, spilletid);
-        inventory.setItem(PV_INDEX, pv);
-        inventory.setItem(ACHIVEMENT_INDEX, achivement);
-        inventory.setItem(RANKUP_INDEX, rankup);
-        inventory.setItem(VAGTLVL_INDEX, vagtlvl);
-        inventory.setItem(L0N_INDEX, lon);
 
 
         p.openInventory(inventory);
@@ -123,6 +106,8 @@ public class MainMenu implements Listener {
                 case VAGTLVL_INDEX:
                     vagtLevelGUI.openVagtLevelGUI(p);
                     break;
+                case SETTINGS_INDEX:
+                    break;
             }
 
             event.setCancelled(true);
@@ -132,7 +117,18 @@ public class MainMenu implements Listener {
 
     }
 
-    public void meta(Player p, PlayerProfile profile) {
+    public void meta(Player p, PlayerProfile profile, Inventory inventory) {
+
+        ItemStack topvagt = api.getItemHead("846");
+        ItemStack spilletid = api.getItemHead("2122");
+        ItemStack pv = api.getItemHead("1193");
+        ItemStack achivement = api.getItemHead("3231");
+        ItemStack rankup = api.getItemHead("36770");
+        ItemStack vagtlvl = api.getItemHead("53095");
+        ItemStack lon = api.getItemHead("66671");
+        ItemStack settings = api.getItemHead("23458");
+        ItemStack stats = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+
         String pattern = "###,###.##";
         DecimalFormat df = new DecimalFormat(pattern);
         int seconds = p.getStatistic(Statistic.PLAY_ONE_TICK) / 20;
@@ -140,16 +136,20 @@ public class MainMenu implements Listener {
         int hours = (minutes / 60);
         int actualMinutes = minutes - (hours * 60);
 
-
+        SkullMeta statsmeta = (SkullMeta) stats.getItemMeta();
+        statsmeta.setOwner(p.getName());
+        stats.setItemMeta(statsmeta);
         // Getting Meta
         ItemMeta metastats = stats.getItemMeta();
         ItemMeta metatopv = topvagt.getItemMeta();
+
         ItemMeta metatid = spilletid.getItemMeta();
         ItemMeta metapv = pv.getItemMeta();
         ItemMeta metaachive = achivement.getItemMeta();
         ItemMeta metarankup = rankup.getItemMeta();
         ItemMeta metavagtlvl = vagtlvl.getItemMeta();
         ItemMeta metalon = lon.getItemMeta();
+        ItemMeta metasettings = settings.getItemMeta();
 
         // DisplayName
         metastats.setDisplayName("§7[§a§lStats§7]");
@@ -160,6 +160,7 @@ public class MainMenu implements Listener {
         metarankup.setDisplayName("§7[§2Rank up§7]");
         metavagtlvl.setDisplayName("§7[§cVagt-Levels§7]");
         metalon.setDisplayName("§7[§aLøn§7]");
+        metasettings.setDisplayName("§7[§cSettings§7]");
 
         // Lores
 
@@ -176,11 +177,9 @@ public class MainMenu implements Listener {
         statsLore.add("§a§lVagt Poster: §f" + profile.getVagtposter());
 
 
-
         List<String> spilletidlore = new ArrayList<>();
         spilletidlore.add("§9" + hours + " §6Hours");
-        spilletidlore.add("§9"+actualMinutes + " §6Minutes");
-
+        spilletidlore.add("§9" + actualMinutes + " §6Minutes");
 
 
         List<String> lonLore = new ArrayList<>();
@@ -194,6 +193,7 @@ public class MainMenu implements Listener {
         metalon.setLore(lonLore);
 
         // Setting Meta on Item
+
         stats.setItemMeta(metastats);
         topvagt.setItemMeta(metatopv);
         spilletid.setItemMeta(metatid);
@@ -202,6 +202,22 @@ public class MainMenu implements Listener {
         rankup.setItemMeta(metarankup);
         vagtlvl.setItemMeta(metavagtlvl);
         lon.setItemMeta(metalon);
+        settings.setItemMeta(metasettings);
+
+        inventory.setItem(STATS_INDEX, stats);
+        inventory.setItem(TOPVAGT_INDEX, topvagt);
+        inventory.setItem(SPILTID_INDEX, spilletid);
+        inventory.setItem(PV_INDEX, pv);
+        inventory.setItem(ACHIVEMENT_INDEX, achivement);
+        inventory.setItem(RANKUP_INDEX, rankup);
+        inventory.setItem(VAGTLVL_INDEX, vagtlvl);
+        inventory.setItem(L0N_INDEX, lon);
+        inventory.setItem(SETTINGS_INDEX, settings);
+        inventory.forEach(item -> {
+            if (item == null) {
+                inventory.setItem(inventory.firstEmpty(), new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5));
+            }
+        });
 
     }
 

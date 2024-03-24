@@ -5,9 +5,11 @@ import com.gmail.markushygedombrowski.buff.BuffGui;
 import com.gmail.markushygedombrowski.combat.CombatList;
 import com.gmail.markushygedombrowski.commands.*;
 import com.gmail.markushygedombrowski.deliveredItems.ItemProfileLoader;
+import com.gmail.markushygedombrowski.inventory.ChangeInvOnWarp;
 import com.gmail.markushygedombrowski.npc.VagtNPCer;
 import com.gmail.markushygedombrowski.npc.vagthavende.DeliverGearGUI;
 import com.gmail.markushygedombrowski.npc.vagthavende.VagthavendeOfficer;
+import com.gmail.markushygedombrowski.panikrum.PanikRumManager;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.rankup.RankupLoader;
 
@@ -49,21 +51,23 @@ public class HLvagt extends JavaPlugin {
     private VagtFangePvpConfigManager vagtFangePvpConfigManager;
     private ItemProfileLoader itemProfileLoader;
     private VagtProfiler vagtProfiler;
+    private PanikRumManager panikRumManager;
     private static HLvagt instance;
     private LuckPerms luckPerms;
+    private ChangeInvOnWarp changeInvOnWarp;
 
 
     public void onEnable() {
         instance = this;
         vagtProfiler = VagtProfiler.getInstance();
-
-
         combatList = CombatMain.getInstance().getCombatList();
         playerProfiles = vagtProfiler.getPlayerProfiles();
         settings = vagtProfiler.getSettings();
         configM = vagtProfiler.getConfigManager();
         itemProfileLoader = vagtProfiler.getItemProfileLoader();
         vagtFangePvpConfigManager = vagtProfiler.getVagtFangePvpConfigManager();
+        panikRumManager = vagtProfiler.getPanikRumManager();
+
         saveDefaultConfig();
         FileConfiguration config = getConfig();
         loadConfigManager();
@@ -103,6 +107,8 @@ public class HLvagt extends JavaPlugin {
 
 
         VagtCooldown vagtCooldown = new VagtCooldown(lon);
+        RegionEnterlistener regionEnterlistener = new RegionEnterlistener(logger, panikRumManager);
+        Bukkit.getPluginManager().registerEvents(regionEnterlistener, this);
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 
@@ -111,8 +117,23 @@ public class HLvagt extends JavaPlugin {
                 vagtCooldown.handleCooldowns();
             }
         }, 1L, 1L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                regionEnterlistener.panikrumTimer();
+            }
+        }, 0, 20);
 
 
+
+
+
+    }
+
+    public void reload() {
+        reloadConfig();
+
+        loadConfigManager();
     }
 
 
@@ -123,8 +144,8 @@ public class HLvagt extends JavaPlugin {
         vagtSpawnManager.load();
         VagtSpawnCommand vagtSpawnCommand = new VagtSpawnCommand(vagtSpawnManager, this);
         getCommand("vagtspawn").setExecutor(vagtSpawnCommand);
-
-        VagtWarpGUI vagtWarpGUI = new VagtWarpGUI(vagtSpawnManager);
+        changeInvOnWarp = vagtProfiler.getChangeInventory();
+        VagtWarpGUI vagtWarpGUI = new VagtWarpGUI(vagtSpawnManager, changeInvOnWarp);
         Warpsign warpsign = new Warpsign(vagtWarpGUI);
         Bukkit.getPluginManager().registerEvents(vagtWarpGUI, this);
         Bukkit.getPluginManager().registerEvents(warpsign, this);
@@ -158,7 +179,7 @@ public class HLvagt extends JavaPlugin {
 
 
 
-        TopVagterGUI topVagterGUI = new TopVagterGUI(playerProfiles);
+        TopVagterGUI topVagterGUI = new TopVagterGUI();
         Bukkit.getPluginManager().registerEvents(topVagterGUI, this);
 
         StatsGUI statsGUI = new StatsGUI(playerProfiles);
@@ -199,7 +220,7 @@ public class HLvagt extends JavaPlugin {
 
         BuffGui buffGui = new BuffGui(settings, this);
         Bukkit.getPluginManager().registerEvents(buffGui, this);
-        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI, buffGui, logger);
+        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI, buffGui, logger, playerProfiles);
         Bukkit.getPluginManager().registerEvents(vagtSigns, this);
 
         AktivBuffCmd aktivBuffCmd = new AktivBuffCmd(settings);
@@ -210,7 +231,7 @@ public class HLvagt extends JavaPlugin {
         OnJoin onJoin = new OnJoin(playerProfiles, settings);
         Bukkit.getPluginManager().registerEvents(onJoin, this);
 
-        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles, this, combatList, vagtFangePvpConfigManager, logger, luckPerms);
+        DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles, this, combatList, vagtFangePvpConfigManager, logger, luckPerms, changeInvOnWarp);
         Bukkit.getPluginManager().registerEvents(damageListener, this);
 
 
@@ -219,9 +240,10 @@ public class HLvagt extends JavaPlugin {
 
         Dropcommand dropcommand = new Dropcommand(dropItemListener);
         getCommand("drop").setExecutor(dropcommand);
+        PanikRumCommands panikRumCommands = new PanikRumCommands(panikRumManager);
+        getCommand("panikrum").setExecutor(panikRumCommands);
 
-        RegionEnterlistener regionEnterlistener = new RegionEnterlistener(logger);
-        Bukkit.getPluginManager().registerEvents(regionEnterlistener, this);
+
     }
 
 

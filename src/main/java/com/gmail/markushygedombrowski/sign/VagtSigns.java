@@ -2,6 +2,8 @@ package com.gmail.markushygedombrowski.sign;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.buff.BuffGui;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
 import com.gmail.markushygedombrowski.utils.Logger;
 import com.gmail.markushygedombrowski.utils.VagtUtils;
@@ -33,7 +35,8 @@ public class VagtSigns implements Listener {
 
     private BuffGui buffGui;
     private Logger logger;
-    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, BuffGui buffGui, Logger logger) {
+    private PlayerProfiles playerProfiles;
+    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, BuffGui buffGui, Logger logger, PlayerProfiles playerProfiles) {
         this.vagtSpawnManager = vagtSpawnManager;
         this.settings = settings;
         this.plugin = plugin;
@@ -41,6 +44,7 @@ public class VagtSigns implements Listener {
 
         this.buffGui = buffGui;
         this.logger = logger;
+        this.playerProfiles = playerProfiles;
     }
 
 
@@ -75,6 +79,7 @@ public class VagtSigns implements Listener {
                         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
                         p.teleport(vagtSpawnManager.getWarpInfo("vagtc").getLocation());
                         p.getInventory().clear();
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission unset playervaults.commands.use");
                     } else {
                         p.sendMessage("§cDu har ikke nok!");
                         p.sendMessage("§cDu skal bruge 64 stone og 64 cobble");
@@ -119,6 +124,15 @@ public class VagtSigns implements Listener {
                     }
                     ItemStack itemStack = new ItemStack(Material.WOOD_PICKAXE);
                     itemStack.addEnchantment(Enchantment.SILK_TOUCH, 1);
+                    PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
+                    if(profile.getLvl() >= 30) {
+                        itemStack.addEnchantment(Enchantment.DURABILITY, 3);
+                    } else if (profile.getLvl() >= 20) {
+                        itemStack.addEnchantment(Enchantment.DURABILITY, 2);
+                    } else if (profile.getLvl() >= 10) {
+                        itemStack.addEnchantment(Enchantment.DURABILITY, 1);
+                    }
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission unset playervaults.commands.use");
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.setDisplayName("§cGratis pickaxe!");
                     itemStack.setItemMeta(itemMeta);

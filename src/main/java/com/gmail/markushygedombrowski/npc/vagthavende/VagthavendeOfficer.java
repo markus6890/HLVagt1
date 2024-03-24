@@ -22,7 +22,8 @@ public class VagthavendeOfficer implements Listener {
 
     private final int SHARDS_INDEX = 11;
     private final int GEAR_INDEX = 13;
-    private final int BREAD_INDEX = 15;
+    private final int BREAD_INDEX = 6;
+    private final int BLAZERODS_INDEX = 24;
     private DeliverGearGUI deliverGearGUI;
     private ItemProfileLoader itemProfileLoader;
     private PlayerProfiles playerProfiles;
@@ -38,12 +39,16 @@ public class VagthavendeOfficer implements Listener {
         ItemStack shards = new ItemStack(Material.PRISMARINE_CRYSTALS, 1);
         ItemStack gear = new ItemStack(Material.IRON_HELMET, 1);
         ItemStack bread = new ItemStack(Material.BREAD, 1);
+        ItemStack blazeRods = new ItemStack(Material.BLAZE_ROD, 1);
         ItemMeta shardsMeta = shards.getItemMeta();
         ItemMeta gearMeta = gear.getItemMeta();
         ItemMeta breadMeta = bread.getItemMeta();
+        ItemMeta blazeRodsMeta = blazeRods.getItemMeta();
         shardsMeta.setDisplayName("§9§lShards");
         gearMeta.setDisplayName("§6§lGear");
         breadMeta.setDisplayName("§e§lBread");
+        blazeRodsMeta.setDisplayName("§c§lBlazeRods");
+
         List<String> lore = new ArrayList<>();
         lore.add(0, "§7Aflever §9§lShards §7her!");
         lore.add(1, "§7Du for §b" + itemProfileLoader.getItemProfile(shardsMeta.getDisplayName()).getExp() + " §3exp");
@@ -54,12 +59,18 @@ public class VagthavendeOfficer implements Listener {
         lore.set(0, "§7Aflever §e§lBread §7her!");
         lore.add(1, "§7Du for §b" + itemProfileLoader.getItemProfile(breadMeta.getDisplayName()).getExp() + " §3exp");
         breadMeta.setLore(lore);
+        lore.clear();
+        lore.add(0, "§7Aflever §c§lBlazeRods §7her!");
+        lore.add(1, "§7Du for §b" + itemProfileLoader.getItemProfile(blazeRodsMeta.getDisplayName()).getExp() + " §3exp");
+        blazeRodsMeta.setLore(lore);
         shards.setItemMeta(shardsMeta);
         gear.setItemMeta(gearMeta);
         bread.setItemMeta(breadMeta);
+        blazeRods.setItemMeta(blazeRodsMeta);
         inventory.setItem(SHARDS_INDEX, shards);
         inventory.setItem(GEAR_INDEX, gear);
         inventory.setItem(BREAD_INDEX, bread);
+        inventory.setItem(BLAZERODS_INDEX, blazeRods);
         player.openInventory(inventory);
 
     }
@@ -94,6 +105,14 @@ public class VagthavendeOfficer implements Listener {
                         break;
                     }
                     profile.getDeliveredItems().setBread(profile.getDeliveredItems().getBread() + amount);
+                    break;
+                case BLAZERODS_INDEX:
+                    amount = deliverItem(p, clickeditem);
+                    if (amount == 0) {
+                        p.sendMessage("§7Du har ikke §c§lBlazeRods §7i dit inventory");
+                        break;
+                    }
+                    profile.getDeliveredItems().setBlazeRods(profile.getDeliveredItems().getBlazeRods() + amount);
                     break;
             }
             event.setCancelled(true);

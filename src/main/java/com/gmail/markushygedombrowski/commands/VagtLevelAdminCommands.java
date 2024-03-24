@@ -1,5 +1,6 @@
 package com.gmail.markushygedombrowski.commands;
 
+import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class VagtLevelAdminCommands implements CommandExecutor {
     private PlayerProfiles playerProfiles;
+
 
     public VagtLevelAdminCommands(PlayerProfiles playerProfiles) {
         this.playerProfiles = playerProfiles;
@@ -38,6 +40,21 @@ public class VagtLevelAdminCommands implements CommandExecutor {
         } else if (alias.equalsIgnoreCase("vreset")) {
             reset(args, p);
             return true;
+        } else if(alias.equalsIgnoreCase("showstats")) {
+            if(args.length == 0) {
+                p.sendMessage("§4Brug /showstats <spiller>");
+                return true;
+            }
+            Player target = getPlayer(args, p);
+            if (target == null) return true;
+            if(!target.hasPermission("vagt")) {
+                p.sendMessage("§4Spilleren er ikke vagt");
+                return true;
+            }
+            PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
+
+
+            return true;
         }
         if (alias.equalsIgnoreCase("vconfirmresetall")) {
             reseta = true;
@@ -61,7 +78,7 @@ public class VagtLevelAdminCommands implements CommandExecutor {
 
     private void confirmResetAll(Player p) {
         playerProfiles.getProfileMap().values().forEach(profile -> {
-            profile.setLvl(0);
+            profile.setLvl(1);
             profile.setXp(0);
 
         });
@@ -76,7 +93,7 @@ public class VagtLevelAdminCommands implements CommandExecutor {
         Player target = getPlayer(args, p);
         if (target == null) return;
         PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
-        profile.setLvl(0);
+        profile.setLvl(1);
         profile.setXp(0);
         p.sendMessage("§aDu har nulstillet " + target.getName() + "'s level og exp");
         try {

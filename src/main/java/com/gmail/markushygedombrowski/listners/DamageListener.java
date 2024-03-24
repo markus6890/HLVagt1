@@ -2,6 +2,7 @@ package com.gmail.markushygedombrowski.listners;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.combat.CombatList;
+import com.gmail.markushygedombrowski.inventory.ChangeInvOnWarp;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
@@ -12,7 +13,6 @@ import com.gmail.markushygedombrowski.utils.VagtUtils;
 import com.gmail.markushygedombrowski.warp.VagtSpawnManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -43,8 +43,9 @@ public class DamageListener implements Listener {
     private final VagtFangePvpConfigManager vFPvpConfig;
     private final Logger logger;
     private LuckPerms luckPerms;
+    private final ChangeInvOnWarp changeInvOnWarp;
 
-    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig, Logger logger, LuckPerms luckPerms) {
+    public DamageListener(Settings settings, VagtSpawnManager vagtSpawnManager, PlayerProfiles profiles, HLvagt plugin, CombatList combatList, VagtFangePvpConfigManager vFPvpConfig, Logger logger, LuckPerms luckPerms, ChangeInvOnWarp changeInvOnWarp) {
         this.settings = settings;
         this.vagtSpawnManager = vagtSpawnManager;
         this.profiles = profiles;
@@ -53,6 +54,7 @@ public class DamageListener implements Listener {
         this.vFPvpConfig = vFPvpConfig;
         this.logger = logger;
         this.luckPerms = luckPerms;
+        this.changeInvOnWarp = changeInvOnWarp;
     }
 
     @EventHandler
@@ -143,7 +145,7 @@ public class DamageListener implements Listener {
         String block = getBlockDisplayName(defender);
 
         sendVagtDeathMessage(defender, attacker, rank, block);
-
+        changeInvOnWarp.clearInventory(defender.getUniqueId(),VagtUtils.getRegion(defender.getLocation()));
         if(Utils.isLocInRegion(defender.getLocation(),"bandekrig")) {
             defender.sendMessage("§7[§cBandeKrig§7] §cDu døde til bandekrig event");
             defender.setMetadata("bandekrigDeathvagt",new FixedMetadataValue(plugin,true));
