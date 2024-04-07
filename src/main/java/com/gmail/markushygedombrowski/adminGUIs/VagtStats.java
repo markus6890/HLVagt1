@@ -61,15 +61,15 @@ public class VagtStats implements Listener {
         vagtposterMeta.setDisplayName("§a§lVagt Poster");
 
         List<String> lore = new ArrayList<>();
-        lore.add(0, "§aVagt Level er §6" + profile.getLvl());
+        lore.add(0, "§aVagt Level: §6" + profile.getProperty("level"));
         vagtLevelMeta.setLore(lore);
         vagtLevel.setItemMeta(vagtLevelMeta);
 
         lore.set(0,"§6§lStats§7");
-        lore.add(1,"§c§lDød: §f" + profile.getDeaths());
-        lore.add(2,"§a§lDræbt: §f" + profile.getKills());
+        lore.add(1,"§c§lDød: §f" + profile.getProperty("deaths"));
+        lore.add(2,"§a§lDræbt: §f" + profile.getProperty("kills"));
         lore.add(3,"§a§lPenge: §f" + plugin.econ.getBalance(target));
-        lore.add(4,"§a§lLøn: §f" + profile.getLon());
+        lore.add(4,"§a§lLøn: §f" + profile.getProperty("salary"));
         statsMeta.setLore(lore);
         stats.setItemMeta(statsMeta);
         lore.clear();
@@ -80,7 +80,7 @@ public class VagtStats implements Listener {
         lore.clear();
 
         lore.add(0,"§c§lPV§7");
-        lore.add("§a§lPV: §f" + profile.getPv());
+        lore.add("§a§lPV: §f" + profile.getProperty("pv"));
         pvMeta.setLore(lore);
         pv.setItemMeta(pvMeta);
         lore.clear();
@@ -97,7 +97,7 @@ public class VagtStats implements Listener {
         lore.clear();
 
         lore.add(0,"§a§lVagt Poster§7");
-        lore.add("§a§lVagt Poster: §f" + profile.getVagtposter());
+        lore.add("§a§lVagt Poster: §f" + profile.getProperty("vagtposter"));
         vagtposterMeta.setLore(lore);
         vagtposter.setItemMeta(vagtposterMeta);
         lore.clear();

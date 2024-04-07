@@ -2,6 +2,8 @@ package com.gmail.markushygedombrowski.sign;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.buff.BuffGui;
+import com.gmail.markushygedombrowski.inventory.ChangeInvOnWarp;
+import com.gmail.markushygedombrowski.inventory.InvHolder;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
@@ -36,7 +38,9 @@ public class VagtSigns implements Listener {
     private BuffGui buffGui;
     private Logger logger;
     private PlayerProfiles playerProfiles;
-    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, BuffGui buffGui, Logger logger, PlayerProfiles playerProfiles) {
+    private ChangeInvOnWarp changeInvOnWarp;
+
+    public VagtSigns(VagtSpawnManager vagtSpawnManager, Settings settings, HLvagt plugin, RepairGUI repairGUI, BuffGui buffGui, Logger logger, PlayerProfiles playerProfiles, ChangeInvOnWarp changeInvOnWarp) {
         this.vagtSpawnManager = vagtSpawnManager;
         this.settings = settings;
         this.plugin = plugin;
@@ -45,6 +49,7 @@ public class VagtSigns implements Listener {
         this.buffGui = buffGui;
         this.logger = logger;
         this.playerProfiles = playerProfiles;
+        this.changeInvOnWarp = changeInvOnWarp;
     }
 
 
@@ -79,7 +84,14 @@ public class VagtSigns implements Listener {
                         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
                         p.teleport(vagtSpawnManager.getWarpInfo("vagtc").getLocation());
                         p.getInventory().clear();
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission unset playervaults.commands.use");
+                        InvHolder invHolder = changeInvOnWarp.getInventory(p.getUniqueId(), VagtUtils.getRegion(p.getLocation()));
+                        if (invHolder != null) {
+                            p.getInventory().setContents(invHolder.getInventory());
+                            p.getInventory().setArmorContents(invHolder.getGear());
+                            p.sendMessage("Du har skiftet gear");
+                            return;
+                        }
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission unset playervaults.commands.use prison");
                     } else {
                         p.sendMessage("§cDu har ikke nok!");
                         p.sendMessage("§cDu skal bruge 64 stone og 64 cobble");
@@ -110,7 +122,7 @@ public class VagtSigns implements Listener {
 
                 if (sign.getLine(0).equalsIgnoreCase("§e§lRepair") && sign.getLine(1).equalsIgnoreCase("Klik for at") && sign.getLine(2).equalsIgnoreCase("Repair dine ting") && sign.getLine(3).equalsIgnoreCase("§e===============")) {
                     if (VagtUtils.notHasPermission(p, "vagtRepair")) return;
-                    logger.formatMessage(p.getName() + " has opened repair sign", "REPAIRSIGN: ","generalreport");
+                    logger.formatMessage(p.getName() + " has opened repair sign", "REPAIRSIGN: ", "generalreport");
                     repairGUI.create(p);
                     return;
                 }
@@ -125,12 +137,21 @@ public class VagtSigns implements Listener {
                     ItemStack itemStack = new ItemStack(Material.WOOD_PICKAXE);
                     itemStack.addEnchantment(Enchantment.SILK_TOUCH, 1);
                     PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
-                    if(profile.getLvl() >= 30) {
-                        itemStack.addEnchantment(Enchantment.DURABILITY, 3);
-                    } else if (profile.getLvl() >= 20) {
-                        itemStack.addEnchantment(Enchantment.DURABILITY, 2);
-                    } else if (profile.getLvl() >= 10) {
-                        itemStack.addEnchantment(Enchantment.DURABILITY, 1);
+                    int playerLevel = (int) profile.getProperty("level");
+
+                    if (playerLevel >= 10) {
+                        itemStack.addEnchantment(Enchantment.DURABILITY, 1); // Unbreaking 1
+                    }
+                    if (playerLevel >= 20) {
+                        itemStack.addEnchantment(Enchantment.DURABILITY, 2); // Unbreaking 2
+                    }
+                    if (playerLevel >= 25) {
+                        itemStack.addEnchantment(Enchantment.DURABILITY, 2); // Unbreaking 2
+                        itemStack.addEnchantment(Enchantment.DIG_SPEED, 1); // Efficiency 1
+                    }
+                    if (playerLevel >= 30) {
+                        itemStack.addEnchantment(Enchantment.DURABILITY, 3); // Unbreaking 3
+                        itemStack.addEnchantment(Enchantment.DIG_SPEED, 1); // Efficiency 1
                     }
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission unset playervaults.commands.use");
                     ItemMeta itemMeta = itemStack.getItemMeta();
@@ -142,7 +163,7 @@ public class VagtSigns implements Listener {
 
                 }
 
-                if(sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik her for") && sign.getLine(2).equalsIgnoreCase("§cAt komme op") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
+                if (sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik her for") && sign.getLine(2).equalsIgnoreCase("§cAt komme op") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
                     if (VagtUtils.notHasPermission(p, "vagt")) return;
 
                     VagtSpawnInfo vagtSpawnInfo = vagtSpawnManager.getWarpInfo("spassermine");

@@ -90,12 +90,12 @@ public class VagtUtils {
         List<String> list = new ArrayList<>();
         List<Integer> sortmap = new LinkedList<>();
         playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            sortmap.add(profile.getDeaths());
+            sortmap.add((int)profile.getProperty("deaths"));
         });
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
         sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            if (profile.getDeaths() == values) {
+            if ((int)profile.getProperty("deaths") == values) {
                 if (list.size() == 10) {
                     return;
                 }
@@ -116,12 +116,12 @@ public class VagtUtils {
         List<String> list = new ArrayList<>();
         List<Integer> sortmap = new LinkedList<>();
         playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            sortmap.add(profile.getKills());
+            sortmap.add((int)profile.getProperty("kills"));
         });
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
         sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            if (profile.getKills() == values) {
+            if ((int)profile.getProperty("kills") == values) {
                 if (list.size() == 10) {
                     return;
                 }
@@ -185,12 +185,12 @@ public class VagtUtils {
         List<String> list = new ArrayList<>();
         List<Integer> sortmap = new LinkedList<>();
         playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            sortmap.add(profile.getLvl());
+            sortmap.add((int)profile.getProperty("level"));
         });
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
         sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            if (profile.getLvl() == values) {
+            if ((int)profile.getProperty("level") == values) {
                 if (list.size() == 10) {
                     return;
                 }
@@ -206,12 +206,12 @@ public class VagtUtils {
         List<String> list = new ArrayList<>();
         List<Integer> sortmap = new LinkedList<>();
         playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            sortmap.add(profile.getVagtposter());
+            sortmap.add((int)profile.getProperty("vagtposter"));
         });
         Collections.sort(sortmap);
         Collections.reverse(sortmap);
         sortmap.forEach(values -> playerProfiles.getProfileMap().forEach((uuid, profile) -> {
-            if (profile.getVagtposter() == values) {
+            if ((int)profile.getProperty("vagtposter") == values) {
                 if (list.size() == 10) {
                     return;
                 }

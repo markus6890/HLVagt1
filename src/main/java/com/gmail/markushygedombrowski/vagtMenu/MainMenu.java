@@ -33,9 +33,9 @@ public class MainMenu implements Listener {
     private TopVagterGUI topVagterGUI;
     private final int SPILTID_INDEX = 11;
     private final int STATS_INDEX = 13;
-    private final int TOPVAGT_INDEX = 28;
+    private final int TOPVAGT_INDEX = 31;
     private final int ACHIVEMENT_INDEX = 49;
-    private final int PV_INDEX = 31;
+    private final int PV_INDEX = 28;
     private final int RANKUP_INDEX = 34;
     private final int VAGTLVL_INDEX = 47;
     private final int L0N_INDEX = 15;
@@ -60,7 +60,6 @@ public class MainMenu implements Listener {
     public void create(Player p, PlayerProfile profile) {
         Inventory inventory = Bukkit.createInventory(null, 54, "§cVagt Menu §8" + p.getName());
         meta(p, profile, inventory);
-
 
 
         p.openInventory(inventory);
@@ -104,7 +103,7 @@ public class MainMenu implements Listener {
                     statsGUI.create(p);
                     break;
                 case VAGTLVL_INDEX:
-                    vagtLevelGUI.openVagtLevelGUI(p);
+                    vagtLevelGUI.openVagtLevelGUI(p, 1);
                     break;
                 case SETTINGS_INDEX:
                     break;
@@ -169,12 +168,13 @@ public class MainMenu implements Listener {
 
         List<String> statsLore = new ArrayList<>();
         statsLore.add("§6§lSe dine Stats§7");
-        statsLore.add("§a§lLevel: §f" + profile.getLvl());
-        statsLore.add("§b§lXP: §f" + profile.getXp() + "/" + profile.getXpToNextLvl());
-        statsLore.add("§c§lDød: §f" + profile.getDeaths());
-        statsLore.add("§a§lDræbt: §f" + profile.getKills());
+        statsLore.add("§a§lLevel: §f" + profile.getProperty("level"));
+        statsLore.add("§b§lXP: §f" + profile.getProperty("exp") + "/" + profile.getXpToNextLvl());
+        statsLore.add("§c§lDød: §f" + profile.getProperty("deaths"));
+        statsLore.add("§a§lDræbt: §f" + profile.getProperty("kills"));
         statsLore.add("§a§lPenge: §f$" + df.format(plugin.econ.getBalance(p)));
-        statsLore.add("§a§lVagt Poster: §f" + profile.getVagtposter());
+        statsLore.add("§a§lVagt Poster: §f" + profile.getProperty("vagtposter"));
+        statsLore.add("§a§lShard Rate: §f" + profile.getProperty("shardsrate"));
 
 
         List<String> spilletidlore = new ArrayList<>();
@@ -183,7 +183,7 @@ public class MainMenu implements Listener {
 
 
         List<String> lonLore = new ArrayList<>();
-        lonLore.add("§7din §2løn: §a" + profile.getLon());
+        lonLore.add("§7din §2løn: §a" + profile.getProperty("salary"));
 
 
         //Setting Lore on Item
@@ -220,6 +220,4 @@ public class MainMenu implements Listener {
         });
 
     }
-
-
 }

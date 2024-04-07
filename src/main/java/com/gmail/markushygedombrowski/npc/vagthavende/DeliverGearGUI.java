@@ -70,7 +70,7 @@ public class DeliverGearGUI implements Listener {
     private boolean gear(Player p, ItemStack clickeditem) {
         if (deliverGear(p, clickeditem)) {
             PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
-            profile.setXp(profile.getXp() + itemProfileLoader.getItemProfile(clickeditem.getItemMeta().getDisplayName()).getExp());
+            profile.setXp((int)profile.getProperty("exp") + itemProfileLoader.getItemProfile(clickeditem.getItemMeta().getDisplayName()).getExp());
 
             return true;
         }

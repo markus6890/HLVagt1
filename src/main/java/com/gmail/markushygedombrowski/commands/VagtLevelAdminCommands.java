@@ -78,7 +78,7 @@ public class VagtLevelAdminCommands implements CommandExecutor {
 
     private void confirmResetAll(Player p) {
         playerProfiles.getProfileMap().values().forEach(profile -> {
-            profile.setLvl(1);
+            profile.setProperty("level",1);
             profile.setXp(0);
 
         });
@@ -93,7 +93,7 @@ public class VagtLevelAdminCommands implements CommandExecutor {
         Player target = getPlayer(args, p);
         if (target == null) return;
         PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
-        profile.setLvl(1);
+        profile.setProperty("level",1);
         profile.setXp(0);
         p.sendMessage("§aDu har nulstillet " + target.getName() + "'s level og exp");
         try {
@@ -131,7 +131,7 @@ public class VagtLevelAdminCommands implements CommandExecutor {
         if (target == null) return;
         int level = Integer.parseInt(args[1]);
         PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
-        profile.setLvl(level);
+        profile.setProperty("level",1);
         p.sendMessage("§aDu har sat " + target.getName() + " til level " + level);
         try {
             playerProfiles.save(profile);

@@ -6,6 +6,7 @@ import com.gmail.markushygedombrowski.combat.CombatList;
 import com.gmail.markushygedombrowski.commands.*;
 import com.gmail.markushygedombrowski.deliveredItems.ItemProfileLoader;
 import com.gmail.markushygedombrowski.inventory.ChangeInvOnWarp;
+import com.gmail.markushygedombrowski.levels.LevelRewards;
 import com.gmail.markushygedombrowski.npc.VagtNPCer;
 import com.gmail.markushygedombrowski.npc.vagthavende.DeliverGearGUI;
 import com.gmail.markushygedombrowski.npc.vagthavende.VagthavendeOfficer;
@@ -55,6 +56,7 @@ public class HLvagt extends JavaPlugin {
     private static HLvagt instance;
     private LuckPerms luckPerms;
     private ChangeInvOnWarp changeInvOnWarp;
+    private LevelRewards levelRewards;
 
 
     public void onEnable() {
@@ -67,7 +69,7 @@ public class HLvagt extends JavaPlugin {
         itemProfileLoader = vagtProfiler.getItemProfileLoader();
         vagtFangePvpConfigManager = vagtProfiler.getVagtFangePvpConfigManager();
         panikRumManager = vagtProfiler.getPanikRumManager();
-
+        levelRewards = vagtProfiler.getLevelRewards();
         saveDefaultConfig();
         FileConfiguration config = getConfig();
         loadConfigManager();
@@ -218,9 +220,9 @@ public class HLvagt extends JavaPlugin {
         lon = new Lon(this, playerProfiles, settings);
 
 
-        BuffGui buffGui = new BuffGui(settings, this);
+        BuffGui buffGui = new BuffGui(settings, this,playerProfiles);
         Bukkit.getPluginManager().registerEvents(buffGui, this);
-        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI, buffGui, logger, playerProfiles);
+        VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI, buffGui, logger, playerProfiles, changeInvOnWarp);
         Bukkit.getPluginManager().registerEvents(vagtSigns, this);
 
         AktivBuffCmd aktivBuffCmd = new AktivBuffCmd(settings);
@@ -228,7 +230,7 @@ public class HLvagt extends JavaPlugin {
     }
 
     public void initListener() {
-        OnJoin onJoin = new OnJoin(playerProfiles, settings);
+        OnJoin onJoin = new OnJoin(playerProfiles, settings,levelRewards);
         Bukkit.getPluginManager().registerEvents(onJoin, this);
 
         DamageListener damageListener = new DamageListener(settings, vagtSpawnManager, playerProfiles, this, combatList, vagtFangePvpConfigManager, logger, luckPerms, changeInvOnWarp);

@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.github.markus6890</groupId>
             <artifactId>VagtProfiler</artifactId>
-            <version>99de4c37b0</version>
+            <version>236087c1a7</version>
         </dependency>
         <dependency>
             <groupId>com.github.mewin</groupId>

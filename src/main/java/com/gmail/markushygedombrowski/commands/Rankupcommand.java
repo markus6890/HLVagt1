@@ -70,22 +70,19 @@ public class Rankupcommand implements CommandExecutor {
             rank = "§cc-vagt";
             perm = "c-vagt";
             prePerm = "p-vagt";
-            profile.setLon(settings.getLonc());
+
         } else if (rankArg.equalsIgnoreCase("b-vagt")) {
             rank = "§bb-vagt";
             perm = "b-vagt";
             prePerm = "c-vagt";
-            profile.setLon(settings.getLonb());
         } else if (rankArg.equalsIgnoreCase("a-vagt")) {
             rank = "§aa-vagt";
             perm = "a-vagt";
             prePerm = "b-vagt";
-            profile.setLon(settings.getLona());
         } else if (rankArg.equalsIgnoreCase("officer")) {
             rank = "§6Officer";
             perm = "officer";
             prePerm = "a-vagt";
-            profile.setLon(settings.getLonoffi());
         }
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent remove " + prePerm + " prison");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + ansat.getName() + " parent add " + perm + " prison");

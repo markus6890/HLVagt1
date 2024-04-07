@@ -47,10 +47,10 @@ public class RankupGUI implements Listener {
             rankupKrav = rankupLoader.getRankupKrav(p.hasPermission("b-vagt") ? "a-vagt" : "b-vagt");
             lore.add("§6§lKrav:");
             lore.add("§a§lSpilletid: §b" + timeplayed + "§7/§b" + rankupKrav.getOnTime() + "§7§lTimer");
-            lore.add("§bVagt Level: §b" + profile.getLvl() + "§7/§b" + rankupKrav.getVagtlevel());
+            lore.add("§bVagt Level: §b" + profile.getProperty("level") + "§7/§b" + rankupKrav.getVagtlevel());
             lore.add("§a§lPenge: §b" + econ.getBalance(p) + "§7/§b" + rankupKrav.getMoney());
             lore.add("§6§lGoldnuggets: §b" + getGoldnugget(p) + "§7/§b" + rankupKrav.getGoldnugget());
-            lore.add("§2VagtPoster: §b" + profile.getVagtposter() + "§7/§b" + rankupKrav.getVagtposter());
+            lore.add("§2VagtPoster: §b" + profile.getProperty("vagtposter") + "§7/§b" + rankupKrav.getVagtposter());
             lore.add("§9§lShards: §b" + profile.getDeliveredItems().getShards() + "§7/§b" + rankupKrav.getShards());
             lore.add("§e§lBread: §b" + profile.getDeliveredItems().getBread() + "§7/§b" + rankupKrav.getBread());
             lore.add("§f§lIron Helmets: §b" + profile.getDeliveredItems().getIronHelmet() + "§7/§b" + (p.hasPermission("b-vagt") ? "3" : "1"));

@@ -57,7 +57,7 @@ public class RankupKrav {
     }
 
     public boolean canRankup(PlayerProfile profile) {
-        return profile.getDeliveredItems().getBread() >= bread && profile.getDeliveredItems().getShards() >= shards && profile.getVagtposter() >= vagtposter && profile.getLvl() >= vagtlevel;
+        return profile.getDeliveredItems().getBread() >= bread && profile.getDeliveredItems().getShards() >= shards && (int)profile.getProperty("vagtposter") >= vagtposter && (int)profile.getProperty("level") >= vagtlevel;
     }
 
 }

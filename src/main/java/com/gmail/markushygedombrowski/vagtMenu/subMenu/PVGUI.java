@@ -44,8 +44,8 @@ public class PVGUI implements Listener {
 
     public void create(Player p) {
         PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
-        kost = (100000 * profile.getPv()) * 2;
-        pvNr = profile.getPv() + 1;
+        kost = (100000 * (int) profile.getProperty("pv")) * 2;
+        pvNr = (int) profile.getProperty("pv") + 1;
 
 
         pv = woolGreen.toItemStack(1);
@@ -89,9 +89,9 @@ public class PVGUI implements Listener {
 
 
                     p.sendMessage("Du har nu adgang til " + pvNr + " Pv");
-                    profile.setPv(pvNr);
-                    pvNr = profile.getPv() + 1;
-                    kost = (100000 * profile.getPv());
+                    profile.setProperty("pv", pvNr);
+                    pvNr = (int)profile.getProperty("pv") + 1;
+                    kost = (100000 * (int)profile.getProperty("pv"));
                     kost = kost + kost;
                     List<String> pvlore = new ArrayList<>();
                     metapv2.setDisplayName("§2Køb PV §7" + pvNr);

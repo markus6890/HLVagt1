@@ -1,5 +1,6 @@
 package com.gmail.markushygedombrowski.listners;
 
+import com.gmail.markushygedombrowski.levels.LevelRewards;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
@@ -20,11 +21,13 @@ public class OnJoin implements Listener {
     private PlayerProfiles playerProfiles;
     private Settings settings;
     private Integer time = 0;
+    private LevelRewards levelRewards;
 
-    public OnJoin(PlayerProfiles playerProfiles, Settings settings) {
+    public OnJoin(PlayerProfiles playerProfiles, Settings settings, LevelRewards levelRewards) {
         this.playerProfiles = playerProfiles;
         this.settings = settings;
 
+        this.levelRewards = levelRewards;
     }
 
     @EventHandler
@@ -42,6 +45,7 @@ public class OnJoin implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        levelRewards.updatePlayerLevel(p, profile);
         addPlayerToCooldown(p);
     }
 

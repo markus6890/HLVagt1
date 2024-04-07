@@ -2,6 +2,7 @@ package com.gmail.markushygedombrowski.buff;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,11 +25,13 @@ public class BuffGui implements Listener {
     private final int EXTRABUFF_INDEX = 6;
     private final Settings settings;
     private final HLvagt plugin;
+    private PlayerProfiles playerProfiles;
 
 
-    public BuffGui(Settings settings, HLvagt plugin) {
+    public BuffGui(Settings settings, HLvagt plugin, PlayerProfiles playerProfiles) {
         this.settings = settings;
         this.plugin = plugin;
+        this.playerProfiles = playerProfiles;
     }
 
     public void create(Player p) {

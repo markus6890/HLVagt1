@@ -140,7 +140,7 @@ public class VagthavendeOfficer implements Listener {
             }
             p.sendMessage("§7Du har afleveret §a" + amount + " " + item.getItemMeta().getDisplayName());
             p.sendMessage("§7Du har fået §b" + exp + "§3 exp");
-            profile.setXp(profile.getXp() + exp);
+            profile.setXp((int)profile.getProperty("exp") + exp);
 
             return amount;
         }

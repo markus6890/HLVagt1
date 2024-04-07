@@ -60,7 +60,7 @@ public class DamageListener implements Listener {
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
-        if(entity.hasMetadata("NPC")) {
+        if (entity.hasMetadata("NPC")) {
             event.setCancelled(true);
             event.isCancelled();
             return;
@@ -77,8 +77,6 @@ public class DamageListener implements Listener {
         }
         sendMessageToVagt(defender, attacker);
     }
-
-
 
 
     private void sendMessageToVagt(Player defender, Player attacker) {
@@ -123,12 +121,12 @@ public class DamageListener implements Listener {
 
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onDeath(PlayerDeathEvent event ) {
+    public void onDeath(PlayerDeathEvent event) {
         Player defender = event.getEntity();
         Player attacker = defender.getKiller();
 
         if (attacker == null) {
-            if(combatList.getLastHit(defender) == null) return;
+            if (combatList.getLastHit(defender) == null) return;
             attacker = combatList.getLastHit(defender);
         }
         if (attackerIsVagt(defender, attacker)) return;
@@ -145,12 +143,12 @@ public class DamageListener implements Listener {
         String block = getBlockDisplayName(defender);
 
         sendVagtDeathMessage(defender, attacker, rank, block);
-        changeInvOnWarp.clearInventory(defender.getUniqueId(),VagtUtils.getRegion(defender.getLocation()));
-        if(Utils.isLocInRegion(defender.getLocation(),"bandekrig")) {
+        changeInvOnWarp.clearInventory(defender.getUniqueId(), VagtUtils.getRegion(defender.getLocation()));
+        if (Utils.isLocInRegion(defender.getLocation(), "bandekrig")) {
             defender.sendMessage("§7[§cBandeKrig§7] §cDu døde til bandekrig event");
-            defender.setMetadata("bandekrigDeathvagt",new FixedMetadataValue(plugin,true));
+            defender.setMetadata("bandekrigDeathvagt", new FixedMetadataValue(plugin, true));
         } else {
-            profile.setDeaths(profile.getDeaths() + 1);
+            profile.setProperty("deaths", (int) profile.getProperty("deaths") + 1);
         }
 
         dropVagtHeadChance(attacker);
@@ -168,7 +166,7 @@ public class DamageListener implements Listener {
         if (attacker.hasPermission("vagt.slag")) {
             attacker.sendMessage("§2Du §4Dræbte §8" + defender.getName());
             profile = profiles.getPlayerProfile(attacker.getUniqueId());
-            profile.setKills(profile.getKills() + 1);
+            profile.setProperty("kills",(int)profile.getProperty("kills") + 1);
             return true;
         }
         return false;
@@ -196,15 +194,15 @@ public class DamageListener implements Listener {
     }
 
     private void log(Player defender, Player attacker, String rank, String block, ItemStack[] defenderInv) {
-        logger.formatMessage(defender.getName() + "died to " + attacker.getName(),"VagtDeath: ", "vagtdeathlog");
-        logger.formatMessage("Block: " + block,"VagtDeath: ", "vagtdeathlog");
-        logger.formatMessage("Rank: " + rank,"VagtDeath: ", "vagtdeathlog");
-        logger.formatMessage("Vagt Inventory:","VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage(defender.getName() + "died to " + attacker.getName(), "VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage("Block: " + block, "VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage("Rank: " + rank, "VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage("Vagt Inventory:", "VagtDeath: ", "vagtdeathlog");
         for (ItemStack item : defenderInv) {
             if (item == null) continue;
-            logger.formatMessage(defender.getName() + "dropped " + item.getType().name() + " amount: " + item.getAmount() + " displayname: " + item.getItemMeta().getDisplayName(),"VagtDeath: ", "vagtdeathlog");
+            logger.formatMessage(defender.getName() + "dropped " + item.getType().name() + " amount: " + item.getAmount() + " displayname: " + item.getItemMeta().getDisplayName(), "VagtDeath: ", "vagtdeathlog");
         }
-        logger.formatMessage("END OF " + defender.getName() + " DEATH LOG","VagtDeath: ", "vagtdeathlog");
+        logger.formatMessage("END OF " + defender.getName() + " DEATH LOG", "VagtDeath: ", "vagtdeathlog");
     }
 
     private String getBlockDisplayName(Player p) {
@@ -215,7 +213,7 @@ public class DamageListener implements Listener {
             block = "§bB";
         } else if (Utils.isLocInRegion(p.getLocation(), "a")) {
             block = "§aA";
-        } else if(Utils.isLocInRegion(p.getLocation(), "BandeKrig")) {
+        } else if (Utils.isLocInRegion(p.getLocation(), "BandeKrig")) {
             block = "§c§lBandeKrig";
         }
         return block;
@@ -242,7 +240,7 @@ public class DamageListener implements Listener {
         if (p.hasPermission("vagt")) {
             Location loc;
 
-                loc = vagtSpawnManager.getWarpInfo("spassermine").getLocation();
+            loc = vagtSpawnManager.getWarpInfo("spassermine").getLocation();
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
@@ -257,13 +255,13 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onArmorDamage(PlayerItemDamageEvent event) {
-        if(event.getItem() == null) return;
+        if (event.getItem() == null) return;
         ItemStack item = event.getItem();
         ItemMeta itemMeta = item.getItemMeta();
-        if(itemMeta.getDisplayName() == null) {
+        if (itemMeta.getDisplayName() == null) {
             return;
         }
-        if(itemMeta.getDisplayName().contains("§aA") || itemMeta.getDisplayName().contains("§bB") || itemMeta.getDisplayName().contains("§cC")) {
+        if (itemMeta.getDisplayName().contains("§aA") || itemMeta.getDisplayName().contains("§bB") || itemMeta.getDisplayName().contains("§cC")) {
             int dura = 1;
             event.setDamage(dura);
         }

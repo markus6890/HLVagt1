@@ -35,44 +35,21 @@ public class VagtWarpGUI implements Listener {
 
     public void create(Player p, String block) {
         Inventory inventory = Bukkit.createInventory(null, 45, "Warp: " + block);
-        Wool woolRed = new Wool(DyeColor.RED);
-        Wool woolBlue = new Wool(DyeColor.BLUE);
-        Wool woolGreen = new Wool(DyeColor.GREEN);
-        ItemStack warpC = woolRed.toItemStack(1);
-        ItemStack warpB = woolBlue.toItemStack(1);
-        ItemStack warpA = woolGreen.toItemStack(1);
-        ItemStack warpAvagtceller = woolGreen.toItemStack(1);
-        ItemStack warpBvcellestue = woolBlue.toItemStack(1);
-        ItemStack warpCvcellestue = woolRed.toItemStack(1);
-
-        ItemMeta metaC = warpC.getItemMeta();
-        ItemMeta metaB = warpB.getItemMeta();
-        ItemMeta metaA = warpA.getItemMeta();
-        ItemMeta metaAvagtceller = warpAvagtceller.getItemMeta();
-        ItemMeta metaBvcellestue = warpBvcellestue.getItemMeta();
-        ItemMeta metaCvcellestue = warpCvcellestue.getItemMeta();
-
-        metaC.setDisplayName("§c§lWarp C");
-        metaB.setDisplayName("§b§lWarp B");
-        metaA.setDisplayName("§a§lWarp A");
-        metaBvcellestue.setDisplayName("§b§lWarp B Vand Celler");
-        metaAvagtceller.setDisplayName("§a§lWarp A Vagt Celler");
-        metaCvcellestue.setDisplayName("§c§lWarp C Vagt Celler");
-
-
-        warpC.setItemMeta(metaC);
-        warpB.setItemMeta(metaB);
-        warpA.setItemMeta(metaA);
-        warpCvcellestue.setItemMeta(metaCvcellestue);
-        warpBvcellestue.setItemMeta(metaBvcellestue);
-        warpAvagtceller.setItemMeta(metaAvagtceller);
+        ItemStack warpC = createWarpItem(DyeColor.RED, "§c§lWarp C");
+        ItemStack warpB = createWarpItem(DyeColor.BLUE, "§b§lWarp B");
+        ItemStack warpA = createWarpItem(DyeColor.GREEN, "§a§lWarp A");
+        ItemStack warpAvagtceller = createWarpItem(DyeColor.GREEN, "§a§lWarp A Vagt Celler");
+        ItemStack warpBvcellestue = createWarpItem(DyeColor.BLUE, "§b§lWarp B Vand Celler");
+        ItemStack warpCvcellestue = createWarpItem(DyeColor.RED, "§c§lWarp C Vagt Celler");
 
         inventory.setItem(WARP_C_INDEX, warpC);
         inventory.setItem(WARP_B_INDEX, warpB);
         inventory.setItem(WARP_A_INDEX, warpA);
-        inventory.setItem(WARP_CVCELLESTUE_INDEX, warpCvcellestue);
-        inventory.setItem(WARP_BVCELLESTUE_INDEX, warpBvcellestue);
         inventory.setItem(WARP_AVAGTCELLER_INDEX, warpAvagtceller);
+        inventory.setItem(WARP_BVCELLESTUE_INDEX, warpBvcellestue);
+        inventory.setItem(WARP_CVCELLESTUE_INDEX, warpCvcellestue);
+
+
         ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 2);
         inventory.forEach(item -> {
             if (item == null) {
@@ -80,7 +57,15 @@ public class VagtWarpGUI implements Listener {
             }
         });
         p.openInventory(inventory);
+    }
 
+    private ItemStack createWarpItem(DyeColor color, String displayName) {
+        Wool wool = new Wool(color);
+        ItemStack item = wool.toItemStack(1);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(displayName);
+        item.setItemMeta(meta);
+        return item;
     }
 
     @EventHandler
@@ -88,72 +73,68 @@ public class VagtWarpGUI implements Listener {
         Player p = (Player) event.getWhoClicked();
         Inventory inventory = event.getClickedInventory();
         ItemStack clickeditem = event.getCurrentItem();
-
         int clickedSlot = event.getRawSlot();
-        if (clickeditem == null) {
+        if (clickeditem == null || !inventory.getTitle().contains("Warp: ")) {
             return;
         }
-
-        if (inventory.getTitle().contains("Warp: ")) {
-            event.setCancelled(true);
-            event.isCancelled();
-            event.setResult(Event.Result.DENY);
-            String block = inventory.getTitle().replace("Warp: ", "");
-            if (clickedSlot == WARP_C_INDEX) {
-                p.sendMessage("§7Du er warpet til §cC");
-                p.teleport(vagtSpawnManager.getWarpInfo("vagtc").getLocation());
-
-
-            } else if (clickedSlot == WARP_CVCELLESTUE_INDEX) {
-                p.sendMessage("§7Du er warpet til §cC Vagt Celler");
-                p.teleport(vagtSpawnManager.getWarpInfo("C2").getLocation());
-
-            } else if (clickedSlot == WARP_BVCELLESTUE_INDEX) {
-                p.sendMessage("§7Du er warpet til §bB Celle Stue");
-                p.teleport(vagtSpawnManager.getWarpInfo("bcellestue").getLocation());
-            } else if (clickedSlot == WARP_B_INDEX) {
+        event.setCancelled(true);
+        event.setResult(Event.Result.DENY);
+        String block = inventory.getTitle().replace("Warp: ", "");
+        switch (clickedSlot) {
+            case WARP_C_INDEX:
+                warpPlayer(p, "vagtc", "§7Du er warpet til §cC");
+                break;
+            case WARP_CVCELLESTUE_INDEX:
+                warpPlayer(p, "C2", "§7Du er warpet til §cC Vagt Celler");
+                break;
+            case WARP_BVCELLESTUE_INDEX:
+                warpPlayer(p, "bcellestue", "§7Du er warpet til §bB Celle Stue");
+                break;
+            case WARP_B_INDEX:
                 if (!p.hasPermission("vagtwarpb")) {
                     p.sendMessage("§cDu har ikke højt nok rank");
                     return;
                 }
-                p.sendMessage("§7Du er warpet til §bB");
-                p.teleport(vagtSpawnManager.getWarpInfo("vagtb").getLocation());
-
-            } else if (clickedSlot == WARP_A_INDEX) {
+                warpPlayer(p, "vagtb", "§7Du er warpet til §bB");
+                break;
+            case WARP_A_INDEX:
                 if (!p.hasPermission("vagtwarpa")) {
                     p.sendMessage("§cDu har ikke højt nok rank");
                     return;
                 }
-                p.sendMessage("§7Du er warpet til §aA");
-                p.teleport(vagtSpawnManager.getWarpInfo("a").getLocation());
+                warpPlayer(p, "a", "§7Du er warpet til §aA");
                 p.sendTitle("§4§lHusk! §c§log skifte gear!", " ");
-
-            } else if (clickedSlot == WARP_AVAGTCELLER_INDEX) {
+                break;
+            case WARP_AVAGTCELLER_INDEX:
                 if (!p.hasPermission("vagtwarpa")) {
                     p.sendMessage("§cDu har ikke højt nok rank");
                     return;
                 }
-                p.sendMessage("§7Du er warpet til §aA Vagt Celler");
-                p.teleport(vagtSpawnManager.getWarpInfo("avagtceller").getLocation());
-            } else {
+                warpPlayer(p, "avagtceller", "§7Du er warpet til §aA Vagt Celler");
+                break;
+            default:
                 return;
-            }
-            changeInvOnWarp.changeInventory(p, block);
-            InvHolder invHolder = changeInvOnWarp.getInventory(p.getUniqueId(), VagtUtils.getRegion(p.getLocation()));
-            if (invHolder != null) {
-                p.getInventory().setContents(invHolder.getInventory());
-                p.getInventory().setArmorContents(invHolder.getGear());
-                p.sendMessage("Du har skiftet gear");
-                return;
-            }
-            p.getInventory().clear();
-            p.getInventory().setHelmet(new ItemStack(Material.AIR));
-            p.getInventory().setChestplate(new ItemStack(Material.AIR));
-            p.getInventory().setLeggings(new ItemStack(Material.AIR));
-            p.getInventory().setBoots(new ItemStack(Material.AIR));
-            p.sendMessage("Dit inventory for denne region blev ikke fundet.");
-            p.sendMessage("Du har ikke mistet dine ting");
-            p.sendMessage("Hvis du warper er dine ting der stadig");
         }
+        changeInvOnWarp.changeInventory(p, block);
+        InvHolder invHolder = changeInvOnWarp.getInventory(p.getUniqueId(), VagtUtils.getRegion(p.getLocation()));
+        if (invHolder != null) {
+            p.getInventory().setContents(invHolder.getInventory());
+            p.getInventory().setArmorContents(invHolder.getGear());
+            p.sendMessage("Du har skiftet gear");
+            return;
+        }
+        p.getInventory().clear();
+        p.getInventory().setHelmet(new ItemStack(Material.AIR));
+        p.getInventory().setChestplate(new ItemStack(Material.AIR));
+        p.getInventory().setLeggings(new ItemStack(Material.AIR));
+        p.getInventory().setBoots(new ItemStack(Material.AIR));
+        p.sendMessage("Dit inventory for denne region blev ikke fundet.");
+        p.sendMessage("Du har ikke mistet dine ting");
+        p.sendMessage("Hvis du warper er dine ting der stadig");
+    }
+
+    private void warpPlayer(Player p, String warpName, String message) {
+        p.sendMessage(message);
+        p.teleport(vagtSpawnManager.getWarpInfo(warpName).getLocation());
     }
 }
