@@ -86,6 +86,10 @@ public class VagthavendeOfficer implements Listener {
         }
         if (inventory.getTitle().equalsIgnoreCase("Vagthavende Officer")) {
             PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
+            if(profile == null) {
+                p.sendMessage("§ckunne ikke finde din profil");
+                return;
+            }
             switch (clickedSlot) {
                 case SHARDS_INDEX:
                     int amount = deliverItem(p, clickeditem);
@@ -140,7 +144,7 @@ public class VagthavendeOfficer implements Listener {
             }
             p.sendMessage("§7Du har afleveret §a" + amount + " " + item.getItemMeta().getDisplayName());
             p.sendMessage("§7Du har fået §b" + exp + "§3 exp");
-            profile.setXp((int)profile.getProperty("exp") + exp);
+            profile.setXp((double)profile.getProperty("exp") + exp);
 
             return amount;
         }

@@ -2,10 +2,12 @@ package com.gmail.markushygedombrowski;
 
 import com.gmail.markushygedombrowski.buff.AktivBuffCmd;
 import com.gmail.markushygedombrowski.buff.BuffGui;
+import com.gmail.markushygedombrowski.buff.BuffManager;
 import com.gmail.markushygedombrowski.combat.CombatList;
 import com.gmail.markushygedombrowski.commands.*;
 import com.gmail.markushygedombrowski.deliveredItems.ItemProfileLoader;
 import com.gmail.markushygedombrowski.inventory.ChangeInvOnWarp;
+import com.gmail.markushygedombrowski.levels.LevelManager;
 import com.gmail.markushygedombrowski.levels.LevelRewards;
 import com.gmail.markushygedombrowski.npc.VagtNPCer;
 import com.gmail.markushygedombrowski.npc.vagthavende.DeliverGearGUI;
@@ -50,13 +52,13 @@ public class HLvagt extends JavaPlugin {
     private PlayerProfiles playerProfiles;
     private Settings settings;
     private VagtFangePvpConfigManager vagtFangePvpConfigManager;
-    private ItemProfileLoader itemProfileLoader;
     private VagtProfiler vagtProfiler;
     private PanikRumManager panikRumManager;
     private static HLvagt instance;
     private LuckPerms luckPerms;
     private ChangeInvOnWarp changeInvOnWarp;
     private LevelRewards levelRewards;
+    private BuffManager buffManager;
 
 
     public void onEnable() {
@@ -66,13 +68,16 @@ public class HLvagt extends JavaPlugin {
         playerProfiles = vagtProfiler.getPlayerProfiles();
         settings = vagtProfiler.getSettings();
         configM = vagtProfiler.getConfigManager();
-        itemProfileLoader = vagtProfiler.getItemProfileLoader();
+        ItemProfileLoader itemProfileLoader = vagtProfiler.getItemProfileLoader();
         vagtFangePvpConfigManager = vagtProfiler.getVagtFangePvpConfigManager();
         panikRumManager = vagtProfiler.getPanikRumManager();
         levelRewards = vagtProfiler.getLevelRewards();
+        buffManager = vagtProfiler.getBuffManager();
+
         saveDefaultConfig();
-        FileConfiguration config = getConfig();
         loadConfigManager();
+
+
 
         if (!setupEconomy()) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
@@ -160,6 +165,8 @@ public class HLvagt extends JavaPlugin {
     public void loadConfigManager() {
         logger = new Logger(this);
         logger.setup();
+
+
     }
 
     private boolean setupEconomy() {
@@ -192,7 +199,8 @@ public class HLvagt extends JavaPlugin {
         RankupGUI rankupGUI = new RankupGUI(playerProfiles, econ, rankupLoader);
         Bukkit.getPluginManager().registerEvents(rankupGUI, this);
 
-        VagtLevelGUI vagtLevelGUI = new VagtLevelGUI(playerProfiles);
+        LevelManager levelManager = vagtProfiler.getLevelManager();
+        VagtLevelGUI vagtLevelGUI = new VagtLevelGUI(playerProfiles, levelManager);
         Bukkit.getPluginManager().registerEvents(vagtLevelGUI, this);
 
         MainMenu mainMenu = new MainMenu(this, pvgui, topVagterGUI, playerProfiles, statsGUI, rankupGUI, vagtLevelGUI);
@@ -201,7 +209,7 @@ public class HLvagt extends JavaPlugin {
         VagtCommand vagtCommand = new VagtCommand(mainMenu, playerProfiles);
         getCommand("vagt").setExecutor(vagtCommand);
 
-        Rankupcommand rankupcommand = new Rankupcommand(settings, playerProfiles);
+        Rankupcommand rankupcommand = new Rankupcommand(settings, playerProfiles, vagtSpawnManager,this);
         getCommand("ansat").setExecutor(rankupcommand);
 
         VagtChat vagtChat = new VagtChat();
@@ -220,12 +228,12 @@ public class HLvagt extends JavaPlugin {
         lon = new Lon(this, playerProfiles, settings);
 
 
-        BuffGui buffGui = new BuffGui(settings, this,playerProfiles);
+        BuffGui buffGui = new BuffGui(settings, this,playerProfiles, buffManager);
         Bukkit.getPluginManager().registerEvents(buffGui, this);
         VagtSigns vagtSigns = new VagtSigns(vagtSpawnManager, settings, this, repairGUI, buffGui, logger, playerProfiles, changeInvOnWarp);
         Bukkit.getPluginManager().registerEvents(vagtSigns, this);
 
-        AktivBuffCmd aktivBuffCmd = new AktivBuffCmd(settings);
+        AktivBuffCmd aktivBuffCmd = new AktivBuffCmd(settings,buffManager);
         getCommand("aktivbuff").setExecutor(aktivBuffCmd);
     }
 

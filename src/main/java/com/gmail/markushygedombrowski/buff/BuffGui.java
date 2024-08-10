@@ -2,6 +2,7 @@ package com.gmail.markushygedombrowski.buff;
 
 import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
+import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
 import org.bukkit.Bukkit;
@@ -26,12 +27,13 @@ public class BuffGui implements Listener {
     private final Settings settings;
     private final HLvagt plugin;
     private PlayerProfiles playerProfiles;
+    private BuffManager buffManager;
 
-
-    public BuffGui(Settings settings, HLvagt plugin, PlayerProfiles playerProfiles) {
+    public BuffGui(Settings settings, HLvagt plugin, PlayerProfiles playerProfiles, BuffManager buffManager) {
         this.settings = settings;
         this.plugin = plugin;
         this.playerProfiles = playerProfiles;
+        this.buffManager = buffManager;
     }
 
     public void create(Player p) {
@@ -43,6 +45,7 @@ public class BuffGui implements Listener {
         if(VagtCooldown.isCooling(p.getName(), "buff")) {
             lore.add(1, "§7Cooldown: §b" + VagtCooldown.getRemaining(p.getName(), "buff") + " minutter");
         }
+        lore.add("§c§lBuff Level: §b" + playerProfiles.getPlayerProfile(p.getUniqueId()).getProperty("buff"));
         ItemMeta meta = buff.getItemMeta();
         meta.setLore(lore);
         meta.setDisplayName("§CBuff");
@@ -92,6 +95,9 @@ public class BuffGui implements Listener {
                 p.sendMessage("§cHAHAAHA");
                 return;
             }
+            if(clickeditem.getType() != Material.POTION) {
+                return;
+            }
             if (clickedSlot == BUFF_INDEX) {
                 if (!plugin.econ.has(p, pay)) {
                     p.sendMessage("§cDu har ikke penge nok!");
@@ -120,10 +126,7 @@ public class BuffGui implements Listener {
                 giveExtraBuff(p, pay);
 
             }
-
             p.sendMessage("§aDu har betalt §b" + pay + "§a for §cBuff");
-            e.setCancelled(true);
-            e.setResult(Event.Result.DENY);
         }
 
     }
@@ -137,12 +140,12 @@ public class BuffGui implements Listener {
     }
 
     private void giveBuff(Player p, int pay) {
-        p.removePotionEffect(PotionEffectType.ABSORPTION);
-        p.removePotionEffect(PotionEffectType.SPEED);
-        p.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-        p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, settings.getBufflength(), settings.getAbsorption()));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, settings.getBufflength(), settings.getSpeed()));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, settings.getBufflength(), settings.getStrengh()));
+        PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
+        int buff = profile.castPropertyToInt(profile.getProperty("buff"));
+
+
+        BuffLevels buffLevel = buffManager.getBuffLevel(buff);
+        buffLevel.giveBuff(p);
         VagtCooldown.add(p.getName(), "buff", 120,System.currentTimeMillis());
         plugin.econ.withdrawPlayer(p, pay);
         p.sendMessage("§aDu har taget §cBuff");

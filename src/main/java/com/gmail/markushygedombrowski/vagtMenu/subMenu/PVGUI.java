@@ -44,8 +44,8 @@ public class PVGUI implements Listener {
 
     public void create(Player p) {
         PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
-        kost = (100000 * (int) profile.getProperty("pv")) * 2;
-        pvNr = (int) profile.getProperty("pv") + 1;
+        kost = (100000 * profile.castPropertyToInt(profile.getProperty("pv"))) * 2;
+        pvNr = profile.castPropertyToInt(profile.getProperty("pv")) + 1;
 
 
         pv = woolGreen.toItemStack(1);
@@ -69,12 +69,11 @@ public class PVGUI implements Listener {
         Player p = (Player) event.getWhoClicked();
         Inventory inventory = event.getClickedInventory();
         ItemStack clickeditem = event.getCurrentItem();
-        PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
 
         int clickedSlot = event.getRawSlot();
         if (clickeditem == null) return;
         if (inventory.getTitle().equalsIgnoreCase("PV")) {
-
+            PlayerProfile profile = profiles.getPlayerProfile(p.getUniqueId());
             if (clickedSlot == PV_INDEX) {
 
                 if (!plugin.econ.has(p, kost)) {
@@ -90,8 +89,8 @@ public class PVGUI implements Listener {
 
                     p.sendMessage("Du har nu adgang til " + pvNr + " Pv");
                     profile.setProperty("pv", pvNr);
-                    pvNr = (int)profile.getProperty("pv") + 1;
-                    kost = (100000 * (int)profile.getProperty("pv"));
+                    pvNr = profile.castPropertyToInt(profile.getProperty("pv")) + 1;
+                    kost = (100000 * profile.castPropertyToInt(profile.getProperty("pv")));
                     kost = kost + kost;
                     List<String> pvlore = new ArrayList<>();
                     metapv2.setDisplayName("§2Køb PV §7" + pvNr);

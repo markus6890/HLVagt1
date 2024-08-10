@@ -111,6 +111,7 @@ public class DamageListener implements Listener {
         Location attackerLoc = attacker.getLocation();
         Location defenderLoc = defender.getLocation();
         vFpvp.forEach(s -> {
+            if(attacker.getUniqueId() == defender.getUniqueId()) return;
             if (Utils.isLocInRegion(attackerLoc, s) || Utils.isLocInRegion(defenderLoc, s)) {
                 event.setCancelled(true);
                 attacker.sendMessage("§aDu kan ikke slå fanger her!");
@@ -148,7 +149,7 @@ public class DamageListener implements Listener {
             defender.sendMessage("§7[§cBandeKrig§7] §cDu døde til bandekrig event");
             defender.setMetadata("bandekrigDeathvagt", new FixedMetadataValue(plugin, true));
         } else {
-            profile.setProperty("deaths", (int) profile.getProperty("deaths") + 1);
+            profile.setProperty("deaths", profile.castPropertyToInt(profile.getProperty("deaths")) + 1);
         }
 
         dropVagtHeadChance(attacker);

@@ -1,13 +1,18 @@
 package com.gmail.markushygedombrowski.listners;
 
 import com.gmail.markushygedombrowski.levels.LevelRewards;
+import com.gmail.markushygedombrowski.levels.LevelUpEvent;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.cooldown.VagtCooldown;
 import com.gmail.markushygedombrowski.settings.Settings;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -37,16 +42,34 @@ public class OnJoin implements Listener {
         if (!p.hasPermission("Vagt")) {
             return;
         }
-        p.sendTitle("§4Husk og sid i Vagt Call!",null);
-
         PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
         try {
             playerProfiles.createVagt(p, profile);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        if (profile.getProperty("buff") == null) {
+            int buff = 0;
+            profile.setProperty("buff", buff);
+        }
         levelRewards.updatePlayerLevel(p, profile);
         addPlayerToCooldown(p);
+        int level = VagtUtils.castPropertyToInt(profile.getProperty("level"));
+        int exp = VagtUtils.castPropertyToInt(profile.getProperty("exp"));
+
+        LevelUpEvent levelUpEvent = new LevelUpEvent(false, p, level, profile, exp);
+        Bukkit.getPluginManager().callEvent(levelUpEvent);
+
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onChat(AsyncPlayerChatEvent event) {
+        Player p = event.getPlayer();
+        if (!p.hasPermission("vagt")) return;
+        PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
+        if (profile == null) return;
+        event.setFormat("§7[§b" + profile.getProperty("level") + "§7] §7" + p.getDisplayName() + "§8: §f" + event.getMessage());
+
     }
 
     private void addPlayerToCooldown(Player p) {

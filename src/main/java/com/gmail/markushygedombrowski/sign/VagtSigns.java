@@ -51,7 +51,12 @@ public class VagtSigns implements Listener {
         this.playerProfiles = playerProfiles;
         this.changeInvOnWarp = changeInvOnWarp;
     }
-
+    public int castPropertyToInt(Object key) {
+        if (key instanceof Double) {
+            return  (((Double) key).intValue());
+        }
+        return (int) key;
+    }
 
     @EventHandler
     public void onPlayerClickSign(PlayerInteractEvent event) {
@@ -78,6 +83,7 @@ public class VagtSigns implements Listener {
                         } else {
                             rank = "§6§lVagten ";
                         }
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission set playervaults.commands.use true prison");
                         Bukkit.broadcastMessage("§7§l----------§c§lVAGT§7§l----------");
                         Bukkit.broadcastMessage(rank + "§c" + p.getName());
                         Bukkit.broadcastMessage("§7Har købt sig ud af§a§l spasser minen");
@@ -91,7 +97,7 @@ public class VagtSigns implements Listener {
                             p.sendMessage("Du har skiftet gear");
                             return;
                         }
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission unset playervaults.commands.use prison");
+
                     } else {
                         p.sendMessage("§cDu har ikke nok!");
                         p.sendMessage("§cDu skal bruge 64 stone og 64 cobble");
@@ -101,16 +107,7 @@ public class VagtSigns implements Listener {
 
                 }
 
-                if (sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik for") && sign.getLine(2).equalsIgnoreCase("§4Heal") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
-                    if (VagtUtils.notHasPermission(p, "vagtbuff")) return;
-                    p.setHealth(20);
-                    p.setFoodLevel(20);
-                    p.setSaturation(10);
-                    plugin.econ.withdrawPlayer(p, 500);
-                    p.sendMessage("§aDu er blevet §cHealet");
-                    return;
-
-                }
+                if (healSign(sign, p)) return;
 
                 if (sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik for") && sign.getLine(2).equalsIgnoreCase("§4Buff") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
                     if (VagtUtils.notHasPermission(p, "vagtbuff")) return;
@@ -137,7 +134,7 @@ public class VagtSigns implements Listener {
                     ItemStack itemStack = new ItemStack(Material.WOOD_PICKAXE);
                     itemStack.addEnchantment(Enchantment.SILK_TOUCH, 1);
                     PlayerProfile profile = playerProfiles.getPlayerProfile(p.getUniqueId());
-                    int playerLevel = (int) profile.getProperty("level");
+                    int playerLevel = castPropertyToInt(profile.getProperty("level"));
 
                     if (playerLevel >= 10) {
                         itemStack.addEnchantment(Enchantment.DURABILITY, 1); // Unbreaking 1
@@ -153,7 +150,6 @@ public class VagtSigns implements Listener {
                         itemStack.addEnchantment(Enchantment.DURABILITY, 3); // Unbreaking 3
                         itemStack.addEnchantment(Enchantment.DIG_SPEED, 1); // Efficiency 1
                     }
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + p.getName() + " permission unset playervaults.commands.use");
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.setDisplayName("§cGratis pickaxe!");
                     itemStack.setItemMeta(itemMeta);
@@ -167,11 +163,26 @@ public class VagtSigns implements Listener {
                     if (VagtUtils.notHasPermission(p, "vagt")) return;
 
                     VagtSpawnInfo vagtSpawnInfo = vagtSpawnManager.getWarpInfo("spassermine");
+
                     p.teleport(vagtSpawnInfo.getLocation());
                     return;
 
                 }
             }
         }
+    }
+
+    private boolean healSign(Sign sign, Player p) {
+        if (sign.getLine(0).equalsIgnoreCase("§8===============") && sign.getLine(1).equalsIgnoreCase("§cKlik for") && sign.getLine(2).equalsIgnoreCase("§4Heal") && sign.getLine(3).equalsIgnoreCase("§8===============")) {
+            if (VagtUtils.notHasPermission(p, "vagtbuff")) return true;
+            p.setHealth(20);
+            p.setFoodLevel(20);
+            p.setSaturation(10);
+            plugin.econ.withdrawPlayer(p, 500);
+            p.sendMessage("§aDu er blevet §cHealet");
+            return true;
+
+        }
+        return false;
     }
 }

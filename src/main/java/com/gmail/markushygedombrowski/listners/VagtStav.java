@@ -30,7 +30,7 @@ public class VagtStav implements Listener {
                 }
                 if (item.getType() == Material.STICK && item.getItemMeta().getDisplayName().equalsIgnoreCase("§cvagt stav") && attacker.hasPermission("vagt.stav")) {
                     defender.sendTitle("§4GÅ VÆK FRA!", "§4" + attacker.getName());
-                    defender.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 2));
+                    defender.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                 }
             }
 

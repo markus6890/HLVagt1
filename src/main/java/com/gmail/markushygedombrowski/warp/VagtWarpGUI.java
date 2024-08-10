@@ -103,7 +103,6 @@ public class VagtWarpGUI implements Listener {
                     return;
                 }
                 warpPlayer(p, "a", "§7Du er warpet til §aA");
-                p.sendTitle("§4§lHusk! §c§log skifte gear!", " ");
                 break;
             case WARP_AVAGTCELLER_INDEX:
                 if (!p.hasPermission("vagtwarpa")) {

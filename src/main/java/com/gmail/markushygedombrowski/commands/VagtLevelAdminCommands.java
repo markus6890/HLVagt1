@@ -21,15 +21,22 @@ public class VagtLevelAdminCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 
+        if(!sender.hasPermission("Vagt.Admin")) {
+            sender.sendMessage("§4Du har ikke tilladelse til at bruge denne kommando");
+            return true;
+        }
+        if(alias.equalsIgnoreCase("vaddexp")) {
+            addExp(args, (Player) sender);
+            return true;
+        } else if(alias.equalsIgnoreCase("vaddlevel")) {
+            addlevel(args, (Player) sender);
+            return true;
+        }
         if(!(sender instanceof Player)) {
-            sender.sendMessage("Du skal være en spiller for at bruge denne kommando");
+            System.out.println("kun spillere kan bruge denne command");
             return true;
         }
         Player p = (Player) sender;
-        if(!p.hasPermission("Vagt.Admin")) {
-            p.sendMessage("§4Du har ikke tilladelse til at bruge denne kommando");
-            return true;
-        }
         boolean reseta = false;
         if(alias.equalsIgnoreCase("vlevel")) {
             setLevel(args, p);
@@ -55,6 +62,28 @@ public class VagtLevelAdminCommands implements CommandExecutor {
 
 
             return true;
+        } else if(alias.equalsIgnoreCase("vbufflevel")) {
+            if(args.length == 0 || args.length == 1) {
+                p.sendMessage("§4Brug /vbufflevel <spiller> <level>");
+                return true;
+            }
+            Player target = getPlayer(args, p);
+            if (target == null) return true;
+            int level = Integer.parseInt(args[1]);
+            PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
+            profile.setProperty("buff", level);
+            p.sendMessage("§aDu har sat " + target.getName() + " til buff level " + level);
+            try {
+                playerProfiles.save(profile);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+        }
+
+        if(!p.hasPermission("Vagt.HAdmin")) {
+            p.sendMessage("§4Du har ikke tilladelse til at bruge denne kommando");
+            return true;
         }
         if (alias.equalsIgnoreCase("vconfirmresetall")) {
             reseta = true;
@@ -75,7 +104,25 @@ public class VagtLevelAdminCommands implements CommandExecutor {
         return true;
     }
 
-
+    public void addlevel(String[] args, Player p) {
+        if(args.length == 0 || args.length == 1) {
+            p.sendMessage("§4Brug /vlevel <spiller> <level>");
+            return;
+        }
+        Player target = getPlayer(args, p);
+        if (target == null) return;
+        int level = Integer.parseInt(args[1]);
+        PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
+        int currentLevel = profile.castPropertyToInt(profile.getProperty("level"));
+        profile.setProperty("level", currentLevel + level);
+        p.sendMessage("§aDu har givet " + target.getName() + " extra level " + level);
+        try {
+            playerProfiles.save(profile);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return;
+    }
     private void confirmResetAll(Player p) {
         playerProfiles.getProfileMap().values().forEach(profile -> {
             profile.setProperty("level",1);
@@ -121,6 +168,25 @@ public class VagtLevelAdminCommands implements CommandExecutor {
         }
         return;
     }
+    public void addExp(String[] args, Player p) {
+        if(args.length == 0 || args.length == 1) {
+            p.sendMessage("§4Brug /vexp <spiller> <exp>");
+            return;
+        }
+        Player target = getPlayer(args, p);
+        if (target == null) return;
+        int exp = Integer.parseInt(args[1]);
+        PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
+        int currentExp = profile.castPropertyToInt(profile.getProperty("exp"));
+        profile.setXp(currentExp + exp);
+        p.sendMessage("§aDu har tilføjet " + target.getName() + " " + exp + "extra exp");
+        try {
+            playerProfiles.save(profile);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return;
+    }
 
     private void setLevel(String[] args, Player p) {
         if(args.length == 0 || args.length == 1) {
@@ -131,7 +197,7 @@ public class VagtLevelAdminCommands implements CommandExecutor {
         if (target == null) return;
         int level = Integer.parseInt(args[1]);
         PlayerProfile profile = playerProfiles.getPlayerProfile(target.getUniqueId());
-        profile.setProperty("level",1);
+        profile.setProperty("level", level);
         p.sendMessage("§aDu har sat " + target.getName() + " til level " + level);
         try {
             playerProfiles.save(profile);

@@ -32,7 +32,8 @@ public class Lon {
                 VagtCooldown.add(p.getName(), "lon", settings.getLonTime(), System.currentTimeMillis());
                 return;
             }
-            plugin.econ.depositPlayer(p, (int)profile.getProperty("salary"));
+
+            plugin.econ.depositPlayer(p, profile.castPropertyToInt(profile.getProperty("salary")));
             p.sendMessage(ChatColor.GRAY + "Du har fået" + ChatColor.AQUA + " Løn!");
 
             VagtCooldown.add(p.getName(), "lon", settings.getLonTime(), System.currentTimeMillis());

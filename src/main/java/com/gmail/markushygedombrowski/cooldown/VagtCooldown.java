@@ -63,7 +63,6 @@ public class VagtCooldown {
 
 
     public void removeCooldownLon(String player, String ability) {
-
         if (!cooldownPlayers.containsKey(player)) {
             return;
         }
@@ -74,10 +73,13 @@ public class VagtCooldown {
         Player cPlayer = Bukkit.getPlayer(player);
         if (cPlayer != null) {
             if (ability.equalsIgnoreCase("lon")) {
+                cooldownPlayers.get(player).cooldownMap.remove(ability);
                 lon.giveLon(cPlayer);
+            } else {
+                cooldownPlayers.get(player).cooldownMap.remove(ability);
             }
         }
-        cooldownPlayers.get(player).cooldownMap.remove(ability);
+
 
 
     }
@@ -97,17 +99,7 @@ public class VagtCooldown {
                 removeCooldownLon(player, cooldownEntry.getKey());
             });
         });
-        /*
-        new HashMap<>(cooldownPlayers).forEach((player, abilityCooldown) -> {
-            if (abilityCooldown.cooldownMap.isEmpty()) {
-                return;
-            }
-            abilityCooldown.cooldownMap.entrySet().stream().filter(vagt -> {
-                        return getRemaining(player, vagt.getKey()) <= 0.0;
-                    }).forEach((cooldownEntry) -> {
-                        removeCooldown(player,cooldownEntry.getKey());
-                    });
-        }); */
+
 
     }
 }

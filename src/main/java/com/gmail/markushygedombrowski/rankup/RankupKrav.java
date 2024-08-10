@@ -1,6 +1,7 @@
 package com.gmail.markushygedombrowski.rankup;
 
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
+import com.gmail.markushygedombrowski.utils.VagtUtils;
 
 public class RankupKrav {
     private String rankup;
@@ -57,7 +58,7 @@ public class RankupKrav {
     }
 
     public boolean canRankup(PlayerProfile profile) {
-        return profile.getDeliveredItems().getBread() >= bread && profile.getDeliveredItems().getShards() >= shards && (int)profile.getProperty("vagtposter") >= vagtposter && (int)profile.getProperty("level") >= vagtlevel;
+        return profile.getDeliveredItems().getBread() >= bread && profile.getDeliveredItems().getShards() >= shards && VagtUtils.castPropertyToInt(profile.getProperty("vagtposter")) >= vagtposter && VagtUtils.castPropertyToInt(profile.getProperty("level")) >= vagtlevel;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.gmail.markushygedombrowski.vagtMenu.subMenu;
 
+import com.gmail.markushygedombrowski.levels.LevelManager;
+import com.gmail.markushygedombrowski.levels.Levels;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import net.citizensnpcs.trait.WoolColor;
@@ -22,13 +24,16 @@ import java.util.*;
 public class VagtLevelGUI implements Listener {
     private PlayerProfiles playerProfiles;
     private HashMap<UUID, Integer> playerPageNumbers = new HashMap<>();
+    private LevelManager levelManager;
 
-    public VagtLevelGUI(PlayerProfiles playerProfiles) {
+    public VagtLevelGUI(PlayerProfiles playerProfiles, LevelManager levelManager) {
         this.playerProfiles = playerProfiles;
+        this.levelManager = levelManager;
     }
 
     private final int NEXT_PAGE = 53;
     private final int PREV_PAGE = 45;
+
     public void openVagtLevelGUI(Player p, int currentPage) {
         Inventory inventory = Bukkit.createInventory(null, 54, "§2Vagt Level side " + currentPage);
         playerPageNumbers.put(p.getUniqueId(), currentPage);
@@ -52,7 +57,7 @@ public class VagtLevelGUI implements Listener {
         event.setCancelled(true);
         event.setResult(Event.Result.DENY);
         ItemStack clickedItem = event.getCurrentItem();
-        if(clickedItem.getType() == Material.AIR || clickedItem.getType() == Material.STAINED_GLASS_PANE){
+        if (clickedItem.getType() == Material.AIR || clickedItem.getType() == Material.STAINED_GLASS_PANE) {
             return;
         }
         if (clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("§aNæste side") || clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("§cForrige side")) {
@@ -81,7 +86,7 @@ public class VagtLevelGUI implements Listener {
         ItemStack item;
         if (lvl != null) {
             PlayerProfile playerProfile = playerProfiles.getPlayerProfile(p.getUniqueId());
-            int level = (int) playerProfile.getProperty("level");
+            double level = (double) playerProfile.getProperty("level");
             DyeColor color = level >= lvl ? (level == lvl ? DyeColor.YELLOW : DyeColor.GREEN) : DyeColor.RED;
             item = new ItemStack(new Wool(color).toItemStack(1));
             List<String> lore = new ArrayList<>();
@@ -89,23 +94,12 @@ public class VagtLevelGUI implements Listener {
             DecimalFormat df = new DecimalFormat(pattern);
             lore.add("§3Exp: §b" + playerProfile.getProperty("exp") + "§7/§b" + df.format(playerProfile.getExpSpecificLevel(lvl)));
             lore.add("§7§a+ §b1000 §7løn");
-            if (lvl == 30) {
-                lore.add("§cSpassermine Pickaxe: §5Unbreaking 3,");
-            } else if (lvl == 25) {
-                lore.add("§aSpassermine Pickaxe: §5Efficiency 1");
-                lore.add("§aDobbelt drop ved §5Shards");
-            } else if (lvl == 23) {
-                lore.add("§5Random §6Glass");
-            } else if (lvl == 20) {
-                lore.add("§cSpassermine Pickaxe: §5Unbreaking 2");
-                lore.add("§5Random§7: §6Blomst");
-                lore.add("§aAdgang til §cA Vagt Celler ");
-            } else if (lvl == 18) {
-                lore.add("§aAdgang til §bB Vagt Celler ");
-            }
-            if (lvl == 10) {
-                lore.add("§cSpassermine Pickaxe: §5Unbreaking 1");
-                lore.add("§aAdgang til §cC Vagt Celler ");
+            Levels levels = levelManager.getLevel(lvl);
+            if(levels != null) {
+                List<String> rewards = levels.getLore();
+                if (rewards != null) {
+                    lore.addAll(rewards);
+                }
             }
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(displayName);

@@ -1,5 +1,6 @@
 package com.gmail.markushygedombrowski.commands;
 
+import com.gmail.markushygedombrowski.HLvagt;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfile;
 import com.gmail.markushygedombrowski.playerProfiles.PlayerProfiles;
 import com.gmail.markushygedombrowski.settings.Settings;
@@ -18,10 +19,13 @@ public class Rankupcommand implements CommandExecutor {
     private Settings settings;
     private PlayerProfiles profiles;
     private VagtSpawnManager vagtSpawnManager;
+    private HLvagt plugin;
 
-    public Rankupcommand(Settings settings, PlayerProfiles profiles) {
+    public Rankupcommand(Settings settings, PlayerProfiles profiles, VagtSpawnManager vagtSpawnManager, HLvagt plugin) {
         this.settings = settings;
         this.profiles = profiles;
+        this.vagtSpawnManager = vagtSpawnManager;
+        this.plugin = plugin;
     }
 
     @Override
@@ -50,6 +54,7 @@ public class Rankupcommand implements CommandExecutor {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        plugin.econ.depositPlayer(ansat, 25000);
         ansat.teleport(vagtSpawnManager.getWarpInfo("vagtc").getLocation());
 
 

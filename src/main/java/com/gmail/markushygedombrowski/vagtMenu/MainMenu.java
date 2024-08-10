@@ -94,7 +94,10 @@ public class MainMenu implements Listener {
                 case L0N_INDEX:
                     if (VagtCooldown.isCooling(p.getName(), "lon")) {
                         VagtCooldown.coolDurMessage(p, "lon");
+                        System.out.println("Cooldown");
+                        break;
                     }
+                    System.out.println("no cooldown");
                     break;
                 case TOPVAGT_INDEX:
                     topVagterGUI.create(p);
