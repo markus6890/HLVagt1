@@ -167,7 +167,11 @@ public class DamageListener implements Listener {
         if (attacker.hasPermission("vagt.slag")) {
             attacker.sendMessage("§2Du §4Dræbte §8" + defender.getName());
             profile = profiles.getPlayerProfile(attacker.getUniqueId());
-            profile.setProperty("kills",(int)profile.getProperty("kills") + 1);
+
+            // Safely cast or convert the "kills" property to an Integer
+            int kills = profile.castPropertyToInt(profile.getProperty("kills"));
+            profile.setProperty("kills", kills + 1);
+
             return true;
         }
         return false;
